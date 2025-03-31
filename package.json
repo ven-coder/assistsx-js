@@ -1,21 +1,25 @@
 {
-  "name": "ax-library",
-  "version": "0.0.111",
-  "description": "Android WebView 辅助功能库",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "name": "@assistsx/ax-web-dev",
+  "version": "0.0.114",
+  "description": "AssistsX Web 开发工具库",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "prepare": "npm run build"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "android",
-    "webview",
-    "assist"
+    "android assists",
+    "assists webview",
+    "dev",
+    "axwebdev",
+    "assistsx",
+    "assists",
+    "AccessibilityService"
   ],
-  "author": "",
-  "license": "MIT",
+  "author": "Ven",
+  "license": "ISC",
   "devDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.3.3"
   }
 }
