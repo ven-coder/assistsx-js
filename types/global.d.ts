@@ -4,7 +4,7 @@ import { Node } from './Node';
 declare global {
     interface Window {
         assistsx: {
-            call(method: string, arguments?: string, node?: Node): string | null;
+            call(method: string, args?: string, node?: Node): string | null;
         };
     }
 }
