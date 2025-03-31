@@ -1,11 +1,15 @@
 {
-  "name": "@assistsx/ax-web-dev",
+  "name": "@assistsxnpm/ax-web-dev",
   "version": "0.0.114",
   "description": "AssistsX Web 开发工具库",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc",
+    "prepublish": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
