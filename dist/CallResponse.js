@@ -1,8 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.CallResponse = void 0;
 // CallResponse 泛型类
-class CallResponse {
+export class CallResponse {
     constructor(code, data) {
         this.code = code;
         this.data = data;
@@ -28,4 +25,3 @@ class CallResponse {
         return (_a = this.data) !== null && _a !== void 0 ? _a : defaultValue;
     }
 }
-exports.CallResponse = CallResponse;

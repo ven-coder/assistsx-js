@@ -1,5 +1,4 @@
-export * from './types/AssistsX';
-export * from './types/CallMethod';
-export * from './types/CallResponse';
-export * from './types/Node';
-//# sourceMappingURL=index.js.map
+export * from './AXWebDev';
+export * from './Node';
+export * from './CallMethod';
+export * from './CallResponse';

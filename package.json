@@ -1,9 +1,17 @@
 {
-  "name": "@assistsxnpm/ax-web-dev",
-  "version": "0.0.114",
+  "name": "ax-web-dev",
+  "version": "0.0.121",
   "description": "AssistsX Web 开发工具库",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -13,6 +21,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
+    "ax-web-dev",
     "android assists",
     "assists webview",
     "dev",

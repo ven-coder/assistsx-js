@@ -1,8 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.CallMethod = void 0;
 // CallMethod 常量对象
-exports.CallMethod = {
+export const CallMethod = {
     setNodeText: "setNodeText",
     findByTags: "findByTags",
     findById: "findById",
