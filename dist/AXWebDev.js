@@ -1,3 +1,4 @@
+import { Node } from './Node';
 import { CallMethod } from './CallMethod';
 import { CallResponse } from './CallResponse';
 // AXWebDev 静态工具类
@@ -6,123 +7,34 @@ export class AXWebDev {
     constructor() { }
     // 统一的调用方法
     static async call(method, args, node) {
-        try {
-            const params = {
-                method,
-                arguments: args ? JSON.parse(args) : undefined,
-                node: node ? JSON.stringify(node) : undefined
-            };
-            const result = await new Promise((resolve) => {
-                const response = window.assistsx.call(JSON.stringify(params));
-                resolve(response);
-            });
-            if (typeof result === 'string') {
-                const responseData = JSON.parse(result);
+        const params = {
+            method,
+            arguments: args ? args : undefined,
+            node: node ? node : undefined
+        };
+        const result = await new Promise((resolve) => {
+            const callResult = window.assistsx.call(JSON.stringify(params));
+            if (typeof callResult === 'string') {
+                const responseData = JSON.parse(callResult);
                 const response = new CallResponse(responseData.code, responseData.data);
                 if (response.isSuccess() && response.data !== null) {
-                    return response.data;
+                    resolve(response);
                 }
             }
-            return null;
-        }
-        catch (error) {
-            console.error(`Failed to call ${method}:`, error);
-        }
-        return null;
+            ///Promise抛出异常
+            throw new Error('Call failed');
+        });
+        return result;
     }
     // 获取所有节点
     static async getAllNodes() {
-        return await this.call(CallMethod.getAllNodes) || [];
+        const response = await this.call(CallMethod.getAllNodes);
+        const nodes = Node.fromJSONArray(response.getDataOrDefault("[]"));
+        return nodes;
     }
     // 设置节点文本
-    static async setNodeText(nodeId, text) {
-        return await this.call(CallMethod.setNodeText, JSON.stringify({ nodeId, text })) || false;
-    }
-    // 通过标签查找节点
-    static async findByTags(tags) {
-        return await this.call(CallMethod.findByTags, JSON.stringify(tags)) || [];
-    }
-    // 通过ID查找节点
-    static async findById(id) {
-        return await this.call(CallMethod.findById, id) || undefined;
-    }
-    // 通过文本查找节点
-    static async findByText(text) {
-        return await this.call(CallMethod.findByText, text) || [];
-    }
-    // 通过文本完全匹配查找节点
-    static async findByTextAllMatch(text) {
-        return await this.call(CallMethod.findByTextAllMatch, text) || [];
-    }
-    // 检查节点是否包含指定文本
-    static async containsText(nodeId, text) {
-        return await this.call(CallMethod.containsText, JSON.stringify({ nodeId, text })) || false;
-    }
-    // 获取所有节点的文本
-    static async getAllText() {
-        return await this.call(CallMethod.getAllText) || [];
-    }
-    // 查找第一个具有指定标签的父节点
-    static async findFirstParentByTags(nodeId, tags) {
-        return await this.call(CallMethod.findFirstParentByTags, JSON.stringify({ nodeId, tags })) || undefined;
-    }
-    // 查找第一个可点击的父节点
-    static async findFirstParentClickable(nodeId) {
-        return await this.call(CallMethod.findFirstParentClickable, nodeId) || undefined;
-    }
-    // 获取子节点
-    static async getChildren(nodeId) {
-        return await this.call(CallMethod.getChildren, nodeId) || [];
-    }
-    // 执行手势操作
-    static async dispatchGesture(gesture) {
-        return await this.call(CallMethod.dispatchGesture, JSON.stringify(gesture)) || false;
-    }
-    // 获取节点在屏幕上的边界
-    static async getBoundsInScreen(nodeId) {
-        return await this.call(CallMethod.getBoundsInScreen, nodeId) || undefined;
-    }
-    // 点击操作
-    static async click(nodeId) {
-        return await this.call(CallMethod.click, nodeId) || false;
-    }
-    // 长按操作
-    static async longClick(nodeId) {
-        return await this.call(CallMethod.longClick, nodeId) || false;
-    }
-    // 手势点击
-    static async gestureClick(x, y) {
-        return await this.call(CallMethod.gestureClick, JSON.stringify({ x, y })) || false;
-    }
-    // 系统操作
-    static async back() {
-        return await this.call(CallMethod.back) || false;
-    }
-    static async home() {
-        return await this.call(CallMethod.home) || false;
-    }
-    static async notifications() {
-        return await this.call(CallMethod.notifications) || false;
-    }
-    static async recentApps() {
-        return await this.call(CallMethod.recentApps) || false;
-    }
-    static async paste() {
-        return await this.call(CallMethod.paste) || false;
-    }
-    // 文本操作
-    static async selectionText() {
-        return await this.call(CallMethod.selectionText) || '';
-    }
-    // 滚动操作
-    static async scrollForward(nodeId) {
-        return await this.call(CallMethod.scrollForward, nodeId) || false;
-    }
-    static async scrollBackward(nodeId) {
-        return await this.call(CallMethod.scrollBackward, nodeId) || false;
-    }
-    // 获取节点列表（别名方法）
-    static async getNodes() {
-        return await this.getAllNodes();
+    static async setNodeText(node, text) {
+        const response = await this.call(CallMethod.setNodeText, text, node);
+        return response.getDataOrDefault(false);
     }
 }

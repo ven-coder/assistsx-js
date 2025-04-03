@@ -1,9 +1,9 @@
-export declare class CallResponse<T> {
+export declare class CallResponse {
     readonly code: number;
-    readonly data: T | null;
-    constructor(code: number, data: T | null);
+    readonly data: any | null;
+    constructor(code: number, data: any | null);
     isSuccess(): boolean;
-    getData(): T;
-    getDataOrNull(): T | null;
-    getDataOrDefault(defaultValue: T): T;
+    getData(): any | null;
+    getDataOrNull(): any | null;
+    getDataOrDefault(defaultValue: any): any;
 }

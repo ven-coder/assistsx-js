@@ -1,8 +1,8 @@
 // CallResponse 泛型类
-export class CallResponse<T> {
+export class CallResponse {
     constructor(
         public readonly code: number,
-        public readonly data: T | null
+        public readonly data: any | null
     ) {}
 
     // 判断是否成功
@@ -11,7 +11,7 @@ export class CallResponse<T> {
     }
 
     // 获取数据，如果数据为空则抛出错误
-    public getData(): T {
+    public getData(): any | null {
         if (this.data === null) {
             throw new Error('Data is null');
         }
@@ -19,12 +19,12 @@ export class CallResponse<T> {
     }
 
     // 获取数据，如果数据为空则返回默认值
-    public getDataOrNull(): T | null {
+    public getDataOrNull(): any | null {
         return this.data;
     }
 
     // 获取数据，如果数据为空则返回默认值
-    public getDataOrDefault(defaultValue: T): T {
+    public getDataOrDefault(defaultValue: any): any {
         return this.data ?? defaultValue;
     }
 } 
