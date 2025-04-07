@@ -103,7 +103,6 @@ export class AssistsX {
         return nodes;
     }
     public static async containsText(text: string): Promise<boolean> {
-        z
         const response = await this.call(CallMethod.containsText, { text });
         return response.getDataOrDefault(false);
     }
