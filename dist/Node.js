@@ -1,4 +1,4 @@
-import { AXWebDev } from './AXWebDev';
+import { AssistsX } from './AssistsX';
 // 将接口改造为类
 export class Node {
     constructor(params) {
@@ -12,7 +12,13 @@ export class Node {
         this.isEnabled = params.isEnabled;
     }
     setNodeText(text) {
-        return AXWebDev.setNodeText(this, text);
+        return AssistsX.setNodeText(this, text);
+    }
+    click() {
+        return AssistsX.click(this);
+    }
+    longClick() {
+        return AssistsX.longClick(this);
     }
     // 静态方法，用于从 JSON 字符串创建实例
     static fromJSON(json) {

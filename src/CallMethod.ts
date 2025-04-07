@@ -1,5 +1,6 @@
 // CallMethod 常量对象
 export const CallMethod = {
+    overlayToast: "overlayToast",
     setNodeText: "setNodeText",
     findByTags: "findByTags",
     findById: "findById",
@@ -24,6 +25,11 @@ export const CallMethod = {
     paste: "paste",
     selectionText: "selectionText",
     scrollForward: "scrollForward",
+    launchApp: "launchApp",
+    getPackageName: "getPackageName",
+    getScreenSize: "getScreenSize",
+    getAppScreenSize: "getAppScreenSize",
+    nodeGestureClick: "nodeGestureClick",
     scrollBackward: "scrollBackward"
 } as const;
 

@@ -1,4 +1,5 @@
 export declare const CallMethod: {
+    readonly overlayToast: "overlayToast";
     readonly setNodeText: "setNodeText";
     readonly findByTags: "findByTags";
     readonly findById: "findById";
@@ -23,6 +24,11 @@ export declare const CallMethod: {
     readonly paste: "paste";
     readonly selectionText: "selectionText";
     readonly scrollForward: "scrollForward";
+    readonly launchApp: "launchApp";
+    readonly getPackageName: "getPackageName";
+    readonly getScreenSize: "getScreenSize";
+    readonly getAppScreenSize: "getAppScreenSize";
+    readonly nodeGestureClick: "nodeGestureClick";
     readonly scrollBackward: "scrollBackward";
 };
 export type CallMethodType = typeof CallMethod[keyof typeof CallMethod];

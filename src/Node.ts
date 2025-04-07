@@ -1,4 +1,4 @@
-import { AXWebDev } from './AXWebDev';
+import { AssistsX } from './AssistsX';
 
 // 将接口改造为类
 export class Node {
@@ -32,7 +32,13 @@ export class Node {
     }
 
     public setNodeText(text: string): Promise<boolean> {
-        return AXWebDev.setNodeText(this, text);
+        return AssistsX.setNodeText(this, text);
+    }
+    public click(): Promise<boolean> {
+        return AssistsX.click(this);
+    }
+    public longClick(): Promise<boolean> {
+        return AssistsX.longClick(this);
     }
 
     // 静态方法，用于从 JSON 字符串创建实例

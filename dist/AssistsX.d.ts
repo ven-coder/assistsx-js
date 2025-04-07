@@ -1,0 +1,36 @@
+import { Node } from './Node';
+import { Bounds } from 'Bounds';
+export declare class AssistsX {
+    private constructor();
+    private static call;
+    static getAllNodes(): Promise<Node[]>;
+    static setNodeText(node: Node, text: string): Promise<boolean>;
+    static click(node: Node): Promise<boolean>;
+    static longClick(node: Node): Promise<boolean>;
+    static launchApp(packageName: string): Promise<boolean>;
+    static getPackageName(): Promise<string>;
+    static overlayToast(text: string, delay?: number): Promise<boolean>;
+    static findById(id: string): Promise<Node[]>;
+    static findByText(text: string): Promise<Node[]>;
+    static findByTags(className: string, text?: string, viewId?: string, des?: string): Promise<Node[]>;
+    static findByTextAllMatch(text: string): Promise<Node[]>;
+    static containsText(text: string): Promise<boolean>;
+    static getAllText(): Promise<string[]>;
+    static findFirstParentByTags(className: string): Promise<Node>;
+    static getNodes(node: Node): Promise<Node[]>;
+    static getChildren(node: Node): Promise<Node[]>;
+    static findFirstParentClickable(node: Node): Promise<Node>;
+    static getBoundsInScreen(node: Node): Promise<Bounds>;
+    static gestureClick(x: number, y: number, duration: number): Promise<boolean>;
+    static back(): Promise<boolean>;
+    static home(): Promise<boolean>;
+    static notifications(): Promise<boolean>;
+    static recentApps(): Promise<boolean>;
+    static paste(node: Node, text: string): Promise<boolean>;
+    static selectionText(node: Node, selectionStart: number, selectionEnd: number): Promise<boolean>;
+    static scrollForward(node: Node): Promise<boolean>;
+    static scrollBackward(node: Node): Promise<boolean>;
+    static nodeGestureClick(node: Node): Promise<boolean>;
+    static getScreenSize(): Promise<any>;
+    static getAppScreenSize(): Promise<any>;
+}
