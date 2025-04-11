@@ -27,12 +27,23 @@ export class StepManager {
             if (!step) {
                 throw new Error(`找不到标签为 ${tag} 的步骤`);
             }
-            const next = await step(new Step(tag));
+            const next = await step(new Step(tag, this._stepId));
+            StepManager.checkStepId(next.stepId);
             tag = next.tag;
             await next.sleep(1000);
+            StepManager.checkStepId(next.stepId);
         }
     }
 
+    static checkStepId(stepId: string) {
+        if (StepManager.stepId != stepId) {
+            throw new Error("StepId mismatch");
+        }
+    }
+
+    static stop() {
+        this._stepId = "";
+    }
 
     static getStep(tag: string) {
         return this._steps.get(tag);

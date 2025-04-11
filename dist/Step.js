@@ -1,35 +1,32 @@
+import { StepManager } from "./StepManager";
 export class Step {
-    constructor(tag) {
-        this._stepId = "";
+    constructor(tag, stepId) {
+        this.stepId = "";
         this.tag = tag;
+        this.stepId = stepId;
     }
     next(tag) {
-        return new Step(tag);
+        StepManager.checkStepId(this.stepId);
+        return new Step(tag, this.stepId);
     }
     sleep(ms) {
-        //保存临时stepId
-        const tempStepId = this._stepId;
+        StepManager.checkStepId(this.stepId);
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                //判断临时id与当前id是否一致
-                if (tempStepId === this._stepId) {
+                try {
+                    StepManager.checkStepId(this.stepId);
                     resolve();
                 }
-                else {
-                    //如果id不一致，则拒绝Promise
-                    reject(new Error("StepId mismatch"));
+                catch (e) {
+                    reject(e);
                 }
             }, ms);
         });
     }
     async await(method) {
-        const tempStepId = this._stepId;
+        StepManager.checkStepId(this.stepId);
         const result = await method();
-        if (tempStepId === this._stepId) {
-            return result;
-        }
-        else {
-            throw new Error("StepId mismatch");
-        }
+        StepManager.checkStepId(this.stepId);
+        return result;
     }
 }
