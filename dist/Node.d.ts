@@ -1,3 +1,4 @@
+import { Bounds } from 'Bounds';
 export declare class Node {
     nodeId: string;
     text: string;
@@ -17,9 +18,13 @@ export declare class Node {
         isClickable: boolean;
         isEnabled: boolean;
     });
-    setNodeText(text: string): Promise<boolean>;
-    click(): Promise<boolean>;
-    longClick(): Promise<boolean>;
+    setNodeText(text: string): boolean;
+    click(): boolean;
+    longClick(): boolean;
+    findFirstParentClickable(): Node;
+    getBoundsInScreen(): Bounds;
+    getNodes(): Node[];
+    getChildren(): Node[];
     static fromJSON(json: string): Node;
     static from(data: any): Node;
     static reviver(key: string, value: any): any;

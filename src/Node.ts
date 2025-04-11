@@ -1,3 +1,4 @@
+import { Bounds } from 'Bounds';
 import { AssistsX } from './AssistsX';
 
 // 将接口改造为类
@@ -31,14 +32,26 @@ export class Node {
         this.isEnabled = params.isEnabled;
     }
 
-    public setNodeText(text: string): Promise<boolean> {
+    public setNodeText(text: string): boolean {
         return AssistsX.setNodeText(this, text);
     }
-    public click(): Promise<boolean> {
+    public click(): boolean {
         return AssistsX.click(this);
     }
-    public longClick(): Promise<boolean> {
+    public longClick(): boolean {
         return AssistsX.longClick(this);
+    }
+    public findFirstParentClickable(): Node {
+        return AssistsX.findFirstParentClickable(this);
+    }
+    public getBoundsInScreen(): Bounds {
+        return AssistsX.getBoundsInScreen(this);
+    }
+    public getNodes(): Node[] {
+        return AssistsX.getNodes(this);
+    }
+    public getChildren(): Node[] {
+        return AssistsX.getChildren(this);
     }
 
     // 静态方法，用于从 JSON 字符串创建实例

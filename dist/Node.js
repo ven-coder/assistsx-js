@@ -20,6 +20,18 @@ export class Node {
     longClick() {
         return AssistsX.longClick(this);
     }
+    findFirstParentClickable() {
+        return AssistsX.findFirstParentClickable(this);
+    }
+    getBoundsInScreen() {
+        return AssistsX.getBoundsInScreen(this);
+    }
+    getNodes() {
+        return AssistsX.getNodes(this);
+    }
+    getChildren() {
+        return AssistsX.getChildren(this);
+    }
     // 静态方法，用于从 JSON 字符串创建实例
     static fromJSON(json) {
         const data = JSON.parse(json);

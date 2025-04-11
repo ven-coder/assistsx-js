@@ -1,7 +1,7 @@
 import { Node } from './Node';
 import { CallMethod } from './CallMethod';
 import { CallResponse } from './CallResponse';
-import { Bounds } from 'Bounds';
+import { Bounds } from './Bounds';
 
 // 定义手势类型
 interface Gesture {
@@ -17,174 +17,167 @@ export class AssistsX {
     private constructor() { }
 
     // 统一的调用方法
-    private static async call(method: string, args?: any, node?: Node): Promise<CallResponse> {
+    private static call(method: string, args?: any, node?: Node): CallResponse {
         const params = {
             method,
             arguments: args ? args : undefined,
             node: node ? node : undefined
         };
-        const result = await new Promise<CallResponse>((resolve) => {
-            const callResult = window.assistsx.call(JSON.stringify(params));
+        const result = window.assistsx.call(JSON.stringify(params));
 
-            if (typeof callResult === 'string') {
-                const responseData = JSON.parse(callResult);
-                const response = new CallResponse(responseData.code, responseData.data);
-                if (response.isSuccess() && response.data !== null) {
-                    resolve(response);
-                }
-            }
-            ///Promise抛出异常
-            throw new Error('Call failed');
-        });
-
-        return result;
+        if (typeof result === 'string') {
+            const responseData = JSON.parse(result);
+            const response = new CallResponse(responseData.code, responseData.data);
+            return response;
+        }
+        throw new Error('Call failed');
     }
 
     // 获取所有节点
-    public static async getAllNodes(): Promise<Node[]> {
-        const response = await this.call(CallMethod.getAllNodes);
+    public static getAllNodes(): Node[] {
+        const response = this.call(CallMethod.getAllNodes);
         const nodes = Node.fromJSONArray(response.getDataOrDefault("[]"));
         return nodes;
     }
 
     // 设置节点文本
-    public static async setNodeText(node: Node, text: string): Promise<boolean> {
-        const response = await this.call(CallMethod.setNodeText, text, node);
+    public static setNodeText(node: Node, text: string): boolean {
+        const response = this.call(CallMethod.setNodeText, text, node);
         return response.getDataOrDefault(false);
     }
     // 点击节点 
-    public static async click(node: Node): Promise<boolean> {
-        const response = await this.call(CallMethod.click, {}, node);
+    public static click(node: Node): boolean {
+        const response = this.call(CallMethod.click, {}, node);
         return response.getDataOrDefault(false);
     }
     // 长按节点
-    public static async longClick(node: Node): Promise<boolean> {
-        const response = await this.call(CallMethod.longClick, {}, node);
+    public static longClick(node: Node): boolean {
+        const response = this.call(CallMethod.longClick, {}, node);
         return response.getDataOrDefault(false);
     }
 
     // 启动应用
-    public static async launchApp(packageName: string): Promise<boolean> {
-        const response = await this.call(CallMethod.launchApp, { packageName });
+    public static launchApp(packageName: string): boolean {
+        const response = this.call(CallMethod.launchApp, { packageName });
         return response.getDataOrDefault(false);
     }
 
     // 启动应用
-    public static async getPackageName(): Promise<string> {
-        const response = await this.call(CallMethod.getPackageName);
+    public static getPackageName(): string {
+        const response = this.call(CallMethod.getPackageName);
         return response.getDataOrDefault("");
     }
     // 显示toast
-    public static async overlayToast(text: string, delay: number = 2000): Promise<boolean> {
-        const response = await this.call(CallMethod.overlayToast, { text, delay });
+    public static overlayToast(text: string, delay: number = 2000): boolean {
+        const response = this.call(CallMethod.overlayToast, { text, delay });
         return response.getDataOrDefault(false);
     }
 
     // 显示toast
-    public static async findById(id: string): Promise<Node[]> {
-        const response = await this.call(CallMethod.findById, { id });
+    public static findById(id: string): Node[] {
+        const response = this.call(CallMethod.findById, { id });
         const nodes = Node.fromJSONArray(response.getDataOrDefault("[]"));
         return nodes;
     }
     // 通过文本查找节点
-    public static async findByText(text: string): Promise<Node[]> {
-        const response = await this.call(CallMethod.findByText, { text });
+    public static findByText(text: string): Node[] {
+        const response = this.call(CallMethod.findByText, { text });
         const nodes = Node.fromJSONArray(response.getDataOrDefault("[]"));
         return nodes;
     }
-    public static async findByTags(className: string, text?: string, viewId?: string, des?: string,): Promise<Node[]> {
-        const response = await this.call(CallMethod.findByTags, { className, text, viewId, des });
+    public static findByTags(className: string, text?: string, viewId?: string, des?: string,): Node[] {
+        const response = this.call(CallMethod.findByTags, { className, text, viewId, des });
         const nodes = Node.fromJSONArray(response.getDataOrDefault("[]"));
         return nodes;
     }
-    public static async findByTextAllMatch(text: string): Promise<Node[]> {
-        const response = await this.call(CallMethod.findByTextAllMatch, { text });
+    public static findByTextAllMatch(text: string): Node[] {
+        const response = this.call(CallMethod.findByTextAllMatch, { text });
         const nodes = Node.fromJSONArray(response.getDataOrDefault("[]"));
         return nodes;
     }
-    public static async containsText(text: string): Promise<boolean> {
-        const response = await this.call(CallMethod.containsText, { text });
+    public static containsText(text: string): boolean {
+        const response = this.call(CallMethod.containsText, { text });
         return response.getDataOrDefault(false);
     }
-    public static async getAllText(): Promise<string[]> {
-        const response = await this.call(CallMethod.getAllText);
+    public static getAllText(): string[] {
+        const response = this.call(CallMethod.getAllText);
         const texts = response.getDataOrDefault("[]");
         return texts;
     }
-    public static async findFirstParentByTags(className: string): Promise<Node> {
-        const response = await this.call(CallMethod.findFirstParentByTags, { className });
+    public static findFirstParentByTags(className: string): Node {
+        const response = this.call(CallMethod.findFirstParentByTags, { className });
         const result = response.getDataOrDefault("{}");
         const node = Node.create(result);
         return node;
     }
-    public static async getNodes(node: Node): Promise<Node[]> {
-        const response = await this.call(CallMethod.getNodes, {}, node);
+    public static getNodes(node: Node): Node[] {
+        const response = this.call(CallMethod.getNodes, {}, node);
         const nodes = Node.fromJSONArray(response.getDataOrDefault("[]"));
         return nodes;
     }
-    public static async getChildren(node: Node): Promise<Node[]> {
-        const response = await this.call(CallMethod.getChildren, {}, node);
+    public static getChildren(node: Node): Node[] {
+        const response = this.call(CallMethod.getChildren, {}, node);
         const nodes = Node.fromJSONArray(response.getDataOrDefault("[]"));
         return nodes;
     }
-    public static async findFirstParentClickable(node: Node): Promise<Node> {
-        const response = await this.call(CallMethod.findFirstParentClickable, {}, node);
+    public static findFirstParentClickable(node: Node): Node {
+        const response = this.call(CallMethod.findFirstParentClickable, {}, node);
         const result = response.getDataOrDefault("{}");
         return Node.create(result);
     }
-    public static async getBoundsInScreen(node: Node): Promise<Bounds> {
-        const response = await this.call(CallMethod.getBoundsInScreen, {}, node);
+    public static getBoundsInScreen(node: Node): Bounds {
+        const response = this.call(CallMethod.getBoundsInScreen, {}, node);
         const result = response.getDataOrDefault("{}");
         return Bounds.fromJSON(result);
     }
-    public static async gestureClick(x: number, y: number, duration: number): Promise<boolean> {
-        const response = await this.call(CallMethod.gestureClick, { x, y, duration });
+    public static gestureClick(x: number, y: number, duration: number): boolean {
+        const response = this.call(CallMethod.gestureClick, { x, y, duration });
         return response.getDataOrDefault(false);
     }
-    public static async back(): Promise<boolean> {
-        const response = await this.call(CallMethod.back, {});
+    public static back(): boolean {
+        const response = this.call(CallMethod.back, {});
         return response.getDataOrDefault(false);
     }
-    public static async home(): Promise<boolean> {
-        const response = await this.call(CallMethod.home, {});
+    public static home(): boolean {
+        const response = this.call(CallMethod.home, {});
         return response.getDataOrDefault(false);
     }
-    public static async notifications(): Promise<boolean> {
-        const response = await this.call(CallMethod.notifications, {});
+    public static notifications(): boolean {
+        const response = this.call(CallMethod.notifications, {});
         return response.getDataOrDefault(false);
     }
-    public static async recentApps(): Promise<boolean> {
-        const response = await this.call(CallMethod.recentApps, {});
+    public static recentApps(): boolean {
+        const response = this.call(CallMethod.recentApps, {});
         return response.getDataOrDefault(false);
     }
 
-    public static async paste(node: Node, text: string): Promise<boolean> {
-        const response = await this.call(CallMethod.paste, { text }, node);
+    public static paste(node: Node, text: string): boolean {
+        const response = this.call(CallMethod.paste, { text }, node);
         return response.getDataOrDefault(false);
     }
-    public static async selectionText(node: Node, selectionStart: number, selectionEnd: number): Promise<boolean> {
-        const response = await this.call(CallMethod.selectionText, { selectionStart, selectionEnd }, node);
+    public static selectionText(node: Node, selectionStart: number, selectionEnd: number): boolean {
+        const response = this.call(CallMethod.selectionText, { selectionStart, selectionEnd }, node);
         return response.getDataOrDefault(false);
     }
-    public static async scrollForward(node: Node): Promise<boolean> {
-        const response = await this.call(CallMethod.scrollForward, {}, node);
+    public static scrollForward(node: Node): boolean {
+        const response = this.call(CallMethod.scrollForward, {}, node);
         return response.getDataOrDefault(false);
     }
-    public static async scrollBackward(node: Node): Promise<boolean> {
-        const response = await this.call(CallMethod.scrollBackward, {}, node);
+    public static scrollBackward(node: Node): boolean {
+        const response = this.call(CallMethod.scrollBackward, {}, node);
         return response.getDataOrDefault(false);
     }
-    public static async nodeGestureClick(node: Node): Promise<boolean> {
-        const response = await this.call(CallMethod.nodeGestureClick, {}, node);
+    public static nodeGestureClick(node: Node): boolean {
+        const response = this.call(CallMethod.nodeGestureClick, {}, node);
         return response.getDataOrDefault(false);
     }
-    public static async getScreenSize(): Promise<any> {
-        const response = await this.call(CallMethod.getScreenSize, {});
+    public static getScreenSize(): any {
+        const response = this.call(CallMethod.getScreenSize, {});
         const data = response.getDataOrDefault("{}")
         return data;
     }
-    public static async getAppScreenSize(): Promise<any> {
-        const response = await this.call(CallMethod.getAppScreenSize, {});
+    public static getAppScreenSize(): any {
+        const response = this.call(CallMethod.getAppScreenSize, {});
         const data = response.getDataOrDefault("{}")
         return data;
     }
