@@ -1,21 +1,26 @@
 import { AssistsX } from "./AssistsX";
 import { Node } from './Node';
 import { CallMethod } from "CallMethod";
+import { useStepStore } from './stepStore';
 
 
 export class Step {
 
     private static _stepId: string | undefined = undefined;
     static async run(impl: (step: Step) => Promise<Step | undefined>, { tag, data, delay = 1000 }: { tag?: string | undefined, data?: any | undefined, delay?: number } = {}) {
+        const stepStore = useStepStore();
         try {
+            //步骤开始
             this._stepId = this.generateUUID();
 
+            stepStore.startStep(this._stepId, tag, data);
             let step = new Step({ stepId: this._stepId, impl, tag, data, delay });
             while (true) {
                 if (delay) {
                     await step.sleep(delay);
                     Step.assert(step.stepId);
                 }
+                //执行步骤
                 const nextStep = await step.impl(step);
                 Step.assert(step.stepId);
                 if (nextStep) {
@@ -24,14 +29,20 @@ export class Step {
                     break;
                 }
             }
+
         } catch (e: any) {
-            throw new Error(JSON.stringify({
+            //步骤执行出错
+            const errorMsg = JSON.stringify({
                 impl: impl.name,
                 tag: tag,
                 data: data,
                 error: e?.message ?? String(e)
-            }));
+            });
+            stepStore.setError(errorMsg);
+            throw new Error(errorMsg);
         }
+        //步骤执行结束
+        stepStore.completeStep();
     }
     // 生成UUID
     private static generateUUID(): string {
