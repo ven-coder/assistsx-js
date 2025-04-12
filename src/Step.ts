@@ -79,12 +79,12 @@ export class Step {
         this.delay = delay;
     }
 
-    next({ stepId = this.stepId, impl, tag, data, delay = 1000 }: { stepId?: string, impl: (step: Step) => Promise<Step | undefined>, tag?: string | undefined, data?: any | undefined, delay?: number }): Step {
+    next(impl: (step: Step) => Promise<Step | undefined>, { tag, data, delay = 1000 }: { tag?: string | undefined, data?: any | undefined, delay?: number } = {}): Step {
         Step.assert(this.stepId);
-        return new Step({ stepId, impl, tag, data, delay });
+        return new Step({ stepId: this.stepId, impl, tag, data, delay });
     }
 
-    repeat({ stepId = this.stepId, tag = this.tag, data = this.data, delay = this.delay }: { stepId?: string, tag?: string | undefined, data?: any | undefined, delay?: number }): Step {
+    repeat({ stepId = this.stepId, tag = this.tag, data = this.data, delay = this.delay }: { stepId?: string, tag?: string | undefined, data?: any | undefined, delay?: number } = {}): Step {
         Step.assert(this.stepId);
         this.repeatCount++;
         this.stepId = stepId;

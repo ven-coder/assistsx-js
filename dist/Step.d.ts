@@ -24,14 +24,12 @@ export declare class Step {
         data?: any | undefined;
         delay?: number;
     });
-    next({ stepId, impl, tag, data, delay }: {
-        stepId?: string;
-        impl: (step: Step) => Promise<Step | undefined>;
+    next(impl: (step: Step) => Promise<Step | undefined>, { tag, data, delay }?: {
         tag?: string | undefined;
         data?: any | undefined;
         delay?: number;
     }): Step;
-    repeat({ stepId, tag, data, delay }: {
+    repeat({ stepId, tag, data, delay }?: {
         stepId?: string;
         tag?: string | undefined;
         data?: any | undefined;

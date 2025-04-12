@@ -65,11 +65,11 @@ export class Step {
         this.impl = impl;
         this.delay = delay;
     }
-    next({ stepId = this.stepId, impl, tag, data, delay = 1000 }) {
+    next(impl, { tag, data, delay = 1000 } = {}) {
         Step.assert(this.stepId);
-        return new Step({ stepId, impl, tag, data, delay });
+        return new Step({ stepId: this.stepId, impl, tag, data, delay });
     }
-    repeat({ stepId = this.stepId, tag = this.tag, data = this.data, delay = this.delay }) {
+    repeat({ stepId = this.stepId, tag = this.tag, data = this.data, delay = this.delay } = {}) {
         Step.assert(this.stepId);
         this.repeatCount++;
         this.stepId = stepId;
