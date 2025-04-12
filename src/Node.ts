@@ -1,5 +1,6 @@
-import { Bounds } from 'Bounds';
+import { Bounds } from './Bounds';
 import { AssistsX } from './AssistsX';
+import { Step } from './Step';
 
 // 将接口改造为类
 export class Node {
@@ -11,6 +12,7 @@ export class Node {
     isScrollable: boolean;
     isClickable: boolean;
     isEnabled: boolean;
+    stepId: string | undefined;
 
     constructor(params: {
         nodeId: string;
@@ -21,6 +23,7 @@ export class Node {
         isScrollable: boolean;
         isClickable: boolean;
         isEnabled: boolean;
+        stepId: string | undefined;
     }) {
         this.nodeId = params.nodeId;
         this.text = params.text;
@@ -30,28 +33,53 @@ export class Node {
         this.isScrollable = params.isScrollable;
         this.isClickable = params.isClickable;
         this.isEnabled = params.isEnabled;
+        this.stepId = params.stepId;
     }
 
     public setNodeText(text: string): boolean {
-        return AssistsX.setNodeText(this, text);
+        Step.assert(this.stepId);
+        const result = AssistsX.setNodeText(this, text);
+        Step.assert(this.stepId);
+        return result;
     }
     public click(): boolean {
-        return AssistsX.click(this);
+        Step.assert(this.stepId);
+        const result = AssistsX.click(this);
+        Step.assert(this.stepId);
+        return result;
     }
     public longClick(): boolean {
-        return AssistsX.longClick(this);
+        Step.assert(this.stepId);
+        const result = AssistsX.longClick(this);
+        Step.assert(this.stepId);
+        return result;
     }
     public findFirstParentClickable(): Node {
-        return AssistsX.findFirstParentClickable(this);
+        Step.assert(this.stepId);
+        const result = AssistsX.findFirstParentClickable(this);
+        Step.assert(this.stepId);
+        Step.assignIdsToNodes([result], this.stepId);
+        return result;
     }
     public getBoundsInScreen(): Bounds {
-        return AssistsX.getBoundsInScreen(this);
+        Step.assert(this.stepId);
+        const result = AssistsX.getBoundsInScreen(this);
+        Step.assert(this.stepId);
+        return result;
     }
     public getNodes(): Node[] {
-        return AssistsX.getNodes(this);
+        Step.assert(this.stepId);
+        const result = AssistsX.getNodes(this);
+        Step.assert(this.stepId);
+        Step.assignIdsToNodes(result, this.stepId);
+        return result;
     }
     public getChildren(): Node[] {
-        return AssistsX.getChildren(this);
+        Step.assert(this.stepId);
+        const result = AssistsX.getChildren(this);
+        Step.assert(this.stepId);
+        Step.assignIdsToNodes(result, this.stepId);
+        return result;
     }
 
     // 静态方法，用于从 JSON 字符串创建实例
@@ -80,6 +108,7 @@ export class Node {
         isScrollable: boolean;
         isClickable: boolean;
         isEnabled: boolean;
+        stepId: string | undefined;
     }): Node {
         return new Node(params);
     }

@@ -1,4 +1,5 @@
 import { AssistsX } from './AssistsX';
+import { Step } from './Step';
 // 将接口改造为类
 export class Node {
     constructor(params) {
@@ -10,27 +11,52 @@ export class Node {
         this.isScrollable = params.isScrollable;
         this.isClickable = params.isClickable;
         this.isEnabled = params.isEnabled;
+        this.stepId = params.stepId;
     }
     setNodeText(text) {
-        return AssistsX.setNodeText(this, text);
+        Step.assert(this.stepId);
+        const result = AssistsX.setNodeText(this, text);
+        Step.assert(this.stepId);
+        return result;
     }
     click() {
-        return AssistsX.click(this);
+        Step.assert(this.stepId);
+        const result = AssistsX.click(this);
+        Step.assert(this.stepId);
+        return result;
     }
     longClick() {
-        return AssistsX.longClick(this);
+        Step.assert(this.stepId);
+        const result = AssistsX.longClick(this);
+        Step.assert(this.stepId);
+        return result;
     }
     findFirstParentClickable() {
-        return AssistsX.findFirstParentClickable(this);
+        Step.assert(this.stepId);
+        const result = AssistsX.findFirstParentClickable(this);
+        Step.assert(this.stepId);
+        Step.assignIdsToNodes([result], this.stepId);
+        return result;
     }
     getBoundsInScreen() {
-        return AssistsX.getBoundsInScreen(this);
+        Step.assert(this.stepId);
+        const result = AssistsX.getBoundsInScreen(this);
+        Step.assert(this.stepId);
+        return result;
     }
     getNodes() {
-        return AssistsX.getNodes(this);
+        Step.assert(this.stepId);
+        const result = AssistsX.getNodes(this);
+        Step.assert(this.stepId);
+        Step.assignIdsToNodes(result, this.stepId);
+        return result;
     }
     getChildren() {
-        return AssistsX.getChildren(this);
+        Step.assert(this.stepId);
+        const result = AssistsX.getChildren(this);
+        Step.assert(this.stepId);
+        Step.assignIdsToNodes(result, this.stepId);
+        return result;
     }
     // 静态方法，用于从 JSON 字符串创建实例
     static fromJSON(json) {

@@ -1,4 +1,4 @@
-import { Bounds } from 'Bounds';
+import { Bounds } from './Bounds';
 export declare class Node {
     nodeId: string;
     text: string;
@@ -8,6 +8,7 @@ export declare class Node {
     isScrollable: boolean;
     isClickable: boolean;
     isEnabled: boolean;
+    stepId: string | undefined;
     constructor(params: {
         nodeId: string;
         text: string;
@@ -17,6 +18,7 @@ export declare class Node {
         isScrollable: boolean;
         isClickable: boolean;
         isEnabled: boolean;
+        stepId: string | undefined;
     });
     setNodeText(text: string): boolean;
     click(): boolean;
@@ -37,6 +39,7 @@ export declare class Node {
         isScrollable: boolean;
         isClickable: boolean;
         isEnabled: boolean;
+        stepId: string | undefined;
     }): Node;
     static fromJSONArray(array: Array<any>): Node[];
 }
