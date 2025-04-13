@@ -1,7 +1,7 @@
 import { AssistsX } from "./AssistsX";
 import { Node } from './Node';
 import { CallMethod } from "CallMethod";
-import { useStepStore } from './stepStore';
+import { useStepStore } from './StepStateStore';
 
 
 export class Step {
