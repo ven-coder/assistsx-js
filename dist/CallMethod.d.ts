@@ -1,4 +1,5 @@
 export declare const CallMethod: {
+    readonly takeScreenshot: "takeScreenshot";
     readonly overlayToast: "overlayToast";
     readonly setNodeText: "setNodeText";
     readonly findByTags: "findByTags";

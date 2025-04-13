@@ -13,6 +13,19 @@ export class Node {
         this.isEnabled = params.isEnabled;
         this.stepId = params.stepId;
     }
+    findById(id) {
+        Step.assert(this.stepId);
+        const result = AssistsX.findById(id, { node: this });
+        Step.assignIdsToNodes(result, this.stepId);
+        Step.assert(this.stepId);
+        return result;
+    }
+    takeScreenshot() {
+        Step.assert(this.stepId);
+        const result = AssistsX.takeScreenshot(this);
+        Step.assert(this.stepId);
+        return result;
+    }
     setNodeText(text) {
         Step.assert(this.stepId);
         const result = AssistsX.setNodeText(this, text);

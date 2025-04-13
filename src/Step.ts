@@ -9,6 +9,7 @@ export class Step {
     private static _stepId: string | undefined = undefined;
     static async run(impl: (step: Step) => Promise<Step | undefined>, { tag, data, delay = 1000 }: { tag?: string | undefined, data?: any | undefined, delay?: number } = {}) {
         const stepStore = useStepStore();
+        let implnName = impl.name
         try {
             //步骤开始
             this._stepId = this.generateUUID();
@@ -21,6 +22,7 @@ export class Step {
                     Step.assert(step.stepId);
                 }
                 //执行步骤
+                implnName = step.impl.name
                 const nextStep = await step.impl(step);
                 Step.assert(step.stepId);
                 if (nextStep) {
@@ -33,7 +35,7 @@ export class Step {
         } catch (e: any) {
             //步骤执行出错
             const errorMsg = JSON.stringify({
-                impl: impl.name,
+                impl: implnName,
                 tag: tag,
                 data: data,
                 error: e?.message ?? String(e)

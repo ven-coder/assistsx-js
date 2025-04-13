@@ -5,12 +5,15 @@ export declare class AssistsX {
     private static call;
     static getAllNodes(): Node[];
     static setNodeText(node: Node, text: string): boolean;
+    static takeScreenshot(node: Node): string;
     static click(node: Node): boolean;
     static longClick(node: Node): boolean;
     static launchApp(packageName: string): boolean;
     static getPackageName(): string;
     static overlayToast(text: string, delay?: number): boolean;
-    static findById(id: string): Node[];
+    static findById(id: string, { node }?: {
+        node?: Node;
+    }): Node[];
     static findByText(text: string): Node[];
     static findByTags(className: string, text?: string, viewId?: string, des?: string): Node[];
     static findByTextAllMatch(text: string): Node[];

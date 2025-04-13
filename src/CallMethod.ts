@@ -1,5 +1,6 @@
 // CallMethod 常量对象
 export const CallMethod = {
+    takeScreenshot: "takeScreenshot",
     overlayToast: "overlayToast",
     setNodeText: "setNodeText",
     findByTags: "findByTags",

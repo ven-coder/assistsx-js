@@ -20,6 +20,8 @@ export declare class Node {
         isEnabled: boolean;
         stepId: string | undefined;
     });
+    findById(id: string): Node[];
+    takeScreenshot(): string;
     setNodeText(text: string): boolean;
     click(): boolean;
     longClick(): boolean;

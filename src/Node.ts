@@ -36,6 +36,19 @@ export class Node {
         this.stepId = params.stepId;
     }
 
+    public findById(id: string): Node[] {
+        Step.assert(this.stepId);
+        const result = AssistsX.findById(id, { node: this });
+        Step.assignIdsToNodes(result, this.stepId);
+        Step.assert(this.stepId);
+        return result;
+    }
+    public takeScreenshot(): string {
+        Step.assert(this.stepId);
+        const result = AssistsX.takeScreenshot(this);
+        Step.assert(this.stepId);
+        return result;
+    }
     public setNodeText(text: string): boolean {
         Step.assert(this.stepId);
         const result = AssistsX.setNodeText(this, text);
