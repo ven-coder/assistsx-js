@@ -74,8 +74,8 @@ export class AssistsX {
         const nodes = Node.fromJSONArray(response.getDataOrDefault("[]"));
         return nodes;
     }
-    static findByTags(className, text, viewId, des) {
-        const response = this.call(CallMethod.findByTags, { args: { className, text, viewId, des } });
+    static findByTags(className, { filterText, filterViewId, filterDes, node } = {}) {
+        const response = this.call(CallMethod.findByTags, { args: { className, filterText, filterViewId, filterDes }, node });
         const nodes = Node.fromJSONArray(response.getDataOrDefault("[]"));
         return nodes;
     }

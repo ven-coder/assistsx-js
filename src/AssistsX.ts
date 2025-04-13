@@ -90,8 +90,8 @@ export class AssistsX {
         const nodes = Node.fromJSONArray(response.getDataOrDefault("[]"));
         return nodes;
     }
-    public static findByTags(className: string, text?: string, viewId?: string, des?: string,): Node[] {
-        const response = this.call(CallMethod.findByTags, { args: { className, text, viewId, des } });
+    public static findByTags(className: string, { filterText, filterViewId, filterDes, node }: { filterText?: string, filterViewId?: string, filterDes?: string, node?: Node } = {}): Node[] {
+        const response = this.call(CallMethod.findByTags, { args: { className, filterText, filterViewId, filterDes }, node });
         const nodes = Node.fromJSONArray(response.getDataOrDefault("[]"));
         return nodes;
     }

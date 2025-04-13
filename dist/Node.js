@@ -13,6 +13,13 @@ export class Node {
         this.isEnabled = params.isEnabled;
         this.stepId = params.stepId;
     }
+    findByTags(className, { filterText, filterViewId, filterDes }) {
+        Step.assert(this.stepId);
+        const result = AssistsX.findByTags(className, { filterText, filterViewId, filterDes, node: this });
+        Step.assignIdsToNodes(result, this.stepId);
+        Step.assert(this.stepId);
+        return result;
+    }
     findById(id) {
         Step.assert(this.stepId);
         const result = AssistsX.findById(id, { node: this });

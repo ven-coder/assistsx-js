@@ -20,6 +20,11 @@ export declare class Node {
         isEnabled: boolean;
         stepId: string | undefined;
     });
+    findByTags(className: string, { filterText, filterViewId, filterDes }: {
+        filterText?: string;
+        filterViewId?: string;
+        filterDes?: string;
+    }): Node[];
     findById(id: string): Node[];
     takeScreenshot(): string;
     setNodeText(text: string): boolean;

@@ -15,7 +15,12 @@ export declare class AssistsX {
         node?: Node;
     }): Node[];
     static findByText(text: string): Node[];
-    static findByTags(className: string, text?: string, viewId?: string, des?: string): Node[];
+    static findByTags(className: string, { filterText, filterViewId, filterDes, node }?: {
+        filterText?: string;
+        filterViewId?: string;
+        filterDes?: string;
+        node?: Node;
+    }): Node[];
     static findByTextAllMatch(text: string): Node[];
     static containsText(text: string): boolean;
     static getAllText(): string[];

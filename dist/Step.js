@@ -1,7 +1,7 @@
 import { AssistsX } from "./AssistsX";
 import { useStepStore } from './StepStateStore';
 export class Step {
-    static async run(impl, { tag, data, delay = 1000 } = {}) {
+    static async run(impl, { tag, data, delayMs = 1000 } = {}) {
         var _a;
         const stepStore = useStepStore();
         let implnName = impl.name;
@@ -9,10 +9,10 @@ export class Step {
             //步骤开始
             this._stepId = this.generateUUID();
             stepStore.startStep(this._stepId, tag, data);
-            let step = new Step({ stepId: this._stepId, impl, tag, data, delay });
+            let step = new Step({ stepId: this._stepId, impl, tag, data, delayMs });
             while (true) {
-                if (delay) {
-                    await step.sleep(delay);
+                if (step.delayMs) {
+                    await step.delay(step.delayMs);
                     Step.assert(step.stepId);
                 }
                 //执行步骤
@@ -67,30 +67,30 @@ export class Step {
     static stop() {
         this._stepId = undefined;
     }
-    constructor({ stepId, impl, tag, data, delay = 1000 }) {
+    constructor({ stepId, impl, tag, data, delayMs = 1000 }) {
         this.stepId = "";
         this.repeatCount = 0;
-        this.delay = 1000;
+        this.delayMs = 1000;
         this.tag = tag;
         this.stepId = stepId;
         this.data = data;
         this.impl = impl;
-        this.delay = delay;
+        this.delayMs = delayMs;
     }
-    next(impl, { tag, data, delay = 1000 } = {}) {
+    next(impl, { tag, data, delayMs = 1000 } = {}) {
         Step.assert(this.stepId);
-        return new Step({ stepId: this.stepId, impl, tag, data, delay });
+        return new Step({ stepId: this.stepId, impl, tag, data, delayMs });
     }
-    repeat({ stepId = this.stepId, tag = this.tag, data = this.data, delay = this.delay } = {}) {
+    repeat({ stepId = this.stepId, tag = this.tag, data = this.data, delayMs = this.delayMs } = {}) {
         Step.assert(this.stepId);
         this.repeatCount++;
         this.stepId = stepId;
         this.tag = tag;
         this.data = data;
-        this.delay = delay;
+        this.delayMs = delayMs;
         return this;
     }
-    sleep(ms) {
+    delay(ms) {
         Step.assert(this.stepId);
         return new Promise((resolve, reject) => {
             setTimeout(() => {
@@ -148,9 +148,9 @@ export class Step {
         Step.assignIdsToNodes(nodes, this.stepId);
         return nodes;
     }
-    findByTags(className, text, viewId, des) {
+    findByTags(className, { filterText, filterViewId, filterDes }) {
         Step.assert(this.stepId);
-        const nodes = AssistsX.findByTags(className, text, viewId, des);
+        const nodes = AssistsX.findByTags(className, { filterText, filterViewId, filterDes });
         Step.assert(this.stepId);
         Step.assignIdsToNodes(nodes, this.stepId);
         return nodes;

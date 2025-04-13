@@ -7,7 +7,7 @@ import { useStepStore } from './StepStateStore';
 export class Step {
 
     private static _stepId: string | undefined = undefined;
-    static async run(impl: (step: Step) => Promise<Step | undefined>, { tag, data, delay = 1000 }: { tag?: string | undefined, data?: any | undefined, delay?: number } = {}) {
+    static async run(impl: (step: Step) => Promise<Step | undefined>, { tag, data, delayMs = 1000 }: { tag?: string | undefined, data?: any | undefined, delayMs?: number } = {}) {
         const stepStore = useStepStore();
         let implnName = impl.name
         try {
@@ -15,10 +15,10 @@ export class Step {
             this._stepId = this.generateUUID();
 
             stepStore.startStep(this._stepId, tag, data);
-            let step = new Step({ stepId: this._stepId, impl, tag, data, delay });
+            let step = new Step({ stepId: this._stepId, impl, tag, data, delayMs });
             while (true) {
-                if (delay) {
-                    await step.sleep(delay);
+                if (step.delayMs) {
+                    await step.delay(step.delayMs);
                     Step.assert(step.stepId);
                 }
                 //执行步骤
@@ -81,33 +81,33 @@ export class Step {
     repeatCount: number = 0;
     tag: string | undefined;
     data: any | undefined;
-    delay: number = 1000;
+    delayMs: number = 1000;
     impl: (step: Step) => Promise<Step | undefined>
 
-    constructor({ stepId, impl, tag, data, delay = 1000 }: { stepId: string, impl: (step: Step) => Promise<Step | undefined>, tag?: string | undefined, data?: any | undefined, delay?: number }) {
+    constructor({ stepId, impl, tag, data, delayMs = 1000 }: { stepId: string, impl: (step: Step) => Promise<Step | undefined>, tag?: string | undefined, data?: any | undefined, delayMs?: number }) {
         this.tag = tag;
         this.stepId = stepId;
         this.data = data;
         this.impl = impl;
-        this.delay = delay;
+        this.delayMs = delayMs;
     }
 
-    next(impl: (step: Step) => Promise<Step | undefined>, { tag, data, delay = 1000 }: { tag?: string | undefined, data?: any | undefined, delay?: number } = {}): Step {
+    next(impl: (step: Step) => Promise<Step | undefined>, { tag, data, delayMs = 1000 }: { tag?: string | undefined, data?: any | undefined, delayMs?: number } = {}): Step {
         Step.assert(this.stepId);
-        return new Step({ stepId: this.stepId, impl, tag, data, delay });
+        return new Step({ stepId: this.stepId, impl, tag, data, delayMs });
     }
 
-    repeat({ stepId = this.stepId, tag = this.tag, data = this.data, delay = this.delay }: { stepId?: string, tag?: string | undefined, data?: any | undefined, delay?: number } = {}): Step {
+    repeat({ stepId = this.stepId, tag = this.tag, data = this.data, delayMs = this.delayMs }: { stepId?: string, tag?: string | undefined, data?: any | undefined, delayMs?: number } = {}): Step {
         Step.assert(this.stepId);
         this.repeatCount++;
         this.stepId = stepId;
         this.tag = tag;
         this.data = data;
-        this.delay = delay;
+        this.delayMs = delayMs;
         return this
     }
 
-    sleep(ms: number): Promise<void> {
+    delay(ms: number): Promise<void> {
         Step.assert(this.stepId);
         return new Promise((resolve, reject) => {
             setTimeout(() => {
@@ -171,9 +171,9 @@ export class Step {
         Step.assignIdsToNodes(nodes, this.stepId);
         return nodes;
     }
-    public findByTags(className: string, text?: string, viewId?: string, des?: string,): Node[] {
+    public findByTags(className: string, { filterText, filterViewId, filterDes }: { filterText?: string, filterViewId?: string, filterDes?: string, }): Node[] {
         Step.assert(this.stepId);
-        const nodes = AssistsX.findByTags(className, text, viewId, des);
+        const nodes = AssistsX.findByTags(className, { filterText, filterViewId, filterDes });
         Step.assert(this.stepId);
         Step.assignIdsToNodes(nodes, this.stepId);
         return nodes;
