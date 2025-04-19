@@ -6,8 +6,9 @@ declare global {
         assistsx: {
             call(method: string): string | null;
         };
+        assistsxCallback: (id: string, data: string) => void;
     }
 }
 
 // 确保这个文件被视为模块
-export {}; 
+export { }; 

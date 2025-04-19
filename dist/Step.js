@@ -1,5 +1,6 @@
 import { AssistsX } from "./AssistsX";
 import { useStepStore } from './StepStateStore';
+import { generateUUID } from "./Utils";
 export class Step {
     static async run(impl, { tag, data, delayMs = 1000 } = {}) {
         var _a;
@@ -7,7 +8,7 @@ export class Step {
         let implnName = impl.name;
         try {
             //步骤开始
-            this._stepId = this.generateUUID();
+            this._stepId = generateUUID();
             stepStore.startStep(this._stepId, tag, data);
             let step = new Step({ stepId: this._stepId, impl, tag, data, delayMs });
             while (true) {
@@ -40,14 +41,6 @@ export class Step {
         }
         //步骤执行结束
         stepStore.completeStep();
-    }
-    // 生成UUID
-    static generateUUID() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            const r = Math.random() * 16 | 0;
-            const v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
     }
     static get stepId() {
         return this._stepId;
@@ -107,6 +100,18 @@ export class Step {
     async await(method) {
         Step.assert(this.stepId);
         const result = await method();
+        Step.assert(this.stepId);
+        return result;
+    }
+    async takeScreenshotByNode(node, overlayHiddenScreenshotDelayMillis = 250) {
+        Step.assert(this.stepId);
+        const result = await AssistsX.takeScreenshotNodes([node], overlayHiddenScreenshotDelayMillis);
+        Step.assert(this.stepId);
+        return result[0];
+    }
+    async takeScreenshotNodes(nodes, overlayHiddenScreenshotDelayMillis = 250) {
+        Step.assert(this.stepId);
+        const result = await AssistsX.takeScreenshotNodes(nodes, overlayHiddenScreenshotDelayMillis);
         Step.assert(this.stepId);
         return result;
     }

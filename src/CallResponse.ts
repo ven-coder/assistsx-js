@@ -2,8 +2,9 @@
 export class CallResponse {
     constructor(
         public readonly code: number,
-        public readonly data: any | null
-    ) {}
+        public readonly data: any | null,
+        public readonly callbackId: string | null,
+    ) { }
 
     // 判断是否成功
     public isSuccess(): boolean {

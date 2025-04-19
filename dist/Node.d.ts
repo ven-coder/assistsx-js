@@ -26,7 +26,7 @@ export declare class Node {
         filterDes?: string;
     }): Node[];
     findById(id: string): Node[];
-    takeScreenshot(): string;
+    takeScreenshot(overlayHiddenScreenshotDelayMillis?: number): Promise<string>;
     setNodeText(text: string): boolean;
     click(): boolean;
     longClick(): boolean;

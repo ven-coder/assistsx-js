@@ -2,87 +2,108 @@ import { Node } from './Node';
 import { CallMethod } from './CallMethod';
 import { CallResponse } from './CallResponse';
 import { Bounds } from './Bounds';
-// AXWebDev 静态工具类
+import { generateUUID } from './Utils';
+const callbacks = {};
+if (typeof window !== 'undefined' && !window.assistsxCallback) {
+    window.assistsxCallback = (data) => {
+        console.log("assistsxCallback", data);
+        const response = JSON.parse(data);
+        const callback = callbacks[response.callbackId];
+        if (callback) {
+            callback(data);
+        }
+    };
+    console.log("assistsxCallback", window.assistsxCallback);
+}
 export class AssistsX {
-    // 私有构造函数，防止实例化
-    constructor() { }
-    // 统一的调用方法
     static call(method, { args, node } = {}) {
         const params = {
             method,
             arguments: args ? args : undefined,
-            node: node ? node : undefined
+            node: node ? node : undefined,
         };
         const result = window.assistsx.call(JSON.stringify(params));
         if (typeof result === 'string') {
             const responseData = JSON.parse(result);
-            const response = new CallResponse(responseData.code, responseData.data);
+            const response = new CallResponse(responseData.code, responseData.data, responseData.callbackId);
             return response;
         }
         throw new Error('Call failed');
     }
-    // 获取所有节点
+    static async asyncCall(method, { args, node, nodes } = {}) {
+        const uuid = generateUUID();
+        const params = {
+            method,
+            arguments: args ? args : undefined,
+            node: node ? node : undefined,
+            nodes: nodes ? nodes : undefined,
+            callbackId: uuid,
+        };
+        const promise = new Promise((resolve) => {
+            callbacks[uuid] = (data) => {
+                resolve(data);
+            };
+            setTimeout(() => {
+                resolve(new CallResponse(0, null, uuid));
+            }, 10000);
+        });
+        const result = window.assistsx.call(JSON.stringify(params));
+        const promiseResult = await promise;
+        if (typeof promiseResult === 'string') {
+            const responseData = JSON.parse(promiseResult);
+            const response = new CallResponse(responseData.code, responseData.data, responseData.callbackId);
+            return response;
+        }
+        throw new Error('Call failed');
+    }
     static getAllNodes() {
         const response = this.call(CallMethod.getAllNodes);
-        const nodes = Node.fromJSONArray(response.getDataOrDefault("[]"));
-        return nodes;
+        return Node.fromJSONArray(response.getDataOrDefault("[]"));
     }
-    // 设置节点文本
     static setNodeText(node, text) {
         const response = this.call(CallMethod.setNodeText, { args: text, node });
         return response.getDataOrDefault(false);
     }
-    static takeScreenshot(node) {
-        const response = this.call(CallMethod.takeScreenshot, { node });
+    static async takeScreenshotNodes(nodes, overlayHiddenScreenshotDelayMillis = 250) {
+        const response = await this.asyncCall(CallMethod.takeScreenshot, { nodes, args: { overlayHiddenScreenshotDelayMillis } });
         const data = response.getDataOrDefault("");
-        return data.base64;
+        return data.images;
     }
-    // 点击节点 
     static click(node) {
         const response = this.call(CallMethod.click, { node });
         return response.getDataOrDefault(false);
     }
-    // 长按节点
     static longClick(node) {
         const response = this.call(CallMethod.longClick, { node });
         return response.getDataOrDefault(false);
     }
-    // 启动应用
     static launchApp(packageName) {
         const response = this.call(CallMethod.launchApp, { args: { packageName } });
         return response.getDataOrDefault(false);
     }
-    // 启动应用
     static getPackageName() {
         const response = this.call(CallMethod.getPackageName);
         return response.getDataOrDefault("");
     }
-    // 显示toast
     static overlayToast(text, delay = 2000) {
         const response = this.call(CallMethod.overlayToast, { args: { text, delay } });
         return response.getDataOrDefault(false);
     }
-    // 显示toast
     static findById(id, { node } = {}) {
         const response = this.call(CallMethod.findById, { args: { id }, node });
-        const nodes = Node.fromJSONArray(response.getDataOrDefault("[]"));
-        return nodes;
+        return Node.fromJSONArray(response.getDataOrDefault("[]"));
     }
-    // 通过文本查找节点
     static findByText(text) {
         const response = this.call(CallMethod.findByText, { args: text });
-        const nodes = Node.fromJSONArray(response.getDataOrDefault("[]"));
-        return nodes;
+        return Node.fromJSONArray(response.getDataOrDefault("[]"));
     }
     static findByTags(className, { filterText, filterViewId, filterDes, node } = {}) {
         const response = this.call(CallMethod.findByTags, { args: { className, filterText, filterViewId, filterDes }, node });
-        const nodes = Node.fromJSONArray(response.getDataOrDefault("[]"));
-        return nodes;
+        return Node.fromJSONArray(response.getDataOrDefault("[]"));
     }
     static findByTextAllMatch(text) {
         const response = this.call(CallMethod.findByTextAllMatch, { args: text });
-        const nodes = Node.fromJSONArray(response.getDataOrDefault("[]"));
-        return nodes;
+        return Node.fromJSONArray(response.getDataOrDefault("[]"));
     }
     static containsText(text) {
         const response = this.call(CallMethod.containsText, { args: text });
@@ -90,34 +111,27 @@ export class AssistsX {
     }
     static getAllText() {
         const response = this.call(CallMethod.getAllText);
-        const texts = response.getDataOrDefault("[]");
-        return texts;
+        return response.getDataOrDefault("[]");
     }
     static findFirstParentByTags(className) {
         const response = this.call(CallMethod.findFirstParentByTags, { args: className });
-        const result = response.getDataOrDefault("{}");
-        const node = Node.create(result);
-        return node;
+        return Node.create(response.getDataOrDefault("{}"));
     }
     static getNodes(node) {
         const response = this.call(CallMethod.getNodes, { node });
-        const nodes = Node.fromJSONArray(response.getDataOrDefault("[]"));
-        return nodes;
+        return Node.fromJSONArray(response.getDataOrDefault("[]"));
     }
     static getChildren(node) {
         const response = this.call(CallMethod.getChildren, { node });
-        const nodes = Node.fromJSONArray(response.getDataOrDefault("[]"));
-        return nodes;
+        return Node.fromJSONArray(response.getDataOrDefault("[]"));
     }
     static findFirstParentClickable(node) {
         const response = this.call(CallMethod.findFirstParentClickable, { node });
-        const result = response.getDataOrDefault("{}");
-        return Node.create(result);
+        return Node.create(response.getDataOrDefault("{}"));
     }
     static getBoundsInScreen(node) {
         const response = this.call(CallMethod.getBoundsInScreen, { node });
-        const result = response.getDataOrDefault("{}");
-        return Bounds.fromJSON(result);
+        return Bounds.fromJSON(response.getDataOrDefault("{}"));
     }
     static gestureClick(x, y, duration) {
         const response = this.call(CallMethod.gestureClick, { args: { x, y, duration } });
@@ -161,12 +175,10 @@ export class AssistsX {
     }
     static getScreenSize() {
         const response = this.call(CallMethod.getScreenSize);
-        const data = response.getDataOrDefault("{}");
-        return data;
+        return response.getDataOrDefault("{}");
     }
     static getAppScreenSize() {
         const response = this.call(CallMethod.getAppScreenSize);
-        const data = response.getDataOrDefault("{}");
-        return data;
+        return response.getDataOrDefault("{}");
     }
 }

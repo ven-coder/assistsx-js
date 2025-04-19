@@ -50,11 +50,11 @@ export class Node {
         Step.assert(this.stepId);
         return result;
     }
-    public takeScreenshot(): string {
+    public async takeScreenshot(overlayHiddenScreenshotDelayMillis: number = 250): Promise<string> {
         Step.assert(this.stepId);
-        const result = AssistsX.takeScreenshot(this);
+        const result = await AssistsX.takeScreenshotNodes([this], overlayHiddenScreenshotDelayMillis);
         Step.assert(this.stepId);
-        return result;
+        return result[0];
     }
     public setNodeText(text: string): boolean {
         Step.assert(this.stepId);

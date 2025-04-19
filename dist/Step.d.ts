@@ -6,7 +6,6 @@ export declare class Step {
         data?: any | undefined;
         delayMs?: number;
     }): Promise<void>;
-    private static generateUUID;
     static get stepId(): string | undefined;
     static assert(stepId: string | undefined): void;
     static assignIdsToNodes(nodes: Node[], stepId: string | undefined): void;
@@ -37,6 +36,8 @@ export declare class Step {
     }): Step;
     delay(ms: number): Promise<void>;
     await<T>(method: () => Promise<T>): Promise<T>;
+    takeScreenshotByNode(node: Node, overlayHiddenScreenshotDelayMillis?: number): Promise<string>;
+    takeScreenshotNodes(nodes: Node[], overlayHiddenScreenshotDelayMillis?: number): Promise<string[]>;
     getAllNodes(): Node[];
     launchApp(packageName: string): boolean;
     getPackageName(): string;

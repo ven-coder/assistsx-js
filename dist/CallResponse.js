@@ -1,8 +1,9 @@
 // CallResponse 泛型类
 export class CallResponse {
-    constructor(code, data) {
+    constructor(code, data, callbackId) {
         this.code = code;
         this.data = data;
+        this.callbackId = callbackId;
     }
     // 判断是否成功
     isSuccess() {

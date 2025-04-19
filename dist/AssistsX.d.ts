@@ -1,11 +1,11 @@
 import { Node } from './Node';
 import { Bounds } from './Bounds';
 export declare class AssistsX {
-    private constructor();
     private static call;
+    private static asyncCall;
     static getAllNodes(): Node[];
     static setNodeText(node: Node, text: string): boolean;
-    static takeScreenshot(node: Node): string;
+    static takeScreenshotNodes(nodes: Node[], overlayHiddenScreenshotDelayMillis?: number): Promise<string[]>;
     static click(node: Node): boolean;
     static longClick(node: Node): boolean;
     static launchApp(packageName: string): boolean;
