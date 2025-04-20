@@ -64,9 +64,9 @@ export class Node {
         Step.assert(this.stepId);
         return response;
     }
-    public isFullyVisible(): boolean {
+    public isVisible({ compareNode, isFullyByCompareNode }: { compareNode?: Node, isFullyByCompareNode?: boolean } = {}): boolean {
         Step.assert(this.stepId);
-        const response = AssistsX.isFullyVisible(this);
+        const response = AssistsX.isVisible(this, { compareNode, isFullyByCompareNode });
         Step.assert(this.stepId);
         return response;
     }

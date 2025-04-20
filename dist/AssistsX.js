@@ -131,8 +131,8 @@ export class AssistsX {
         const response = this.call(CallMethod.getBoundsInScreen, { node });
         return Bounds.fromJSON(response.getDataOrDefault("{}"));
     }
-    static isFullyVisible(node) {
-        const response = this.call(CallMethod.isFullyVisible, { node });
+    static isVisible(node, { compareNode, isFullyByCompareNode } = {}) {
+        const response = this.call(CallMethod.isVisible, { node, args: { compareNode, isFullyByCompareNode } });
         return response.getDataOrDefault(false);
     }
     static gestureClick(x, y, duration) {

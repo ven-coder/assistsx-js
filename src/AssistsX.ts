@@ -159,8 +159,9 @@ export class AssistsX {
         const response = this.call(CallMethod.getBoundsInScreen, { node });
         return Bounds.fromJSON(response.getDataOrDefault("{}"));
     }
-    public static isFullyVisible(node: Node): boolean {
-        const response = this.call(CallMethod.isFullyVisible, { node });
+
+    public static isVisible(node: Node, { compareNode, isFullyByCompareNode }: { compareNode?: Node, isFullyByCompareNode?: boolean } = {}): boolean {
+        const response = this.call(CallMethod.isVisible, { node, args: { compareNode, isFullyByCompareNode } });
         return response.getDataOrDefault(false);
     }
 

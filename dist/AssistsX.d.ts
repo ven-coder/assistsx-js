@@ -29,7 +29,10 @@ export declare class AssistsX {
     static getChildren(node: Node): Node[];
     static findFirstParentClickable(node: Node): Node;
     static getBoundsInScreen(node: Node): Bounds;
-    static isFullyVisible(node: Node): boolean;
+    static isVisible(node: Node, { compareNode, isFullyByCompareNode }?: {
+        compareNode?: Node;
+        isFullyByCompareNode?: boolean;
+    }): boolean;
     static gestureClick(x: number, y: number, duration: number): boolean;
     static back(): boolean;
     static home(): boolean;

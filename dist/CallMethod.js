@@ -16,7 +16,7 @@ export const CallMethod = {
     getChildren: "getChildren",
     dispatchGesture: "dispatchGesture",
     getBoundsInScreen: "getBoundsInScreen",
-    isFullyVisible: "isFullyVisible",
+    isVisible: "isVisible",
     click: "click",
     longClick: "longClick",
     gestureClick: "gestureClick",

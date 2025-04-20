@@ -28,7 +28,10 @@ export declare class Node {
     findById(id: string): Node[];
     scrollForward(): boolean;
     scrollBackward(): boolean;
-    isFullyVisible(): boolean;
+    isVisible({ compareNode, isFullyByCompareNode }?: {
+        compareNode?: Node;
+        isFullyByCompareNode?: boolean;
+    }): boolean;
     takeScreenshot(overlayHiddenScreenshotDelayMillis?: number): Promise<string>;
     setNodeText(text: string): boolean;
     click(): boolean;
