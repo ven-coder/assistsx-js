@@ -15,6 +15,7 @@ export declare const CallMethod: {
     readonly getChildren: "getChildren";
     readonly dispatchGesture: "dispatchGesture";
     readonly getBoundsInScreen: "getBoundsInScreen";
+    readonly isFullyVisible: "isFullyVisible";
     readonly click: "click";
     readonly longClick: "longClick";
     readonly gestureClick: "gestureClick";

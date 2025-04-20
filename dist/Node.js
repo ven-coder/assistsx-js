@@ -27,6 +27,24 @@ export class Node {
         Step.assert(this.stepId);
         return result;
     }
+    scrollForward() {
+        Step.assert(this.stepId);
+        const response = AssistsX.scrollForward(this);
+        Step.assert(this.stepId);
+        return response;
+    }
+    scrollBackward() {
+        Step.assert(this.stepId);
+        const response = AssistsX.scrollBackward(this);
+        Step.assert(this.stepId);
+        return response;
+    }
+    isFullyVisible() {
+        Step.assert(this.stepId);
+        const response = AssistsX.isFullyVisible(this);
+        Step.assert(this.stepId);
+        return response;
+    }
     async takeScreenshot(overlayHiddenScreenshotDelayMillis = 250) {
         Step.assert(this.stepId);
         const result = await AssistsX.takeScreenshotNodes([this], overlayHiddenScreenshotDelayMillis);

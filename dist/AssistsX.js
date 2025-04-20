@@ -6,14 +6,12 @@ import { generateUUID } from './Utils';
 const callbacks = {};
 if (typeof window !== 'undefined' && !window.assistsxCallback) {
     window.assistsxCallback = (data) => {
-        console.log("assistsxCallback", data);
         const response = JSON.parse(data);
         const callback = callbacks[response.callbackId];
         if (callback) {
             callback(data);
         }
     };
-    console.log("assistsxCallback", window.assistsxCallback);
 }
 export class AssistsX {
     static call(method, { args, node } = {}) {
@@ -132,6 +130,10 @@ export class AssistsX {
     static getBoundsInScreen(node) {
         const response = this.call(CallMethod.getBoundsInScreen, { node });
         return Bounds.fromJSON(response.getDataOrDefault("{}"));
+    }
+    static isFullyVisible(node) {
+        const response = this.call(CallMethod.isFullyVisible, { node });
+        return response.getDataOrDefault(false);
     }
     static gestureClick(x, y, duration) {
         const response = this.call(CallMethod.gestureClick, { args: { x, y, duration } });

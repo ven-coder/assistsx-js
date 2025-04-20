@@ -15,14 +15,12 @@ const callbacks: { [key: string]: (data: any) => void } = {};
 
 if (typeof window !== 'undefined' && !window.assistsxCallback) {
     window.assistsxCallback = (data: string) => {
-        console.log("assistsxCallback", data)
         const response = JSON.parse(data)
         const callback = callbacks[response.callbackId];
         if (callback) {
             callback(data);
         }
     }
-    console.log("assistsxCallback", window.assistsxCallback)
 }
 
 export class AssistsX {
@@ -160,6 +158,10 @@ export class AssistsX {
     public static getBoundsInScreen(node: Node): Bounds {
         const response = this.call(CallMethod.getBoundsInScreen, { node });
         return Bounds.fromJSON(response.getDataOrDefault("{}"));
+    }
+    public static isFullyVisible(node: Node): boolean {
+        const response = this.call(CallMethod.isFullyVisible, { node });
+        return response.getDataOrDefault(false);
     }
 
     public static gestureClick(x: number, y: number, duration: number): boolean {

@@ -26,6 +26,9 @@ export declare class Node {
         filterDes?: string;
     }): Node[];
     findById(id: string): Node[];
+    scrollForward(): boolean;
+    scrollBackward(): boolean;
+    isFullyVisible(): boolean;
     takeScreenshot(overlayHiddenScreenshotDelayMillis?: number): Promise<string>;
     setNodeText(text: string): boolean;
     click(): boolean;
