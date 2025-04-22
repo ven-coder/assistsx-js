@@ -3,7 +3,12 @@ import { Bounds } from './Bounds';
 export declare class AssistsX {
     private static call;
     private static asyncCall;
-    static getAllNodes(): Node[];
+    static getAllNodes({ filterClass, filterViewId, filterDes, filterText }?: {
+        filterClass?: string;
+        filterViewId?: string;
+        filterDes?: string;
+        filterText?: string;
+    }): Node[];
     static setNodeText(node: Node, text: string): boolean;
     static takeScreenshotNodes(nodes: Node[], overlayHiddenScreenshotDelayMillis?: number): Promise<string[]>;
     static click(node: Node): boolean;
@@ -11,10 +16,18 @@ export declare class AssistsX {
     static launchApp(packageName: string): boolean;
     static getPackageName(): string;
     static overlayToast(text: string, delay?: number): boolean;
-    static findById(id: string, { node }?: {
+    static findById(id: string, { filterClass, filterText, filterDes, node }?: {
+        filterClass?: string;
+        filterText?: string;
+        filterDes?: string;
         node?: Node;
     }): Node[];
-    static findByText(text: string): Node[];
+    static findByText(text: string, { filterClass, filterViewId, filterDes, node }?: {
+        filterClass?: string;
+        filterViewId?: string;
+        filterDes?: string;
+        node?: Node;
+    }): Node[];
     static findByTags(className: string, { filterText, filterViewId, filterDes, node }?: {
         filterText?: string;
         filterViewId?: string;
@@ -42,7 +55,19 @@ export declare class AssistsX {
     static selectionText(node: Node, selectionStart: number, selectionEnd: number): boolean;
     static scrollForward(node: Node): boolean;
     static scrollBackward(node: Node): boolean;
-    static nodeGestureClick(node: Node): boolean;
+    static nodeGestureClick(node: Node, { offsetX, offsetY, switchWindowIntervalDelay, clickDuration }?: {
+        offsetX?: number;
+        offsetY?: number;
+        switchWindowIntervalDelay?: number;
+        clickDuration?: number;
+    }): Promise<boolean>;
+    static nodeGestureClickByDouble(node: Node, { offsetX, offsetY, switchWindowIntervalDelay, clickDuration, clickInterval }?: {
+        offsetX?: number;
+        offsetY?: number;
+        switchWindowIntervalDelay?: number;
+        clickDuration?: number;
+        clickInterval?: number;
+    }): Promise<boolean>;
     static getScreenSize(): any;
     static getAppScreenSize(): any;
 }

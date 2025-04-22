@@ -31,6 +31,7 @@ export declare const CallMethod: {
     readonly getScreenSize: "getScreenSize";
     readonly getAppScreenSize: "getAppScreenSize";
     readonly nodeGestureClick: "nodeGestureClick";
+    readonly nodeGestureClickByDouble: "nodeGestureClickByDouble";
     readonly scrollBackward: "scrollBackward";
 };
 export type CallMethodType = typeof CallMethod[keyof typeof CallMethod];

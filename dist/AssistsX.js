@@ -54,8 +54,8 @@ export class AssistsX {
         }
         throw new Error('Call failed');
     }
-    static getAllNodes() {
-        const response = this.call(CallMethod.getAllNodes);
+    static getAllNodes({ filterClass, filterViewId, filterDes, filterText } = {}) {
+        const response = this.call(CallMethod.getAllNodes, { args: { filterClass, filterViewId, filterDes, filterText } });
         return Node.fromJSONArray(response.getDataOrDefault("[]"));
     }
     static setNodeText(node, text) {
@@ -87,12 +87,12 @@ export class AssistsX {
         const response = this.call(CallMethod.overlayToast, { args: { text, delay } });
         return response.getDataOrDefault(false);
     }
-    static findById(id, { node } = {}) {
-        const response = this.call(CallMethod.findById, { args: { id }, node });
+    static findById(id, { filterClass, filterText, filterDes, node } = {}) {
+        const response = this.call(CallMethod.findById, { args: { id, filterClass, filterText, filterDes }, node });
         return Node.fromJSONArray(response.getDataOrDefault("[]"));
     }
-    static findByText(text) {
-        const response = this.call(CallMethod.findByText, { args: text });
+    static findByText(text, { filterClass, filterViewId, filterDes, node } = {}) {
+        const response = this.call(CallMethod.findByText, { args: { text, filterClass, filterViewId, filterDes }, node });
         return Node.fromJSONArray(response.getDataOrDefault("[]"));
     }
     static findByTags(className, { filterText, filterViewId, filterDes, node } = {}) {
@@ -171,8 +171,12 @@ export class AssistsX {
         const response = this.call(CallMethod.scrollBackward, { node });
         return response.getDataOrDefault(false);
     }
-    static nodeGestureClick(node) {
-        const response = this.call(CallMethod.nodeGestureClick, { node });
+    static async nodeGestureClick(node, { offsetX, offsetY, switchWindowIntervalDelay, clickDuration } = {}) {
+        const response = await this.asyncCall(CallMethod.nodeGestureClick, { node, args: { offsetX, offsetY, switchWindowIntervalDelay, clickDuration } });
+        return response.getDataOrDefault(false);
+    }
+    static async nodeGestureClickByDouble(node, { offsetX, offsetY, switchWindowIntervalDelay, clickDuration, clickInterval } = {}) {
+        const response = await this.asyncCall(CallMethod.nodeGestureClickByDouble, { node, args: { offsetX, offsetY, switchWindowIntervalDelay, clickDuration, clickInterval } });
         return response.getDataOrDefault(false);
     }
     static getScreenSize() {

@@ -13,6 +13,18 @@ export class Node {
         this.isEnabled = params.isEnabled;
         this.stepId = params.stepId;
     }
+    async nodeGestureClick({ offsetX, offsetY, switchWindowIntervalDelay, clickDuration } = {}) {
+        Step.assert(this.stepId);
+        const result = await AssistsX.nodeGestureClick(this, { offsetX, offsetY, switchWindowIntervalDelay, clickDuration });
+        Step.assert(this.stepId);
+        return result;
+    }
+    async nodeGestureClickByDouble({ offsetX, offsetY, switchWindowIntervalDelay, clickDuration, clickInterval } = {}) {
+        Step.assert(this.stepId);
+        const result = await AssistsX.nodeGestureClickByDouble(this, { offsetX, offsetY, switchWindowIntervalDelay, clickDuration, clickInterval });
+        Step.assert(this.stepId);
+        return result;
+    }
     findByTags(className, { filterText, filterViewId, filterDes }) {
         Step.assert(this.stepId);
         const result = AssistsX.findByTags(className, { filterText, filterViewId, filterDes, node: this });
@@ -20,9 +32,16 @@ export class Node {
         Step.assert(this.stepId);
         return result;
     }
-    findById(id) {
+    findById(id, { filterClass, filterText, filterDes } = {}) {
         Step.assert(this.stepId);
-        const result = AssistsX.findById(id, { node: this });
+        const result = AssistsX.findById(id, { filterClass, filterText, filterDes, node: this });
+        Step.assignIdsToNodes(result, this.stepId);
+        Step.assert(this.stepId);
+        return result;
+    }
+    findByText(text, { filterClass, filterViewId, filterDes } = {}) {
+        Step.assert(this.stepId);
+        const result = AssistsX.findByText(text, { filterClass, filterViewId, filterDes, node: this });
         Step.assignIdsToNodes(result, this.stepId);
         Step.assert(this.stepId);
         return result;

@@ -20,12 +20,34 @@ export declare class Node {
         isEnabled: boolean;
         stepId: string | undefined;
     });
+    nodeGestureClick({ offsetX, offsetY, switchWindowIntervalDelay, clickDuration }?: {
+        offsetX?: number;
+        offsetY?: number;
+        switchWindowIntervalDelay?: number;
+        clickDuration?: number;
+    }): Promise<boolean>;
+    nodeGestureClickByDouble({ offsetX, offsetY, switchWindowIntervalDelay, clickDuration, clickInterval }?: {
+        offsetX?: number;
+        offsetY?: number;
+        switchWindowIntervalDelay?: number;
+        clickDuration?: number;
+        clickInterval?: number;
+    }): Promise<boolean>;
     findByTags(className: string, { filterText, filterViewId, filterDes }: {
         filterText?: string;
         filterViewId?: string;
         filterDes?: string;
     }): Node[];
-    findById(id: string): Node[];
+    findById(id: string, { filterClass, filterText, filterDes }?: {
+        filterClass?: string;
+        filterText?: string;
+        filterDes?: string;
+    }): Node[];
+    findByText(text: string, { filterClass, filterViewId, filterDes }?: {
+        filterClass?: string;
+        filterViewId?: string;
+        filterDes?: string;
+    }): Node[];
     scrollForward(): boolean;
     scrollBackward(): boolean;
     isVisible({ compareNode, isFullyByCompareNode }?: {

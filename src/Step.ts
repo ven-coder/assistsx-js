@@ -134,9 +134,9 @@ export class Step {
     }
 
     // 获取所有节点
-    public getAllNodes(): Node[] {
+    public getAllNodes({ filterClass, filterViewId, filterDes, filterText }: { filterClass?: string, filterViewId?: string, filterDes?: string, filterText?: string } = {}): Node[] {
         Step.assert(this.stepId);
-        const nodes = AssistsX.getAllNodes();
+        const nodes = AssistsX.getAllNodes({ filterClass, filterViewId, filterDes, filterText });
         Step.assert(this.stepId);
         Step.assignIdsToNodes(nodes, this.stepId);
         return nodes;
@@ -160,17 +160,17 @@ export class Step {
     }
 
     // 显示toast
-    public findById(id: string): Node[] {
+    public findById(id: string, { filterClass, filterText, filterDes }: { filterClass?: string, filterText?: string, filterDes?: string } = {}): Node[] {
         Step.assert(this.stepId);
-        const nodes = AssistsX.findById(id);
+        const nodes = AssistsX.findById(id, { filterClass, filterText, filterDes });
         Step.assert(this.stepId);
         Step.assignIdsToNodes(nodes, this.stepId);
         return nodes;
     }
     // 通过文本查找节点
-    public findByText(text: string): Node[] {
+    public findByText(text: string, { filterClass, filterViewId, filterDes }: { filterClass?: string, filterViewId?: string, filterDes?: string } = {}): Node[] {
         Step.assert(this.stepId);
-        const nodes = AssistsX.findByText(text);
+        const nodes = AssistsX.findByText(text, { filterClass, filterViewId, filterDes });
         Step.assert(this.stepId);
         Step.assignIdsToNodes(nodes, this.stepId);
         return nodes;

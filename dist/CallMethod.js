@@ -32,5 +32,6 @@ export const CallMethod = {
     getScreenSize: "getScreenSize",
     getAppScreenSize: "getAppScreenSize",
     nodeGestureClick: "nodeGestureClick",
+    nodeGestureClickByDouble: "nodeGestureClickByDouble",
     scrollBackward: "scrollBackward"
 };

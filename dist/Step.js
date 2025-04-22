@@ -116,9 +116,9 @@ export class Step {
         return result;
     }
     // 获取所有节点
-    getAllNodes() {
+    getAllNodes({ filterClass, filterViewId, filterDes, filterText } = {}) {
         Step.assert(this.stepId);
-        const nodes = AssistsX.getAllNodes();
+        const nodes = AssistsX.getAllNodes({ filterClass, filterViewId, filterDes, filterText });
         Step.assert(this.stepId);
         Step.assignIdsToNodes(nodes, this.stepId);
         return nodes;
@@ -138,17 +138,17 @@ export class Step {
         return result;
     }
     // 显示toast
-    findById(id) {
+    findById(id, { filterClass, filterText, filterDes } = {}) {
         Step.assert(this.stepId);
-        const nodes = AssistsX.findById(id);
+        const nodes = AssistsX.findById(id, { filterClass, filterText, filterDes });
         Step.assert(this.stepId);
         Step.assignIdsToNodes(nodes, this.stepId);
         return nodes;
     }
     // 通过文本查找节点
-    findByText(text) {
+    findByText(text, { filterClass, filterViewId, filterDes } = {}) {
         Step.assert(this.stepId);
-        const nodes = AssistsX.findByText(text);
+        const nodes = AssistsX.findByText(text, { filterClass, filterViewId, filterDes });
         Step.assert(this.stepId);
         Step.assignIdsToNodes(nodes, this.stepId);
         return nodes;

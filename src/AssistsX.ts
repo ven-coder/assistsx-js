@@ -65,8 +65,8 @@ export class AssistsX {
         }
         throw new Error('Call failed');
     }
-    public static getAllNodes(): Node[] {
-        const response = this.call(CallMethod.getAllNodes);
+    public static getAllNodes({ filterClass, filterViewId, filterDes, filterText }: { filterClass?: string, filterViewId?: string, filterDes?: string, filterText?: string } = {}): Node[] {
+        const response = this.call(CallMethod.getAllNodes, { args: { filterClass, filterViewId, filterDes, filterText } });
         return Node.fromJSONArray(response.getDataOrDefault("[]"));
     }
 
@@ -105,13 +105,13 @@ export class AssistsX {
         return response.getDataOrDefault(false);
     }
 
-    public static findById(id: string, { node }: { node?: Node } = {}): Node[] {
-        const response = this.call(CallMethod.findById, { args: { id }, node });
+    public static findById(id: string, { filterClass, filterText, filterDes, node }: { filterClass?: string, filterText?: string, filterDes?: string, node?: Node } = {}): Node[] {
+        const response = this.call(CallMethod.findById, { args: { id, filterClass, filterText, filterDes }, node });
         return Node.fromJSONArray(response.getDataOrDefault("[]"));
     }
 
-    public static findByText(text: string): Node[] {
-        const response = this.call(CallMethod.findByText, { args: text });
+    public static findByText(text: string, { filterClass, filterViewId, filterDes, node }: { filterClass?: string, filterViewId?: string, filterDes?: string, node?: Node } = {}): Node[] {
+        const response = this.call(CallMethod.findByText, { args: { text, filterClass, filterViewId, filterDes }, node });
         return Node.fromJSONArray(response.getDataOrDefault("[]"));
     }
 
@@ -210,8 +210,13 @@ export class AssistsX {
         return response.getDataOrDefault(false);
     }
 
-    public static nodeGestureClick(node: Node): boolean {
-        const response = this.call(CallMethod.nodeGestureClick, { node });
+    public static async nodeGestureClick(node: Node, { offsetX, offsetY, switchWindowIntervalDelay, clickDuration }: { offsetX?: number, offsetY?: number, switchWindowIntervalDelay?: number, clickDuration?: number } = {}): Promise<boolean> {
+        const response = await this.asyncCall(CallMethod.nodeGestureClick, { node, args: { offsetX, offsetY, switchWindowIntervalDelay, clickDuration } });
+        return response.getDataOrDefault(false);
+    }
+    public static async nodeGestureClickByDouble(node: Node,
+        { offsetX, offsetY, switchWindowIntervalDelay, clickDuration, clickInterval }: { offsetX?: number, offsetY?: number, switchWindowIntervalDelay?: number, clickDuration?: number, clickInterval?: number } = {}): Promise<boolean> {
+        const response = await this.asyncCall(CallMethod.nodeGestureClickByDouble, { node, args: { offsetX, offsetY, switchWindowIntervalDelay, clickDuration, clickInterval } });
         return response.getDataOrDefault(false);
     }
 

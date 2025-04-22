@@ -38,11 +38,24 @@ export declare class Step {
     await<T>(method: () => Promise<T>): Promise<T>;
     takeScreenshotByNode(node: Node, overlayHiddenScreenshotDelayMillis?: number): Promise<string>;
     takeScreenshotNodes(nodes: Node[], overlayHiddenScreenshotDelayMillis?: number): Promise<string[]>;
-    getAllNodes(): Node[];
+    getAllNodes({ filterClass, filterViewId, filterDes, filterText }?: {
+        filterClass?: string;
+        filterViewId?: string;
+        filterDes?: string;
+        filterText?: string;
+    }): Node[];
     launchApp(packageName: string): boolean;
     getPackageName(): string;
-    findById(id: string): Node[];
-    findByText(text: string): Node[];
+    findById(id: string, { filterClass, filterText, filterDes }?: {
+        filterClass?: string;
+        filterText?: string;
+        filterDes?: string;
+    }): Node[];
+    findByText(text: string, { filterClass, filterViewId, filterDes }?: {
+        filterClass?: string;
+        filterViewId?: string;
+        filterDes?: string;
+    }): Node[];
     findByTags(className: string, { filterText, filterViewId, filterDes }: {
         filterText?: string;
         filterViewId?: string;
