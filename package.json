@@ -1,7 +1,7 @@
 {
-  "name": "ax-web-dev",
-  "version": "0.0.121",
-  "description": "AssistsX Web 开发工具库",
+  "name": "assistsx",
+  "version": "0.0.1",
+  "description": "AssistsX自动化开发工具库",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,14 +21,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "ax-web-dev",
-    "android assists",
-    "assists webview",
-    "dev",
-    "axwebdev",
     "assistsx",
     "assists",
-    "AccessibilityService"
+    "android assistsx",
+    "assistsx webview",
+    "AccessibilityService",
+    "dev"
   ],
   "author": "Ven",
   "license": "ISC",
