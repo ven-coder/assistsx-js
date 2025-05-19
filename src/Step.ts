@@ -1,3 +1,7 @@
+/**
+ * 步骤执行控制类
+ * 用于管理和执行自动化步骤，提供步骤的生命周期管理、状态控制和界面操作功能
+ */
 import { AssistsX } from "./AssistsX";
 import { Node } from './Node';
 import { CallMethod } from "CallMethod";
@@ -6,8 +10,18 @@ import { generateUUID } from "./Utils";
 
 
 export class Step {
-
+    /**
+     * 当前执行步骤的ID
+     */
     private static _stepId: string | undefined = undefined;
+
+    /**
+     * 运行步骤实现
+     * @param impl 步骤实现函数
+     * @param tag 步骤标签
+     * @param data 步骤数据
+     * @param delayMs 步骤延迟时间(毫秒)
+     */
     static async run(impl: (step: Step) => Promise<Step | undefined>, { tag, data, delayMs = 1000 }: { tag?: string | undefined, data?: any | undefined, delayMs?: number } = {}) {
         const stepStore = useStepStore();
         let implnName = impl.name
@@ -47,15 +61,29 @@ export class Step {
         //步骤执行结束
         stepStore.completeStep();
     }
+
+    /**
+     * 获取当前步骤ID
+     */
     static get stepId(): string | undefined {
         return this._stepId;
     }
+
+    /**
+     * 验证步骤ID是否匹配
+     * @param stepId 要验证的步骤ID
+     */
     static assert(stepId: string | undefined) {
         if (stepId && Step.stepId != stepId) {
             throw new Error("StepId mismatch");
         }
     }
 
+    /**
+     * 为节点数组分配步骤ID
+     * @param nodes 节点数组
+     * @param stepId 步骤ID
+     */
     static assignIdsToNodes(nodes: Node[], stepId: string | undefined): void {
         if (stepId) {
             nodes.forEach(node => {
@@ -64,19 +92,51 @@ export class Step {
         }
     }
 
+    /**
+     * 停止当前步骤执行
+     */
     static stop(): void {
         this._stepId = undefined;
     }
 
-
-
+    /**
+     * 步骤ID
+     */
     stepId: string = "";
+
+    /**
+     * 步骤重复执行次数
+     */
     repeatCount: number = 0;
+
+    /**
+     * 步骤标签
+     */
     tag: string | undefined;
+
+    /**
+     * 步骤数据
+     */
     data: any | undefined;
+
+    /**
+     * 步骤延迟时间(毫秒)
+     */
     delayMs: number = 1000;
+
+    /**
+     * 步骤实现函数
+     */
     impl: (step: Step) => Promise<Step | undefined>
 
+    /**
+     * 构造函数
+     * @param stepId 步骤ID
+     * @param impl 步骤实现函数
+     * @param tag 步骤标签
+     * @param data 步骤数据
+     * @param delayMs 步骤延迟时间(毫秒)
+     */
     constructor({ stepId, impl, tag, data, delayMs = 1000 }: { stepId: string, impl: (step: Step) => Promise<Step | undefined>, tag?: string | undefined, data?: any | undefined, delayMs?: number }) {
         this.tag = tag;
         this.stepId = stepId;
@@ -85,11 +145,27 @@ export class Step {
         this.delayMs = delayMs;
     }
 
+    /**
+     * 创建下一个步骤
+     * @param impl 下一步骤实现函数
+     * @param tag 步骤标签
+     * @param data 步骤数据
+     * @param delayMs 步骤延迟时间(毫秒)
+     * @returns 新的步骤实例
+     */
     next(impl: (step: Step) => Promise<Step | undefined>, { tag, data, delayMs = 1000 }: { tag?: string | undefined, data?: any | undefined, delayMs?: number } = {}): Step {
         Step.assert(this.stepId);
         return new Step({ stepId: this.stepId, impl, tag, data, delayMs });
     }
 
+    /**
+     * 重复当前步骤
+     * @param stepId 步骤ID
+     * @param tag 步骤标签
+     * @param data 步骤数据
+     * @param delayMs 步骤延迟时间(毫秒)
+     * @returns 当前步骤实例
+     */
     repeat({ stepId = this.stepId, tag = this.tag, data = this.data, delayMs = this.delayMs }: { stepId?: string, tag?: string | undefined, data?: any | undefined, delayMs?: number } = {}): Step {
         Step.assert(this.stepId);
         this.repeatCount++;
@@ -100,6 +176,11 @@ export class Step {
         return this
     }
 
+    /**
+     * 延迟执行
+     * @param ms 延迟时间(毫秒)
+     * @returns Promise
+     */
     delay(ms: number): Promise<void> {
         Step.assert(this.stepId);
         return new Promise((resolve, reject) => {
@@ -114,18 +195,37 @@ export class Step {
         });
     }
 
+    /**
+     * 等待异步方法执行完成
+     * @param method 异步方法
+     * @returns Promise<T>
+     */
     async await<T>(method: () => Promise<T>): Promise<T> {
         Step.assert(this.stepId);
         const result = await method();
         Step.assert(this.stepId);
         return result;
     }
+
+    /**
+     * 对单个节点进行截图
+     * @param node 目标节点
+     * @param overlayHiddenScreenshotDelayMillis 截图延迟时间(毫秒)
+     * @returns 截图路径
+     */
     public async takeScreenshotByNode(node: Node, overlayHiddenScreenshotDelayMillis: number = 250): Promise<string> {
         Step.assert(this.stepId);
         const result = await AssistsX.takeScreenshotNodes([node], overlayHiddenScreenshotDelayMillis);
         Step.assert(this.stepId);
         return result[0];
     }
+
+    /**
+     * 对多个节点进行截图
+     * @param nodes 目标节点数组
+     * @param overlayHiddenScreenshotDelayMillis 截图延迟时间(毫秒)
+     * @returns 截图路径数组
+     */
     public async takeScreenshotNodes(nodes: Node[], overlayHiddenScreenshotDelayMillis: number = 250): Promise<string[]> {
         Step.assert(this.stepId);
         const result = await AssistsX.takeScreenshotNodes(nodes, overlayHiddenScreenshotDelayMillis);
@@ -133,7 +233,14 @@ export class Step {
         return result;
     }
 
-    // 获取所有节点
+    /**
+     * 获取所有符合条件的节点
+     * @param filterClass 类名过滤
+     * @param filterViewId 视图ID过滤
+     * @param filterDes 描述过滤
+     * @param filterText 文本过滤
+     * @returns 节点数组
+     */
     public getAllNodes({ filterClass, filterViewId, filterDes, filterText }: { filterClass?: string, filterViewId?: string, filterDes?: string, filterText?: string } = {}): Node[] {
         Step.assert(this.stepId);
         const nodes = AssistsX.getAllNodes({ filterClass, filterViewId, filterDes, filterText });
@@ -142,8 +249,11 @@ export class Step {
         return nodes;
     }
 
-
-    // 启动应用
+    /**
+     * 启动应用
+     * @param packageName 应用包名
+     * @returns 是否启动成功
+     */
     public launchApp(packageName: string): boolean {
         Step.assert(this.stepId);
         const result = AssistsX.launchApp(packageName);
@@ -151,7 +261,10 @@ export class Step {
         return result;
     }
 
-    // 启动应用
+    /**
+     * 获取当前应用包名
+     * @returns 包名
+     */
     public getPackageName(): string {
         Step.assert(this.stepId);
         const result = AssistsX.getPackageName();
@@ -159,7 +272,14 @@ export class Step {
         return result;
     }
 
-    // 显示toast
+    /**
+     * 通过ID查找节点
+     * @param id 节点ID
+     * @param filterClass 类名过滤
+     * @param filterText 文本过滤
+     * @param filterDes 描述过滤
+     * @returns 节点数组
+     */
     public findById(id: string, { filterClass, filterText, filterDes }: { filterClass?: string, filterText?: string, filterDes?: string } = {}): Node[] {
         Step.assert(this.stepId);
         const nodes = AssistsX.findById(id, { filterClass, filterText, filterDes });
@@ -167,7 +287,15 @@ export class Step {
         Step.assignIdsToNodes(nodes, this.stepId);
         return nodes;
     }
-    // 通过文本查找节点
+
+    /**
+     * 通过文本查找节点
+     * @param text 要查找的文本
+     * @param filterClass 类名过滤
+     * @param filterViewId 视图ID过滤
+     * @param filterDes 描述过滤
+     * @returns 节点数组
+     */
     public findByText(text: string, { filterClass, filterViewId, filterDes }: { filterClass?: string, filterViewId?: string, filterDes?: string } = {}): Node[] {
         Step.assert(this.stepId);
         const nodes = AssistsX.findByText(text, { filterClass, filterViewId, filterDes });
@@ -175,6 +303,15 @@ export class Step {
         Step.assignIdsToNodes(nodes, this.stepId);
         return nodes;
     }
+
+    /**
+     * 通过标签查找节点
+     * @param className 类名
+     * @param filterText 文本过滤
+     * @param filterViewId 视图ID过滤
+     * @param filterDes 描述过滤
+     * @returns 节点数组
+     */
     public findByTags(className: string, { filterText, filterViewId, filterDes }: { filterText?: string, filterViewId?: string, filterDes?: string, }): Node[] {
         Step.assert(this.stepId);
         const nodes = AssistsX.findByTags(className, { filterText, filterViewId, filterDes });
@@ -182,6 +319,12 @@ export class Step {
         Step.assignIdsToNodes(nodes, this.stepId);
         return nodes;
     }
+
+    /**
+     * 查找所有匹配文本的节点
+     * @param text 要查找的文本
+     * @returns 节点数组
+     */
     public findByTextAllMatch(text: string): Node[] {
         Step.assert(this.stepId);
         const nodes = AssistsX.findByTextAllMatch(text);
@@ -189,48 +332,93 @@ export class Step {
         Step.assignIdsToNodes(nodes, this.stepId);
         return nodes;
     }
+
+    /**
+     * 检查是否包含指定文本
+     * @param text 要检查的文本
+     * @returns 是否包含
+     */
     public containsText(text: string): boolean {
         Step.assert(this.stepId);
         const result = AssistsX.containsText(text);
         Step.assert(this.stepId);
         return result;
     }
+
+    /**
+     * 获取所有文本
+     * @returns 文本数组
+     */
     public getAllText(): string[] {
         Step.assert(this.stepId);
         const texts = AssistsX.getAllText();
         Step.assert(this.stepId);
         return texts;
     }
+
+    /**
+     * 查找第一个匹配标签的父节点
+     * @param className 类名
+     * @returns 父节点
+     */
     public findFirstParentByTags(className: string): Node {
         Step.assert(this.stepId);
         const node = AssistsX.findFirstParentByTags(className);
         Step.assert(this.stepId);
         return node;
     }
+
+    /**
+     * 执行点击手势
+     * @param x 横坐标
+     * @param y 纵坐标
+     * @param duration 持续时间(毫秒)
+     * @returns 是否成功
+     */
     public gestureClick(x: number, y: number, duration: number): boolean {
         Step.assert(this.stepId);
         const result = AssistsX.gestureClick(x, y, duration);
         Step.assert(this.stepId);
         return result;
     }
+
+    /**
+     * 返回操作
+     * @returns 是否成功
+     */
     public back(): boolean {
         Step.assert(this.stepId);
         const result = AssistsX.back();
         Step.assert(this.stepId);
         return result;
     }
+
+    /**
+     * 回到主页
+     * @returns 是否成功
+     */
     public home(): boolean {
         Step.assert(this.stepId);
         const result = AssistsX.home();
         Step.assert(this.stepId);
         return result;
     }
+
+    /**
+     * 打开通知栏
+     * @returns 是否成功
+     */
     public notifications(): boolean {
         Step.assert(this.stepId);
         const result = AssistsX.notifications();
         Step.assert(this.stepId);
         return result;
     }
+
+    /**
+     * 显示最近应用
+     * @returns 是否成功
+     */
     public recentApps(): boolean {
         Step.assert(this.stepId);
         const result = AssistsX.recentApps();
@@ -238,17 +426,25 @@ export class Step {
         return result;
     }
 
+    /**
+     * 获取屏幕尺寸
+     * @returns 屏幕尺寸对象
+     */
     public getScreenSize(): any {
         Step.assert(this.stepId);
         const data = AssistsX.getScreenSize();
         Step.assert(this.stepId);
         return data;
     }
+
+    /**
+     * 获取应用窗口尺寸
+     * @returns 应用窗口尺寸对象
+     */
     public getAppScreenSize(): any {
         Step.assert(this.stepId);
         const data = AssistsX.getAppScreenSize();
         Step.assert(this.stepId);
         return data;
     }
-
 }
