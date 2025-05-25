@@ -33,7 +33,8 @@ export const CallMethod = {
     getAppScreenSize: "getAppScreenSize",
     nodeGestureClick: "nodeGestureClick",
     nodeGestureClickByDouble: "nodeGestureClickByDouble",
-    scrollBackward: "scrollBackward"
+    scrollBackward: "scrollBackward",
+    setOverlayFlags: "setOverlayFlags"
 } as const;
 
 // 导出类型定义

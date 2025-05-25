@@ -7,3 +7,4 @@ export * from './Utils';
 export * from './Bounds';
 export * from './Step';
 export * from './StepStateStore';
+export * from './WindowFlags';
