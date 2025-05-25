@@ -107,7 +107,7 @@ export class AssistsX {
      * @returns 是否设置成功
      */
     public static setNodeText(node: Node, text: string): boolean {
-        const response = this.call(CallMethod.setNodeText, { args: text, node });
+        const response = this.call(CallMethod.setNodeText, { args: { text }, node });
         return response.getDataOrDefault(false);
     }
 
@@ -361,7 +361,7 @@ export class AssistsX {
      * @returns 是否成功
      */
     public static paste(node: Node, text: string): boolean {
-        const response = this.call(CallMethod.paste, { args: text, node });
+        const response = this.call(CallMethod.paste, { args: { text }, node });
         return response.getDataOrDefault(false);
     }
 

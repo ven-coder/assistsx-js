@@ -10,6 +10,11 @@ import { generateUUID } from "./Utils";
 
 
 export class Step {
+
+    static delayMsDefault: number = 1000;
+    static readonly repeatCountInfinite: number = -1;
+    static repeatCountMaxDefault: number = Step.repeatCountInfinite;
+
     /**
      * 当前执行步骤的ID
      */
@@ -22,7 +27,7 @@ export class Step {
      * @param data 步骤数据
      * @param delayMs 步骤延迟时间(毫秒)
      */
-    static async run(impl: (step: Step) => Promise<Step | undefined>, { tag, data, delayMs = 1000 }: { tag?: string | undefined, data?: any | undefined, delayMs?: number } = {}) {
+    static async run(impl: (step: Step) => Promise<Step | undefined>, { tag, data, delayMs = Step.delayMsDefault }: { tag?: string | undefined, data?: any | undefined, delayMs?: number } = {}) {
         const stepStore = useStepStore();
         let implnName = impl.name
         try {
@@ -33,12 +38,19 @@ export class Step {
             let step = new Step({ stepId: this._stepId, impl, tag, data, delayMs });
             while (true) {
                 if (step.delayMs) {
+                    console.log(`延迟${step.delayMs}毫秒`)
                     await step.delay(step.delayMs);
                     Step.assert(step.stepId);
                 }
                 //执行步骤
                 implnName = step.impl.name
+                console.log(`执行步骤${implnName}，重复次数${step.repeatCount}`)
                 const nextStep = await step.impl(step);
+                if (step.repeatCountMax > Step.repeatCountInfinite && step.repeatCount > step.repeatCountMax) {
+                    console.log(`重复次数${step.repeatCount}超过最大次数${step.repeatCountMax}，停止执行`)
+                    break;
+                }
+
                 Step.assert(step.stepId);
                 if (nextStep) {
                     step = nextStep;
@@ -48,6 +60,7 @@ export class Step {
             }
 
         } catch (e: any) {
+            console.error(`步骤${implnName}执行出错`, e)
             //步骤执行出错
             const errorMsg = JSON.stringify({
                 impl: implnName,
@@ -110,6 +123,11 @@ export class Step {
     repeatCount: number = 0;
 
     /**
+     * 步骤重复执行最大次数,默认不限制
+     */
+    repeatCountMax: number = Step.repeatCountMaxDefault;
+
+    /**
      * 步骤标签
      */
     tag: string | undefined;
@@ -122,7 +140,7 @@ export class Step {
     /**
      * 步骤延迟时间(毫秒)
      */
-    delayMs: number = 1000;
+    delayMs: number = Step.delayMsDefault;
 
     /**
      * 步骤实现函数
@@ -137,12 +155,13 @@ export class Step {
      * @param data 步骤数据
      * @param delayMs 步骤延迟时间(毫秒)
      */
-    constructor({ stepId, impl, tag, data, delayMs = 1000 }: { stepId: string, impl: (step: Step) => Promise<Step | undefined>, tag?: string | undefined, data?: any | undefined, delayMs?: number }) {
+    constructor({ stepId, impl, tag, data, delayMs = Step.delayMsDefault, repeatCountMax = Step.repeatCountMaxDefault }: { stepId: string, impl: (step: Step) => Promise<Step | undefined>, tag?: string | undefined, data?: any | undefined, delayMs?: number, repeatCountMax?: number }) {
         this.tag = tag;
         this.stepId = stepId;
         this.data = data;
         this.impl = impl;
         this.delayMs = delayMs;
+        this.repeatCountMax = repeatCountMax;
     }
 
     /**
@@ -153,9 +172,9 @@ export class Step {
      * @param delayMs 步骤延迟时间(毫秒)
      * @returns 新的步骤实例
      */
-    next(impl: (step: Step) => Promise<Step | undefined>, { tag, data, delayMs = 1000 }: { tag?: string | undefined, data?: any | undefined, delayMs?: number } = {}): Step {
+    next(impl: (step: Step) => Promise<Step | undefined>, { tag, data, delayMs = Step.delayMsDefault, repeatCountMax = Step.repeatCountMaxDefault }: { tag?: string | undefined, data?: any | undefined, delayMs?: number, repeatCountMax?: number } = {}): Step {
         Step.assert(this.stepId);
-        return new Step({ stepId: this.stepId, impl, tag, data, delayMs });
+        return new Step({ stepId: this.stepId, impl, tag, data: data ?? this.data, delayMs, repeatCountMax });
     }
 
     /**
@@ -166,13 +185,14 @@ export class Step {
      * @param delayMs 步骤延迟时间(毫秒)
      * @returns 当前步骤实例
      */
-    repeat({ stepId = this.stepId, tag = this.tag, data = this.data, delayMs = this.delayMs }: { stepId?: string, tag?: string | undefined, data?: any | undefined, delayMs?: number } = {}): Step {
+    repeat({ stepId = this.stepId, tag = this.tag, data = this.data, delayMs = this.delayMs, repeatCountMax = this.repeatCountMax }: { stepId?: string, tag?: string | undefined, data?: any | undefined, delayMs?: number, repeatCountMax?: number } = {}): Step {
         Step.assert(this.stepId);
         this.repeatCount++;
         this.stepId = stepId;
         this.tag = tag;
         this.data = data;
         this.delayMs = delayMs;
+        this.repeatCountMax = repeatCountMax;
         return this
     }
 
@@ -312,7 +332,7 @@ export class Step {
      * @param filterDes 描述过滤
      * @returns 节点数组
      */
-    public findByTags(className: string, { filterText, filterViewId, filterDes }: { filterText?: string, filterViewId?: string, filterDes?: string, }): Node[] {
+    public findByTags(className: string, { filterText, filterViewId, filterDes }: { filterText?: string, filterViewId?: string, filterDes?: string, } = {}): Node[] {
         Step.assert(this.stepId);
         const nodes = AssistsX.findByTags(className, { filterText, filterViewId, filterDes });
         Step.assert(this.stepId);

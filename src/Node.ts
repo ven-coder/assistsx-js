@@ -209,6 +209,13 @@ export class Node {
         Step.assert(this.stepId);
         return result;
     }
+    public paste(text: string): boolean {
+        Step.assert(this.stepId);
+        const result = AssistsX.paste(this, text);
+        Step.assert(this.stepId);
+        return result;
+    }
+
     /**
      * 点击节点
      * @returns 是否点击成功
