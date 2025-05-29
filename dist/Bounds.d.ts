@@ -11,6 +11,7 @@ export declare class Bounds {
         bottom: number;
     }): Bounds;
     static fromJSON(json: string): Bounds;
+    static fromData(data: any): Bounds;
     toJSON(): {
         left: number;
         top: number;

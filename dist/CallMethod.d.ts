@@ -33,5 +33,6 @@ export declare const CallMethod: {
     readonly nodeGestureClick: "nodeGestureClick";
     readonly nodeGestureClickByDouble: "nodeGestureClickByDouble";
     readonly scrollBackward: "scrollBackward";
+    readonly setOverlayFlags: "setOverlayFlags";
 };
 export type CallMethodType = typeof CallMethod[keyof typeof CallMethod];

@@ -73,6 +73,15 @@ export class AssistsX {
         throw new Error('Call failed');
     }
     /**
+     * 设置悬浮窗标志
+     * @param flags 标志
+     * @returns 是否设置成功
+     */
+    static setOverlayFlags(flags) {
+        const response = this.call(CallMethod.setOverlayFlags, { args: { flags: flags } });
+        return response.getDataOrDefault(false);
+    }
+    /**
      * 获取所有符合条件的节点
      * @param filterClass 类名过滤
      * @param filterViewId 视图ID过滤
@@ -258,7 +267,7 @@ export class AssistsX {
      */
     static getBoundsInScreen(node) {
         const response = this.call(CallMethod.getBoundsInScreen, { node });
-        return Bounds.fromJSON(response.getDataOrDefault("{}"));
+        return Bounds.fromData(response.getDataOrDefault({}));
     }
     /**
      * 检查节点是否可见

@@ -20,6 +20,12 @@ export declare class AssistsX {
      */
     private static asyncCall;
     /**
+     * 设置悬浮窗标志
+     * @param flags 标志
+     * @returns 是否设置成功
+     */
+    static setOverlayFlags(flags: number): boolean;
+    /**
      * 获取所有符合条件的节点
      * @param filterClass 类名过滤
      * @param filterViewId 视图ID过滤

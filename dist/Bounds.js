@@ -16,6 +16,9 @@ export class Bounds {
         const data = JSON.parse(json);
         return Bounds.from(data);
     }
+    static fromData(data) {
+        return new Bounds(data.left, data.top, data.right, data.bottom);
+    }
     // 转换为普通对象
     toJSON() {
         return {

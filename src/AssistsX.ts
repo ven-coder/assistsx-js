@@ -300,7 +300,7 @@ export class AssistsX {
      */
     public static getBoundsInScreen(node: Node): Bounds {
         const response = this.call(CallMethod.getBoundsInScreen, { node });
-        return Bounds.fromJSON(response.getDataOrDefault("{}"));
+        return Bounds.fromData(response.getDataOrDefault({}));
     }
 
     /**

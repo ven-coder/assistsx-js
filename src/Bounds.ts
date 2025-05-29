@@ -19,6 +19,10 @@ export class Bounds {
         return Bounds.from(data);
     }
 
+    static fromData(data: any): Bounds {
+        return new Bounds(data.left, data.top, data.right, data.bottom);
+    }
+
     // 转换为普通对象
     toJSON(): { left: number; top: number; right: number; bottom: number } {
         return {
