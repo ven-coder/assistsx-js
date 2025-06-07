@@ -103,3 +103,24 @@ export default defineConfig({
 <br/>
 
 **[API开发文档]()**
+
+# 💝 支持开源
+
+开源不易，您的支持是我坚持的动力！
+
+如果AssistsX JS对您的项目有帮助，可以通过以下方式支持我喔：
+
+### ⭐ Star支持
+- 给项目点个Star，让更多开发者发现这个框架
+- 分享给身边的朋友和同事
+
+### 💰 赞助支持
+- [爱发电支持](https://afdian.com/a/vencoder) - 您的每一份支持都是我们前进的动力
+- 一杯Coffee的微信赞赏
+<br/>
+<br/>
+<img width="200" alt="image" src="https://github.com/user-attachments/assets/3862a40c-631c-4ab0-b1e7-00ec3e3e00ad" />
+
+**定制开发可联系个人微信: x39598**
+
+**感谢所有的支持者，得到你们的支持我将会更加完善开源库的能力！** 🚀
