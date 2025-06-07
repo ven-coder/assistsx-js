@@ -102,7 +102,7 @@ export default defineConfig({
 <br/>
 <br/>
 
-**[API开发文档]()**
+**[API开发文档](https://github.com/ven-coder/assistsx-js/blob/main/README-DEV.md)**
 
 # 💝 支持开源
 
