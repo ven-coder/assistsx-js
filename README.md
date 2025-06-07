@@ -47,10 +47,10 @@
 
 # 快速开始
 ## 1. 创建项目
-- 创建vite模版项目`npm create vite@latest assistsx-helloword -- --template vue`
-- 安装assistsx依赖`npm install assistsx-js@latest`
+- 创建`vite`模版项目：`npm create vite@latest assistsx-helloword -- --template vue`
+- 安装`assistsx-js`依赖：`npm install assistsx-js@latest`
 ## 2. 创建插件配置
-在目录`public`下创建文件`assistsx_plugin_config.json`文件，将以下`json`复制粘贴到文件中
+在项目目录`public`下创建文件`assistsx_plugin_config.json`文件，将以下`json`复制粘贴到文件中
 ```
 {
 "name": "AssistsX示例",
@@ -78,7 +78,8 @@ const handleClick = () => {
 ```
 
 ## 4. 加载插件
-1. 我们使用局域网加载插件，加载插件前需要配置项目允许局域网访问，在文件`vite.config.js`添加以下配置
+1. 通过[AssistsX](https://www.pgyer.com/SqGaCx8C)局域网加载插件
+> 加载插件前需要配置项目允许局域网访问，在文件`vite.config.js`添加以下配置
 ```
 export default defineConfig({
   plugins: [vue()],
@@ -88,9 +89,9 @@ export default defineConfig({
   },
 })
 ```
-运行项目`npm run dev`以便AssistsX直接加载
+运行项目`npm run dev`以便`AssistsX`直接加载
 
-2. 打开AssistsX，扫描局域网插件添加
+1. 打开`AssistsX`，扫描局域网插件添加
 
 <img src="https://github.com/user-attachments/assets/d0f24763-266e-4e3c-bd64-a63be9e6c68c" width="250"/>
 
