@@ -53,15 +53,15 @@
 在项目目录`public`下创建文件`assistsx_plugin_config.json`文件，将以下`json`复制粘贴到文件中
 ```
 {
-"name": "AssistsX示例",
-"version": "1.0.0",
-"description": "AssistsX示例",
-"isShowOverlay": true,
-"needScreenCapture": true,
-"packageName": "com.assistsx.example",
-"main": "index.html",
-"icon": "vite.svg",
-"overlayTitle": "AssistsX示例"
+  "name": "AssistsX示例",
+  "version": "1.0.0",
+  "description": "AssistsX示例",
+  "isShowOverlay": true,
+  "needScreenCapture": true,
+  "packageName": "com.assistsx.example",
+  "main": "index.html",
+  "icon": "vite.svg",
+  "overlayTitle": "AssistsX示例"
 }
 ```
 ## 3. 编写脚本插件
