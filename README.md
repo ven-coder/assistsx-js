@@ -2,10 +2,8 @@
 
 一个支持通过Web端实现Android平台自动化脚本的JS库，支持元素节点查找、获取节点文本、节点截图、执行手势动作、提供步骤器实现复杂自动化业务等一系列自动化脚本开发能力支持
 
-> **通过[AssistsX](https://www.pgyer.com/SqGaCx8C)自动化脚本插件平台APP运行**
-
 # AssistsX JS运行平台
-开发的自动化脚本需要运行在Android端[AssistsX](https://www.pgyer.com/SqGaCx8C)自动化脚本插件平台APP中，所以开发前需要先在手机安装[AssistsX](https://www.pgyer.com/SqGaCx8C)
+开发的自动化脚本需要运行在Android端[AssistsX](https://www.pgyer.com/SqGaCx8C)中，所以开发前需要先在手机安装[AssistsX](https://www.pgyer.com/SqGaCx8C)
 
 **扫码下载**
 
