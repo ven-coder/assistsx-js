@@ -117,8 +117,7 @@ export default defineConfig({
 ### 💰 赞助支持
 - [爱发电支持](https://afdian.com/a/vencoder) - 您的每一份支持都是我们前进的动力
 - 一杯Coffee的微信赞赏
-<br/>
-<br/>
+
 <img width="200" alt="image" src="https://github.com/user-attachments/assets/3862a40c-631c-4ab0-b1e7-00ec3e3e00ad" />
 
 **定制开发可联系个人微信: x39598**
