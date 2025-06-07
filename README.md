@@ -5,7 +5,7 @@ Android WebView 辅助功能库，提供了一系列用于与 Android WebView �
 ## 安装
 
 ```bash
-npm install assistsx
+npm install assistsx-js
 ```
 
 ## 快速开始
@@ -13,7 +13,7 @@ npm install assistsx
 ### 基本用法
 
 ```typescript
-import { AssistsX, Node } from 'assistsx';
+import { AssistsX, Node } from 'assistsx-js';
 
 // 获取所有节点
 const nodes: Node[] = AssistsX.getAllNodes();
