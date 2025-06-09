@@ -151,32 +151,6 @@ scrollable.scrollForward();
 scrollable.scrollBackward();
 ```
 
-## 注意事项
-
-1. 使用前提
-   - 确保 Android WebView 中已注入 `assistsx` 对象
-   - 确保有足够的权限（如辅助功能权限）
-
-2. 性能建议
-   - 避免频繁查找节点，建议复用查找结果
-   - 截图等耗时操作请合理使用
-
-3. 异步操作
-   - 截图、手势等操作为异步方法，需使用 `await`
-   - 建议使用 try-catch 处理异常
-
-4. 节点状态
-   - 操作前建议检查节点的 `isEnabled`、`isClickable` 等状态
-   - 使用 `isVisible` 确认节点是否可见
-
-## API 文档
-
-详细的 API 文档请参考源码中的 TypeScript 类型定义和注释说明。
-
-## 问题反馈
-
-如有问题或建议，欢迎提交 Issue 或 Pull Request。
-
 ## 步骤器（Step）使用说明
 
 步骤器提供了一种结构化的方式来组织和执行自动化操作，支持步骤的生命周期管理、状态控制和界面操作。
