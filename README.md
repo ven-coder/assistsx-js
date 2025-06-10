@@ -105,6 +105,12 @@ export default defineConfig({
 
 **[API开发文档](https://github.com/ven-coder/assistsx-js/blob/main/README-DEV.md)**
 
+## 🙋有问题欢迎反馈交流
+
+| QQ交流群| 个人微信 |
+|:---------:|:-----------:|
+| <img src="https://github.com/user-attachments/assets/732c38a5-7473-44ca-be76-d1fabb27aa5d" width=200/> | <img src="https://github.com/user-attachments/assets/b805f5a0-223b-415d-a34b-7659aa0bdf0a" width=200/>
+
 # 💝 支持开源
 
 开源不易，您的支持是我坚持的动力！
