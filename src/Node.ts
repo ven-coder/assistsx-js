@@ -116,7 +116,7 @@ export class Node {
      * @param filterDes 描述过滤
      * @returns 节点数组
      */
-    public findByTags(className: string, { filterText, filterViewId, filterDes }: { filterText?: string, filterViewId?: string, filterDes?: string, }): Node[] {
+    public findByTags(className: string, { filterText, filterViewId, filterDes }: { filterText?: string, filterViewId?: string, filterDes?: string, } = {}): Node[] {
         Step.assert(this.stepId);
         const result = AssistsX.findByTags(className, { filterText, filterViewId, filterDes, node: this });
         Step.assignIdsToNodes(result, this.stepId);
