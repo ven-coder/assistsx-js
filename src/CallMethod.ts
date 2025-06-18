@@ -34,7 +34,8 @@ export const CallMethod = {
     nodeGestureClick: "nodeGestureClick",
     nodeGestureClickByDouble: "nodeGestureClickByDouble",
     scrollBackward: "scrollBackward",
-    setOverlayFlags: "setOverlayFlags"
+    setOverlayFlags: "setOverlayFlags",
+    scanQR: "scanQR"
 } as const;
 
 // 导出类型定义

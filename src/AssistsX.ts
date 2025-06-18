@@ -131,6 +131,11 @@ export class AssistsX {
         const data = response.getDataOrDefault("");
         return data.images;
     }
+    public static async scanQR(): Promise<string> {
+        const response = await this.asyncCall(CallMethod.scanQR);
+        const data = response.getDataOrDefault({ value: "" });
+        return data.value;
+    }
 
     /**
      * 点击节点
@@ -230,7 +235,7 @@ export class AssistsX {
      * @returns 节点数组
      */
     public static findByTextAllMatch(text: string): Node[] {
-        const response = this.call(CallMethod.findByTextAllMatch, { args: text });
+        const response = this.call(CallMethod.findByTextAllMatch, { args: { text } });
         return Node.fromJSONArray(response.getDataOrDefault("[]"));
     }
 
@@ -240,7 +245,7 @@ export class AssistsX {
      * @returns 是否包含
      */
     public static containsText(text: string): boolean {
-        const response = this.call(CallMethod.containsText, { args: text });
+        const response = this.call(CallMethod.containsText, { args: { text } });
         return response.getDataOrDefault(false);
     }
 
@@ -259,7 +264,7 @@ export class AssistsX {
      * @returns 父节点
      */
     public static findFirstParentByTags(className: string): Node {
-        const response = this.call(CallMethod.findFirstParentByTags, { args: className });
+        const response = this.call(CallMethod.findFirstParentByTags, { args: { className } });
         return Node.create(response.getDataOrDefault("{}"));
     }
 
