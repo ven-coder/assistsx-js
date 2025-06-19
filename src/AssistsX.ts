@@ -18,6 +18,19 @@ interface Gesture {
     duration?: number;
 }
 
+/**
+ * Web浮动窗口选项接口定义
+ */
+interface WebFloatingWindowOptions {
+    initialWidth?: number;
+    initialHeight?: number;
+    minWidth?: number;
+    minHeight?: number;
+    maxWidth?: number;
+    maxHeight?: number;
+    initialCenter?: boolean;
+}
+
 // 回调函数存储对象
 const callbacks: { [key: string]: (data: any) => void } = {};
 
@@ -135,6 +148,15 @@ export class AssistsX {
         const response = await this.asyncCall(CallMethod.scanQR);
         const data = response.getDataOrDefault({ value: "" });
         return data.value;
+    }
+    public static async addWebFloatingWindow(url: string, options: WebFloatingWindowOptions = {}): Promise<any> {
+        const { initialWidth, initialHeight, minWidth, minHeight, maxWidth, maxHeight, initialCenter } = options;
+        const response = await this.asyncCall(
+            CallMethod.addWebFloatingWindow,
+            { args: { url, initialWidth, initialHeight, minWidth, minHeight, maxWidth, maxHeight, initialCenter } }
+        );
+        const data = response.getDataOrDefault({});
+        return data;
     }
 
     /**

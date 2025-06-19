@@ -35,7 +35,8 @@ export const CallMethod = {
     nodeGestureClickByDouble: "nodeGestureClickByDouble",
     scrollBackward: "scrollBackward",
     setOverlayFlags: "setOverlayFlags",
-    scanQR: "scanQR"
+    scanQR: "scanQR",
+    addWebFloatingWindow: "addWebFloatingWindow"
 } as const;
 
 // 导出类型定义
