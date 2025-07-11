@@ -110,6 +110,15 @@ export class AssistsX {
         return response.getDataOrDefault(false);
     }
     /**
+     * 设置悬浮窗标志
+     * @param flags 标志
+     * @returns 是否设置成功
+     */
+    public static setOverlayFlagList(flags: number[]): boolean {
+        const response = this.call(CallMethod.setOverlayFlags, { args: { flags: flags } });
+        return response.getDataOrDefault(false);
+    }
+    /**
      * 获取所有符合条件的节点
      * @param filterClass 类名过滤
      * @param filterViewId 视图ID过滤
