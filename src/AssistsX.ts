@@ -316,7 +316,7 @@ export class AssistsX {
      */
     public static getChildren(node: Node): Node[] {
         const response = this.call(CallMethod.getChildren, { node });
-        return Node.fromJSONArray(response.getDataOrDefault("[]"));
+        return Node.fromJSONArray(response.getDataOrDefault([]));
     }
 
     /**
