@@ -7,6 +7,7 @@ declare global {
             call(method: string): string | null;
         };
         assistsxCallback: (id: string, data: string) => void;
+        onAccessibilityEvent: (event: any) => void;
     }
 }
 

@@ -34,6 +34,9 @@ interface WebFloatingWindowOptions {
 // 回调函数存储对象
 const callbacks: { [key: string]: (data: any) => void } = {};
 
+// 无障碍事件监听器存储
+const accessibilityEventListeners: ((event: any) => void)[] = [];
+
 // 初始化全局回调函数
 if (typeof window !== 'undefined' && !window.assistsxCallback) {
     window.assistsxCallback = (data: string) => {
@@ -42,6 +45,20 @@ if (typeof window !== 'undefined' && !window.assistsxCallback) {
         if (callback) {
             callback(data);
         }
+    }
+}
+
+// 初始化全局无障碍事件函数
+if (typeof window !== 'undefined' && !window.onAccessibilityEvent) {
+    window.onAccessibilityEvent = (event: any) => {
+        // 通知所有注册的监听器
+        accessibilityEventListeners.forEach(listener => {
+            try {
+                listener(event);
+            } catch (error) {
+                console.error('Accessibility event listener error:', error);
+            }
+        });
     }
 }
 
@@ -488,5 +505,60 @@ export class AssistsX {
     public static getAppScreenSize(): any {
         const response = this.call(CallMethod.getAppScreenSize);
         return response.getDataOrDefault("{}");
+    }
+
+    /**
+     * 添加无障碍事件监听器
+     * @param listener 监听器函数
+     * @returns 监听器ID，用于移除监听器
+     */
+    public static addAccessibilityEventListener(listener: (event: any) => void): string {
+        const listenerId = generateUUID();
+        const wrappedListener = (event: any) => {
+            try {
+                listener(event);
+            } catch (error) {
+                console.error('Accessibility event listener error:', error);
+            }
+        };
+
+        // 将监听器包装并存储，使用ID作为键
+        (accessibilityEventListeners as any)[listenerId] = wrappedListener;
+        accessibilityEventListeners.push(wrappedListener);
+
+        return listenerId;
+    }
+
+    /**
+     * 移除无障碍事件监听器
+     * @param listenerId 监听器ID
+     * @returns 是否移除成功
+     */
+    public static removeAccessibilityEventListener(listenerId: string): boolean {
+        const listener = (accessibilityEventListeners as any)[listenerId];
+        if (listener) {
+            const index = accessibilityEventListeners.indexOf(listener);
+            if (index > -1) {
+                accessibilityEventListeners.splice(index, 1);
+                delete (accessibilityEventListeners as any)[listenerId];
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 移除所有无障碍事件监听器
+     */
+    public static removeAllAccessibilityEventListeners(): void {
+        accessibilityEventListeners.length = 0;
+    }
+
+    /**
+     * 获取当前注册的无障碍事件监听器数量
+     * @returns 监听器数量
+     */
+    public static getAccessibilityEventListenerCount(): number {
+        return accessibilityEventListeners.length;
     }
 }
