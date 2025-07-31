@@ -1,6 +1,6 @@
 {
   "name": "assistsx-js",
-  "version": "0.0.1333",
+  "version": "0.0.1334",
   "description": "assistsx-js自动化开发SDK",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -33,7 +33,7 @@
     "dev"
   ],
   "author": "Ven",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "typescript": "^5.3.3"
   },
