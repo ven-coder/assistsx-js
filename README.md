@@ -13,6 +13,8 @@
 
 > 下载安装后会默认安装一个示例插件，可长按删除
 
+**[Assistsx源码](https://github.com/ven-coder/assistsx)**
+
 # 快速开始
 ## 1. 创建项目
 - 创建`vite`模版项目：`npm create vite@latest assistsx-helloword -- --template vue`
