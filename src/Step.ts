@@ -14,6 +14,7 @@ export class Step {
     static delayMsDefault: number = 1000;
     static readonly repeatCountInfinite: number = -1;
     static repeatCountMaxDefault: number = Step.repeatCountInfinite;
+    static showLog: boolean = false;
 
     /**
      * 当前执行步骤的ID
@@ -38,16 +39,22 @@ export class Step {
             let step = new Step({ stepId: this._stepId, impl, tag, data, delayMs });
             while (true) {
                 if (step.delayMs) {
-                    console.log(`延迟${step.delayMs}毫秒`)
+                    if (Step.showLog) {
+                        console.log(`延迟${step.delayMs}毫秒`)
+                    }
                     await step.delay(step.delayMs);
                     Step.assert(step.stepId);
                 }
                 //执行步骤
                 implnName = step.impl.name
-                console.log(`执行步骤${implnName}，重复次数${step.repeatCount}`)
+                if (Step.showLog) {
+                    console.log(`执行步骤${implnName}，重复次数${step.repeatCount}`)
+                }
                 const nextStep = await step.impl(step);
                 if (step.repeatCountMax > Step.repeatCountInfinite && step.repeatCount > step.repeatCountMax) {
-                    console.log(`重复次数${step.repeatCount}超过最大次数${step.repeatCountMax}，停止执行`)
+                    if (Step.showLog) {
+                        console.log(`重复次数${step.repeatCount}超过最大次数${step.repeatCountMax}，停止执行`)
+                    }
                     break;
                 }
 
@@ -60,7 +67,9 @@ export class Step {
             }
 
         } catch (e: any) {
-            console.error(`步骤${implnName}执行出错`, e)
+            if (Step.showLog) {
+                console.error(`步骤${implnName}执行出错`, e)
+            }
             //步骤执行出错
             const errorMsg = JSON.stringify({
                 impl: implnName,

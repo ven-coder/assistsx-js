@@ -36,7 +36,7 @@ export const CallMethod = {
     scrollBackward: "scrollBackward",
     setOverlayFlags: "setOverlayFlags",
     scanQR: "scanQR",
-    addWebFloatingWindow: "addWebFloatingWindow"
+    loadWebViewOverlay: "loadWebViewOverlay"
 } as const;
 
 // 导出类型定义

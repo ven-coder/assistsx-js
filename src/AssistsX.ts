@@ -175,10 +175,10 @@ export class AssistsX {
         const data = response.getDataOrDefault({ value: "" });
         return data.value;
     }
-    public static async addWebFloatingWindow(url: string, options: WebFloatingWindowOptions = {}): Promise<any> {
+    public static async loadWebViewOverlay(url: string, options: WebFloatingWindowOptions = {}): Promise<any> {
         const { initialWidth, initialHeight, minWidth, minHeight, maxWidth, maxHeight, initialCenter } = options;
         const response = await this.asyncCall(
-            CallMethod.addWebFloatingWindow,
+            CallMethod.loadWebViewOverlay,
             { args: { url, initialWidth, initialHeight, minWidth, minHeight, maxWidth, maxHeight, initialCenter } }
         );
         const data = response.getDataOrDefault({});
