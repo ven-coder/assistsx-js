@@ -375,8 +375,8 @@ export class AssistsX {
      * @param duration 持续时间
      * @returns 是否成功
      */
-    public static gestureClick(x: number, y: number, duration: number): boolean {
-        const response = this.call(CallMethod.gestureClick, { args: { x, y, duration } });
+    public static clickByGesture(x: number, y: number, duration: number): boolean {
+        const response = this.call(CallMethod.clickByGesture, { args: { x, y, duration } });
         return response.getDataOrDefault(false);
     }
 
@@ -468,8 +468,8 @@ export class AssistsX {
      * @param clickDuration 点击持续时间
      * @returns 是否成功
      */
-    public static async nodeGestureClick(node: Node, { offsetX, offsetY, switchWindowIntervalDelay, clickDuration }: { offsetX?: number, offsetY?: number, switchWindowIntervalDelay?: number, clickDuration?: number } = {}): Promise<boolean> {
-        const response = await this.asyncCall(CallMethod.nodeGestureClick, { node, args: { offsetX, offsetY, switchWindowIntervalDelay, clickDuration } });
+    public static async clickNodeByGesture(node: Node, { offsetX, offsetY, switchWindowIntervalDelay, clickDuration }: { offsetX?: number, offsetY?: number, switchWindowIntervalDelay?: number, clickDuration?: number } = {}): Promise<boolean> {
+        const response = await this.asyncCall(CallMethod.clickNodeByGesture, { node, args: { offsetX, offsetY, switchWindowIntervalDelay, clickDuration } });
         return response.getDataOrDefault(false);
     }
 
@@ -483,9 +483,20 @@ export class AssistsX {
      * @param clickInterval 点击间隔
      * @returns 是否成功
      */
-    public static async nodeGestureClickByDouble(node: Node,
+    public static async doubleClickNodeByGesture(node: Node,
         { offsetX, offsetY, switchWindowIntervalDelay, clickDuration, clickInterval }: { offsetX?: number, offsetY?: number, switchWindowIntervalDelay?: number, clickDuration?: number, clickInterval?: number } = {}): Promise<boolean> {
-        const response = await this.asyncCall(CallMethod.nodeGestureClickByDouble, { node, args: { offsetX, offsetY, switchWindowIntervalDelay, clickDuration, clickInterval } });
+        const response = await this.asyncCall(CallMethod.doubleClickNodeByGesture, { node, args: { offsetX, offsetY, switchWindowIntervalDelay, clickDuration, clickInterval } });
+        return response.getDataOrDefault(false);
+    }
+    /**
+     * 执行线型手势
+     * @param startPoint 
+     * @param endPoint 
+     * @param param2 
+     * @returns 
+     */
+    public static async performLinearGesture(startPoint: { x: number, y: number }, endPoint: { x: number, y: number }, { duration }: { duration?: number } = {}): Promise<boolean> {
+        const response = await this.asyncCall(CallMethod.performLinearGesture, { args: { startPoint, endPoint, duration } });
         return response.getDataOrDefault(false);
     }
 

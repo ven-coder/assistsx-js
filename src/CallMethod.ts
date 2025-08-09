@@ -14,12 +14,10 @@ export const CallMethod = {
     getNodes: "getNodes",
     findFirstParentClickable: "findFirstParentClickable",
     getChildren: "getChildren",
-    dispatchGesture: "dispatchGesture",
     getBoundsInScreen: "getBoundsInScreen",
     isVisible: "isVisible",
     click: "click",
     longClick: "longClick",
-    gestureClick: "gestureClick",
     back: "back",
     home: "home",
     notifications: "notifications",
@@ -31,12 +29,15 @@ export const CallMethod = {
     getPackageName: "getPackageName",
     getScreenSize: "getScreenSize",
     getAppScreenSize: "getAppScreenSize",
-    nodeGestureClick: "nodeGestureClick",
-    nodeGestureClickByDouble: "nodeGestureClickByDouble",
     scrollBackward: "scrollBackward",
     setOverlayFlags: "setOverlayFlags",
     scanQR: "scanQR",
-    loadWebViewOverlay: "loadWebViewOverlay"
+    loadWebViewOverlay: "loadWebViewOverlay",
+
+    clickByGesture: "clickByGesture",
+    clickNodeByGesture: "clickNodeByGesture",
+    doubleClickNodeByGesture: "doubleClickNodeByGesture",
+    performLinearGesture: "performLinearGesture",
 } as const;
 
 // 导出类型定义

@@ -404,9 +404,9 @@ export class Step {
      * @param duration 持续时间(毫秒)
      * @returns 是否成功
      */
-    public gestureClick(x: number, y: number, duration: number): boolean {
+    public clickByGesture(x: number, y: number, duration: number): boolean {
         Step.assert(this.stepId);
-        const result = AssistsX.gestureClick(x, y, duration);
+        const result = AssistsX.clickByGesture(x, y, duration);
         Step.assert(this.stepId);
         return result;
     }

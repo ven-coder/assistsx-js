@@ -87,9 +87,9 @@ export class Node {
      * @param clickDuration 点击持续时间
      * @returns 是否点击成功
      */
-    public async nodeGestureClick({ offsetX, offsetY, switchWindowIntervalDelay, clickDuration }: { offsetX?: number, offsetY?: number, switchWindowIntervalDelay?: number, clickDuration?: number } = {}): Promise<boolean> {
+    public async clickNodeByGesture({ offsetX, offsetY, switchWindowIntervalDelay, clickDuration }: { offsetX?: number, offsetY?: number, switchWindowIntervalDelay?: number, clickDuration?: number } = {}): Promise<boolean> {
         Step.assert(this.stepId);
-        const result = await AssistsX.nodeGestureClick(this, { offsetX, offsetY, switchWindowIntervalDelay, clickDuration });
+        const result = await AssistsX.clickNodeByGesture(this, { offsetX, offsetY, switchWindowIntervalDelay, clickDuration });
         Step.assert(this.stepId);
         return result;
     }
@@ -102,9 +102,9 @@ export class Node {
      * @param clickInterval 点击间隔
      * @returns 是否双击成功
      */
-    public async nodeGestureClickByDouble({ offsetX, offsetY, switchWindowIntervalDelay, clickDuration, clickInterval }: { offsetX?: number, offsetY?: number, switchWindowIntervalDelay?: number, clickDuration?: number, clickInterval?: number } = {}): Promise<boolean> {
+    public async doubleClickNodeByGesture({ offsetX, offsetY, switchWindowIntervalDelay, clickDuration, clickInterval }: { offsetX?: number, offsetY?: number, switchWindowIntervalDelay?: number, clickDuration?: number, clickInterval?: number } = {}): Promise<boolean> {
         Step.assert(this.stepId);
-        const result = await AssistsX.nodeGestureClickByDouble(this, { offsetX, offsetY, switchWindowIntervalDelay, clickDuration, clickInterval });
+        const result = await AssistsX.doubleClickNodeByGesture(this, { offsetX, offsetY, switchWindowIntervalDelay, clickDuration, clickInterval });
         Step.assert(this.stepId);
         return result;
     }
