@@ -38,6 +38,8 @@ export const CallMethod = {
     clickNodeByGesture: "clickNodeByGesture",
     doubleClickNodeByGesture: "doubleClickNodeByGesture",
     performLinearGesture: "performLinearGesture",
+
+    getAppInfo: "getAppInfo",
 } as const;
 
 // 导出类型定义

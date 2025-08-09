@@ -404,9 +404,21 @@ export class Step {
      * @param duration 持续时间(毫秒)
      * @returns 是否成功
      */
-    public clickByGesture(x: number, y: number, duration: number): boolean {
+    public async clickByGesture(x: number, y: number, duration: number): Promise<boolean> {
         Step.assert(this.stepId);
-        const result = AssistsX.clickByGesture(x, y, duration);
+        const result = await AssistsX.clickByGesture(x, y, duration);
+        Step.assert(this.stepId);
+        return result;
+    }
+    public async getAppInfo(packageName: string): Promise<any> {
+        Step.assert(this.stepId);
+        const result = await AssistsX.getAppInfo(packageName);
+        Step.assert(this.stepId);
+        return result;
+    }
+    public async performLinearGesture(startPoint: { x: number, y: number }, endPoint: { x: number, y: number }, { duration }: { duration?: number } = {}): Promise<boolean> {
+        Step.assert(this.stepId);
+        const result = await AssistsX.performLinearGesture(startPoint, endPoint, { duration });
         Step.assert(this.stepId);
         return result;
     }

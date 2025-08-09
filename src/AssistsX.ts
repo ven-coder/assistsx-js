@@ -375,8 +375,8 @@ export class AssistsX {
      * @param duration 持续时间
      * @returns 是否成功
      */
-    public static clickByGesture(x: number, y: number, duration: number): boolean {
-        const response = this.call(CallMethod.clickByGesture, { args: { x, y, duration } });
+    public static async clickByGesture(x: number, y: number, duration: number): Promise<boolean> {
+        const response = await this.asyncCall(CallMethod.clickByGesture, { args: { x, y, duration } });
         return response.getDataOrDefault(false);
     }
 
@@ -498,6 +498,10 @@ export class AssistsX {
     public static async performLinearGesture(startPoint: { x: number, y: number }, endPoint: { x: number, y: number }, { duration }: { duration?: number } = {}): Promise<boolean> {
         const response = await this.asyncCall(CallMethod.performLinearGesture, { args: { startPoint, endPoint, duration } });
         return response.getDataOrDefault(false);
+    }
+    public static async getAppInfo(packageName: string): Promise<any> {
+        const response = await this.asyncCall(CallMethod.getAppInfo, { args: { packageName } });
+        return response.getDataOrDefault({});
     }
 
     /**
