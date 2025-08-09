@@ -410,6 +410,18 @@ export class Step {
         Step.assert(this.stepId);
         return result;
     }
+
+    public async longPressGestureAutoPaste(
+        point: { x: number, y: number }, text: string,
+        { matchedPackageName, matchedText, timeoutMillis, longPressDuration }:
+            { matchedPackageName?: string, matchedText?: string, timeoutMillis?: number, longPressDuration?: number } =
+            { matchedText: "粘贴", timeoutMillis: 1500, longPressDuration: 600 }
+    ): Promise<boolean> {
+        Step.assert(this.stepId);
+        const result = await AssistsX.longPressGestureAutoPaste(point, text, { matchedPackageName, matchedText, timeoutMillis, longPressDuration });
+        Step.assert(this.stepId);
+        return result;
+    }
     public async getAppInfo(packageName: string): Promise<any> {
         Step.assert(this.stepId);
         const result = await AssistsX.getAppInfo(packageName);

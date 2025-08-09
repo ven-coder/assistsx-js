@@ -38,6 +38,7 @@ export const CallMethod = {
     clickNodeByGesture: "clickNodeByGesture",
     doubleClickNodeByGesture: "doubleClickNodeByGesture",
     performLinearGesture: "performLinearGesture",
+    longPressGestureAutoPaste: "longPressGestureAutoPaste",
 
     getAppInfo: "getAppInfo",
 } as const;

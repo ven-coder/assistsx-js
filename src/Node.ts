@@ -108,6 +108,18 @@ export class Node {
         Step.assert(this.stepId);
         return result;
     }
+
+    public async longPressNodeByGestureAutoPaste(text: string,
+        { matchedPackageName, matchedText, timeoutMillis, longPressDuration }:
+            { matchedPackageName?: string, matchedText?: string, timeoutMillis?: number, longPressDuration?: number } =
+            { matchedText: "粘贴", timeoutMillis: 1500, longPressDuration: 600 }
+    ): Promise<boolean> {
+        Step.assert(this.stepId);
+        const result = await AssistsX.longPressNodeByGestureAutoPaste(this, text, { matchedPackageName, matchedText, timeoutMillis, longPressDuration });
+        Step.assert(this.stepId);
+        return result;
+    }
+
     /**
      * 在当前节点范围内通过标签查找节点
      * @param className 类名

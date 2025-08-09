@@ -499,6 +499,25 @@ export class AssistsX {
         const response = await this.asyncCall(CallMethod.performLinearGesture, { args: { startPoint, endPoint, duration } });
         return response.getDataOrDefault(false);
     }
+    public static async longPressNodeByGestureAutoPaste(
+        node: Node, text: string,
+        { matchedPackageName, matchedText, timeoutMillis, longPressDuration }:
+            { matchedPackageName?: string, matchedText?: string, timeoutMillis?: number, longPressDuration?: number } =
+            { matchedText: "粘贴", timeoutMillis: 1500, longPressDuration: 600 }
+    ): Promise<boolean> {
+        const response = await this.asyncCall(CallMethod.longPressGestureAutoPaste, { node, args: { text, matchedPackageName, matchedText, timeoutMillis, longPressDuration } });
+        return response.getDataOrDefault(false);
+    }
+
+    public static async longPressGestureAutoPaste(
+        point: { x: number, y: number }, text: string,
+        { matchedPackageName, matchedText, timeoutMillis, longPressDuration }:
+            { matchedPackageName?: string, matchedText?: string, timeoutMillis?: number, longPressDuration?: number } =
+            { matchedText: "粘贴", timeoutMillis: 1500, longPressDuration: 600 }
+    ): Promise<boolean> {
+        const response = await this.asyncCall(CallMethod.longPressGestureAutoPaste, { args: { point, text, matchedPackageName, matchedText, timeoutMillis, longPressDuration } });
+        return response.getDataOrDefault(false);
+    }
     public static async getAppInfo(packageName: string): Promise<any> {
         const response = await this.asyncCall(CallMethod.getAppInfo, { args: { packageName } });
         return response.getDataOrDefault({});
