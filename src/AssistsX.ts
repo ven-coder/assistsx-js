@@ -522,6 +522,18 @@ export class AssistsX {
         const response = await this.asyncCall(CallMethod.getAppInfo, { args: { packageName } });
         return response.getDataOrDefault({});
     }
+    public static getUniqueDeviceId(): any {
+        const response = this.call(CallMethod.getUniqueDeviceId);
+        return response.getDataOrDefault("");
+    }
+    public static getAndroidID(): any {
+        const response = this.call(CallMethod.getAndroidID);
+        return response.getDataOrDefault("");
+    }
+    public static async getMacAddress(): Promise<any> {
+        const response = await this.asyncCall(CallMethod.getMacAddress);
+        return response.getDataOrDefault({});
+    }
 
     /**
      * 获取屏幕尺寸

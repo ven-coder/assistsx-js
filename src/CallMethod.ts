@@ -41,6 +41,9 @@ export const CallMethod = {
     longPressGestureAutoPaste: "longPressGestureAutoPaste",
 
     getAppInfo: "getAppInfo",
+    getMacAddress: "getMacAddress",
+    getAndroidID: "getAndroidID",
+    getUniqueDeviceId: "getUniqueDeviceId",
 } as const;
 
 // 导出类型定义
