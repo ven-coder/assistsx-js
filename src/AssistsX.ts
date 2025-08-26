@@ -426,6 +426,10 @@ export class AssistsX {
         const response = this.call(CallMethod.paste, { args: { text }, node });
         return response.getDataOrDefault(false);
     }
+    public static focus(node: Node): boolean {
+        const response = this.call(CallMethod.focus, { node });
+        return response.getDataOrDefault(false);
+    }
 
     /**
      * 选择文本
@@ -490,10 +494,10 @@ export class AssistsX {
     }
     /**
      * 执行线型手势
-     * @param startPoint 
-     * @param endPoint 
-     * @param param2 
-     * @returns 
+     * @param startPoint
+     * @param endPoint
+     * @param param2
+     * @returns
      */
     public static async performLinearGesture(startPoint: { x: number, y: number }, endPoint: { x: number, y: number }, { duration }: { duration?: number } = {}): Promise<boolean> {
         const response = await this.asyncCall(CallMethod.performLinearGesture, { args: { startPoint, endPoint, duration } });

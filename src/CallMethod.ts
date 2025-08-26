@@ -23,6 +23,7 @@ export const CallMethod = {
     notifications: "notifications",
     recentApps: "recentApps",
     paste: "paste",
+    focus: "focus",
     selectionText: "selectionText",
     scrollForward: "scrollForward",
     launchApp: "launchApp",
@@ -47,4 +48,4 @@ export const CallMethod = {
 } as const;
 
 // 导出类型定义
-export type CallMethodType = typeof CallMethod[keyof typeof CallMethod]; 
+export type CallMethodType = typeof CallMethod[keyof typeof CallMethod];

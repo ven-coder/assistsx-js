@@ -38,7 +38,7 @@ export class Step {
       tag?: string | undefined;
       data?: any | undefined;
       backupSteps?:
-        | Map<string, (step: Step) => Promise<Step | undefined>>
+        | { [key: string]: (step: Step) => Promise<Step | undefined> }
         | undefined;
       delayMs?: number;
     } = {}
@@ -197,7 +197,7 @@ export class Step {
    * 备份步骤，可用于在指定的步骤中转向其他步骤
    */
   backupSteps:
-    | Map<string, (step: Step) => Promise<Step | undefined>>
+    | { [key: string]: (step: Step) => Promise<Step | undefined> }
     | undefined;
 
   /**
@@ -222,7 +222,7 @@ export class Step {
     tag?: string | undefined;
     data?: any | undefined;
     backupSteps?:
-      | Map<string, (step: Step) => Promise<Step | undefined>>
+      | { [key: string]: (step: Step) => Promise<Step | undefined> }
       | undefined;
     delayMs?: number;
     repeatCountMax?: number;
@@ -256,7 +256,7 @@ export class Step {
       tag?: string | undefined;
       data?: any | undefined;
       backupSteps?:
-        | Map<string, (step: Step) => Promise<Step | undefined>>
+        | { [key: string]: (step: Step) => Promise<Step | undefined> }
         | undefined;
       delayMs?: number;
       repeatCountMax?: number;
@@ -294,7 +294,7 @@ export class Step {
     tag?: string | undefined;
     data?: any | undefined;
     backupSteps?:
-      | Map<string, (step: Step) => Promise<Step | undefined>>
+      | { [key: string]: (step: Step) => Promise<Step | undefined> }
       | undefined;
     delayMs?: number;
     repeatCountMax?: number;
