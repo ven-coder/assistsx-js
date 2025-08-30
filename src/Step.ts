@@ -4,10 +4,11 @@
  */
 import { AssistsX } from "./AssistsX";
 import { Node } from "./Node";
-import { CallMethod } from "CallMethod";
+import { CallMethod } from "./CallMethod";
 import { useStepStore } from "./StepStateStore";
 import { generateUUID } from "./Utils";
 import { StepError } from "./StepError";
+import { StepAsync } from "./StepAsync";
 
 export class Step {
   static delayMsDefault: number = 1000;
@@ -236,6 +237,9 @@ export class Step {
     this.repeatCountMax = repeatCountMax;
   }
 
+  public get async(): StepAsync {
+    return new StepAsync(this);
+  }
   /**
    * 创建下一个步骤
    * @param impl 下一步骤实现函数

@@ -7,87 +7,16 @@ import { CallMethod } from "./CallMethod";
 import { CallResponse } from "./CallResponse";
 import { Bounds } from "./Bounds";
 import { generateUUID } from "./Utils";
+import { AssistsX, callbacks, WebFloatingWindowOptions } from "./AssistsX";
 
-/**
- * Web浮动窗口选项接口定义
- */
-export interface WebFloatingWindowOptions {
-  initialWidth?: number;
-  initialHeight?: number;
-  minWidth?: number;
-  minHeight?: number;
-  maxWidth?: number;
-  maxHeight?: number;
-  initialCenter?: boolean;
-}
-
-// 回调函数存储对象
-export const callbacks: { [key: string]: (data: any) => void } = {};
-
-// 无障碍事件监听器存储
-export const accessibilityEventListeners: ((event: any) => void)[] = [];
-
-// 初始化全局回调函数
-if (typeof window !== "undefined" && !window.assistsxCallback) {
-  window.assistsxCallback = (data: string) => {
-    const response = JSON.parse(data);
-    const callback = callbacks[response.callbackId];
-    if (callback) {
-      callback(data);
-    }
-  };
-}
-
-// 初始化全局无障碍事件函数
-if (typeof window !== "undefined" && !window.onAccessibilityEvent) {
-  window.onAccessibilityEvent = (event: any) => {
-    // 通知所有注册的监听器
-    accessibilityEventListeners.forEach((listener) => {
-      try {
-        listener(event);
-      } catch (error) {
-        console.error("Accessibility event listener error:", error);
-      }
-    });
-  };
-}
-
-export class AssistsX {
-  /**
-   * 执行同步调用
-   * @param method 方法名
-   * @param args 参数对象
-   * @returns 调用响应
-   */
-  public static call(
-    method: string,
-    { args, node }: { args?: any; node?: Node } = {}
-  ): CallResponse {
-    const params = {
-      method,
-      arguments: args ? args : undefined,
-      node: node ? node : undefined,
-    };
-    const result = window.assistsx.call(JSON.stringify(params));
-    if (typeof result === "string") {
-      const responseData = JSON.parse(result);
-      const response = new CallResponse(
-        responseData.code,
-        responseData.data,
-        responseData.callbackId
-      );
-      return response;
-    }
-    throw new Error("Call failed");
-  }
-
+export class AssistsXAsync {
   /**
    * 执行异步调用
    * @param method 方法名
    * @param args 参数对象
    * @returns Promise<调用响应>
    */
-  public static async asyncCall(
+  private static async asyncCall(
     method: string,
     { args, node, nodes }: { args?: any; node?: Node; nodes?: Node[] } = {}
   ): Promise<CallResponse> {
@@ -107,7 +36,7 @@ export class AssistsX {
         resolve(new CallResponse(0, null, uuid));
       }, 10000);
     });
-    const result = window.assistsx.call(JSON.stringify(params));
+    const result = window.assistsxAsync.call(JSON.stringify(params));
     const promiseResult = await promise;
     if (typeof promiseResult === "string") {
       const responseData = JSON.parse(promiseResult);
@@ -126,8 +55,8 @@ export class AssistsX {
    * @param flags 标志
    * @returns 是否设置成功
    */
-  public static setOverlayFlags(flags: number): boolean {
-    const response = this.call(CallMethod.setOverlayFlags, {
+  public static async setOverlayFlags(flags: number): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.setOverlayFlags, {
       args: { flags: flags },
     });
     return response.getDataOrDefault(false);
@@ -137,8 +66,8 @@ export class AssistsX {
    * @param flags 标志
    * @returns 是否设置成功
    */
-  public static setOverlayFlagList(flags: number[]): boolean {
-    const response = this.call(CallMethod.setOverlayFlags, {
+  public static async setOverlayFlagList(flags: number[]): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.setOverlayFlags, {
       args: { flags: flags },
     });
     return response.getDataOrDefault(false);
@@ -151,7 +80,7 @@ export class AssistsX {
    * @param filterText 文本过滤
    * @returns 节点数组
    */
-  public static getAllNodes({
+  public static async getAllNodes({
     filterClass,
     filterViewId,
     filterDes,
@@ -161,8 +90,8 @@ export class AssistsX {
     filterViewId?: string;
     filterDes?: string;
     filterText?: string;
-  } = {}): Node[] {
-    const response = this.call(CallMethod.getAllNodes, {
+  } = {}): Promise<Node[]> {
+    const response = await this.asyncCall(CallMethod.getAllNodes, {
       args: { filterClass, filterViewId, filterDes, filterText },
     });
     return Node.fromJSONArray(response.getDataOrDefault("[]"));
@@ -174,8 +103,8 @@ export class AssistsX {
    * @param text 要设置的文本
    * @returns 是否设置成功
    */
-  public static setNodeText(node: Node, text: string): boolean {
-    const response = this.call(CallMethod.setNodeText, {
+  public static async setNodeText(node: Node, text: string): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.setNodeText, {
       args: { text },
       node,
     });
@@ -238,8 +167,8 @@ export class AssistsX {
    * @param node 要点击的节点
    * @returns 是否点击成功
    */
-  public static click(node: Node): boolean {
-    const response = this.call(CallMethod.click, { node });
+  public static async click(node: Node): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.click, { node });
     return response.getDataOrDefault(false);
   }
 
@@ -248,8 +177,8 @@ export class AssistsX {
    * @param node 要长按的节点
    * @returns 是否长按成功
    */
-  public static longClick(node: Node): boolean {
-    const response = this.call(CallMethod.longClick, { node });
+  public static async longClick(node: Node): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.longClick, { node });
     return response.getDataOrDefault(false);
   }
 
@@ -258,8 +187,10 @@ export class AssistsX {
    * @param packageName 应用包名
    * @returns 是否启动成功
    */
-  public static launchApp(packageName: string): boolean {
-    const response = this.call(CallMethod.launchApp, { args: { packageName } });
+  public static async launchApp(packageName: string): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.launchApp, {
+      args: { packageName },
+    });
     return response.getDataOrDefault(false);
   }
 
@@ -267,8 +198,8 @@ export class AssistsX {
    * 获取当前应用包名
    * @returns 包名
    */
-  public static getPackageName(): string {
-    const response = this.call(CallMethod.getPackageName);
+  public static async getPackageName(): Promise<string> {
+    const response = await this.asyncCall(CallMethod.getPackageName);
     return response.getDataOrDefault("");
   }
 
@@ -278,8 +209,11 @@ export class AssistsX {
    * @param delay 显示时长(毫秒)
    * @returns 是否显示成功
    */
-  public static overlayToast(text: string, delay: number = 2000): boolean {
-    const response = this.call(CallMethod.overlayToast, {
+  public static async overlayToast(
+    text: string,
+    delay: number = 2000
+  ): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.overlayToast, {
       args: { text, delay },
     });
     return response.getDataOrDefault(false);
@@ -294,7 +228,7 @@ export class AssistsX {
    * @param node 父节点范围
    * @returns 节点数组
    */
-  public static findById(
+  public static async findById(
     id: string,
     {
       filterClass,
@@ -307,8 +241,8 @@ export class AssistsX {
       filterDes?: string;
       node?: Node;
     } = {}
-  ): Node[] {
-    const response = this.call(CallMethod.findById, {
+  ): Promise<Node[]> {
+    const response = await this.asyncCall(CallMethod.findById, {
       args: { id, filterClass, filterText, filterDes },
       node,
     });
@@ -324,7 +258,7 @@ export class AssistsX {
    * @param node 父节点范围
    * @returns 节点数组
    */
-  public static findByText(
+  public static async findByText(
     text: string,
     {
       filterClass,
@@ -337,8 +271,8 @@ export class AssistsX {
       filterDes?: string;
       node?: Node;
     } = {}
-  ): Node[] {
-    const response = this.call(CallMethod.findByText, {
+  ): Promise<Node[]> {
+    const response = await this.asyncCall(CallMethod.findByText, {
       args: { text, filterClass, filterViewId, filterDes },
       node,
     });
@@ -354,7 +288,7 @@ export class AssistsX {
    * @param node 父节点范围
    * @returns 节点数组
    */
-  public static findByTags(
+  public static async findByTags(
     className: string,
     {
       filterText,
@@ -367,8 +301,8 @@ export class AssistsX {
       filterDes?: string;
       node?: Node;
     } = {}
-  ): Node[] {
-    const response = this.call(CallMethod.findByTags, {
+  ): Promise<Node[]> {
+    const response = await this.asyncCall(CallMethod.findByTags, {
       args: { className, filterText, filterViewId, filterDes },
       node,
     });
@@ -380,8 +314,8 @@ export class AssistsX {
    * @param text 要查找的文本
    * @returns 节点数组
    */
-  public static findByTextAllMatch(text: string): Node[] {
-    const response = this.call(CallMethod.findByTextAllMatch, {
+  public static async findByTextAllMatch(text: string): Promise<Node[]> {
+    const response = await this.asyncCall(CallMethod.findByTextAllMatch, {
       args: { text },
     });
     return Node.fromJSONArray(response.getDataOrDefault("[]"));
@@ -392,8 +326,10 @@ export class AssistsX {
    * @param text 要检查的文本
    * @returns 是否包含
    */
-  public static containsText(text: string): boolean {
-    const response = this.call(CallMethod.containsText, { args: { text } });
+  public static async containsText(text: string): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.containsText, {
+      args: { text },
+    });
     return response.getDataOrDefault(false);
   }
 
@@ -401,8 +337,8 @@ export class AssistsX {
    * 获取所有文本
    * @returns 文本数组
    */
-  public static getAllText(): string[] {
-    const response = this.call(CallMethod.getAllText);
+  public static async getAllText(): Promise<string[]> {
+    const response = await this.asyncCall(CallMethod.getAllText);
     return response.getDataOrDefault("[]");
   }
 
@@ -411,8 +347,8 @@ export class AssistsX {
    * @param className 类名
    * @returns 父节点
    */
-  public static findFirstParentByTags(className: string): Node {
-    const response = this.call(CallMethod.findFirstParentByTags, {
+  public static async findFirstParentByTags(className: string): Promise<Node> {
+    const response = await this.asyncCall(CallMethod.findFirstParentByTags, {
       args: { className },
     });
     return Node.create(response.getDataOrDefault("{}"));
@@ -423,8 +359,8 @@ export class AssistsX {
    * @param node 父节点
    * @returns 子节点数组
    */
-  public static getNodes(node: Node): Node[] {
-    const response = this.call(CallMethod.getNodes, { node });
+  public static async getNodes(node: Node): Promise<Node[]> {
+    const response = await this.asyncCall(CallMethod.getNodes, { node });
     return Node.fromJSONArray(response.getDataOrDefault("[]"));
   }
 
@@ -433,8 +369,8 @@ export class AssistsX {
    * @param node 父节点
    * @returns 子节点数组
    */
-  public static getChildren(node: Node): Node[] {
-    const response = this.call(CallMethod.getChildren, { node });
+  public static async getChildren(node: Node): Promise<Node[]> {
+    const response = await this.asyncCall(CallMethod.getChildren, { node });
     return Node.fromJSONArray(response.getDataOrDefault([]));
   }
 
@@ -443,8 +379,10 @@ export class AssistsX {
    * @param node 起始节点
    * @returns 可点击的父节点
    */
-  public static findFirstParentClickable(node: Node): Node {
-    const response = this.call(CallMethod.findFirstParentClickable, { node });
+  public static async findFirstParentClickable(node: Node): Promise<Node> {
+    const response = await this.asyncCall(CallMethod.findFirstParentClickable, {
+      node,
+    });
     return Node.create(response.getDataOrDefault("{}"));
   }
 
@@ -453,8 +391,10 @@ export class AssistsX {
    * @param node 目标节点
    * @returns 边界对象
    */
-  public static getBoundsInScreen(node: Node): Bounds {
-    const response = this.call(CallMethod.getBoundsInScreen, { node });
+  public static async getBoundsInScreen(node: Node): Promise<Bounds> {
+    const response = await this.asyncCall(CallMethod.getBoundsInScreen, {
+      node,
+    });
     return Bounds.fromData(response.getDataOrDefault({}));
   }
 
@@ -465,14 +405,14 @@ export class AssistsX {
    * @param isFullyByCompareNode 是否完全可见
    * @returns 是否可见
    */
-  public static isVisible(
+  public static async isVisible(
     node: Node,
     {
       compareNode,
       isFullyByCompareNode,
     }: { compareNode?: Node; isFullyByCompareNode?: boolean } = {}
-  ): boolean {
-    const response = this.call(CallMethod.isVisible, {
+  ): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.isVisible, {
       node,
       args: { compareNode, isFullyByCompareNode },
     });
@@ -501,8 +441,8 @@ export class AssistsX {
    * 返回操作
    * @returns 是否成功
    */
-  public static back(): boolean {
-    const response = this.call(CallMethod.back);
+  public static async back(): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.back);
     return response.getDataOrDefault(false);
   }
 
@@ -510,8 +450,8 @@ export class AssistsX {
    * 回到主页
    * @returns 是否成功
    */
-  public static home(): boolean {
-    const response = this.call(CallMethod.home);
+  public static async home(): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.home);
     return response.getDataOrDefault(false);
   }
 
@@ -519,8 +459,8 @@ export class AssistsX {
    * 打开通知栏
    * @returns 是否成功
    */
-  public static notifications(): boolean {
-    const response = this.call(CallMethod.notifications);
+  public static async notifications(): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.notifications);
     return response.getDataOrDefault(false);
   }
 
@@ -528,8 +468,8 @@ export class AssistsX {
    * 显示最近应用
    * @returns 是否成功
    */
-  public static recentApps(): boolean {
-    const response = this.call(CallMethod.recentApps);
+  public static async recentApps(): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.recentApps);
     return response.getDataOrDefault(false);
   }
 
@@ -539,12 +479,15 @@ export class AssistsX {
    * @param text 要粘贴的文本
    * @returns 是否成功
    */
-  public static paste(node: Node, text: string): boolean {
-    const response = this.call(CallMethod.paste, { args: { text }, node });
+  public static async paste(node: Node, text: string): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.paste, {
+      args: { text },
+      node,
+    });
     return response.getDataOrDefault(false);
   }
-  public static focus(node: Node): boolean {
-    const response = this.call(CallMethod.focus, { node });
+  public static async focus(node: Node): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.focus, { node });
     return response.getDataOrDefault(false);
   }
 
@@ -555,12 +498,12 @@ export class AssistsX {
    * @param selectionEnd 选择结束位置
    * @returns 是否成功
    */
-  public static selectionText(
+  public static async selectionText(
     node: Node,
     selectionStart: number,
     selectionEnd: number
-  ): boolean {
-    const response = this.call(CallMethod.selectionText, {
+  ): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.selectionText, {
       args: { selectionStart, selectionEnd },
       node,
     });
@@ -572,8 +515,10 @@ export class AssistsX {
    * @param node 可滚动节点
    * @returns 是否成功
    */
-  public static scrollForward(node: Node): boolean {
-    const response = this.call(CallMethod.scrollForward, { node });
+  public static async scrollForward(node: Node): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.scrollForward, {
+      node,
+    });
     return response.getDataOrDefault(false);
   }
 
@@ -582,8 +527,10 @@ export class AssistsX {
    * @param node 可滚动节点
    * @returns 是否成功
    */
-  public static scrollBackward(node: Node): boolean {
-    const response = this.call(CallMethod.scrollBackward, { node });
+  public static async scrollBackward(node: Node): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.scrollBackward, {
+      node,
+    });
     return response.getDataOrDefault(false);
   }
 
@@ -739,12 +686,12 @@ export class AssistsX {
     });
     return response.getDataOrDefault({});
   }
-  public static getUniqueDeviceId(): any {
-    const response = this.call(CallMethod.getUniqueDeviceId);
+  public static async getUniqueDeviceId(): Promise<any> {
+    const response = await this.asyncCall(CallMethod.getUniqueDeviceId);
     return response.getDataOrDefault("");
   }
-  public static getAndroidID(): any {
-    const response = this.call(CallMethod.getAndroidID);
+  public static async getAndroidID(): Promise<any> {
+    const response = await this.asyncCall(CallMethod.getAndroidID);
     return response.getDataOrDefault("");
   }
   public static async getMacAddress(): Promise<any> {
@@ -756,8 +703,8 @@ export class AssistsX {
    * 获取屏幕尺寸
    * @returns 屏幕尺寸对象
    */
-  public static getScreenSize(): any {
-    const response = this.call(CallMethod.getScreenSize);
+  public static async getScreenSize(): Promise<any> {
+    const response = await this.asyncCall(CallMethod.getScreenSize);
     return response.getDataOrDefault("{}");
   }
 
@@ -765,65 +712,8 @@ export class AssistsX {
    * 获取应用窗口尺寸
    * @returns 应用窗口尺寸对象
    */
-  public static getAppScreenSize(): any {
-    const response = this.call(CallMethod.getAppScreenSize);
+  public static async getAppScreenSize(): Promise<any> {
+    const response = await this.asyncCall(CallMethod.getAppScreenSize);
     return response.getDataOrDefault("{}");
-  }
-
-  /**
-   * 添加无障碍事件监听器
-   * @param listener 监听器函数
-   * @returns 监听器ID，用于移除监听器
-   */
-  public static addAccessibilityEventListener(
-    listener: (event: any) => void
-  ): string {
-    const listenerId = generateUUID();
-    const wrappedListener = (event: any) => {
-      try {
-        listener(event);
-      } catch (error) {
-        console.error("Accessibility event listener error:", error);
-      }
-    };
-
-    // 将监听器包装并存储，使用ID作为键
-    (accessibilityEventListeners as any)[listenerId] = wrappedListener;
-    accessibilityEventListeners.push(wrappedListener);
-
-    return listenerId;
-  }
-
-  /**
-   * 移除无障碍事件监听器
-   * @param listenerId 监听器ID
-   * @returns 是否移除成功
-   */
-  public static removeAccessibilityEventListener(listenerId: string): boolean {
-    const listener = (accessibilityEventListeners as any)[listenerId];
-    if (listener) {
-      const index = accessibilityEventListeners.indexOf(listener);
-      if (index > -1) {
-        accessibilityEventListeners.splice(index, 1);
-        delete (accessibilityEventListeners as any)[listenerId];
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
-   * 移除所有无障碍事件监听器
-   */
-  public static removeAllAccessibilityEventListeners(): void {
-    accessibilityEventListeners.length = 0;
-  }
-
-  /**
-   * 获取当前注册的无障碍事件监听器数量
-   * @returns 监听器数量
-   */
-  public static getAccessibilityEventListenerCount(): number {
-    return accessibilityEventListeners.length;
   }
 }

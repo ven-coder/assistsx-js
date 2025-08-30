@@ -5,83 +5,18 @@
 import { Bounds } from "./Bounds";
 import { AssistsX } from "./AssistsX";
 import { Step } from "./Step";
-import { NodeAsync } from "./NodeAsync";
+import { AssistsXAsync } from "./AssistsXAsync";
+import { Node } from "./Node";
 
-// 将接口改造为类
-export class Node {
-  /**
-   * 节点唯一标识
-   */
-  nodeId: string;
-
-  /**
-   * 节点文本内容
-   */
-  text: string;
-
-  /**
-   * 节点描述信息
-   */
-  des: string;
-
-  /**
-   * 节点视图ID
-   */
-  viewId: string;
-
-  /**
-   * 节点类名
-   */
-  className: string;
-
-  /**
-   * 是否可滚动
-   */
-  isScrollable: boolean;
-
-  /**
-   * 是否可点击
-   */
-  isClickable: boolean;
-
-  /**
-   * 是否启用
-   */
-  isEnabled: boolean;
-
-  /**
-   * 所属步骤ID
-   */
-  stepId: string | undefined;
+export class NodeAsync {
+  private node: Node;
 
   /**
    * 构造函数
-   * @param params 节点参数对象
+   * @param node Node实例
    */
-  constructor(params: {
-    nodeId: string;
-    text: string;
-    des: string;
-    viewId: string;
-    className: string;
-    isScrollable: boolean;
-    isClickable: boolean;
-    isEnabled: boolean;
-    stepId: string | undefined;
-  }) {
-    this.nodeId = params.nodeId;
-    this.text = params.text;
-    this.des = params.des;
-    this.viewId = params.viewId;
-    this.className = params.className;
-    this.isScrollable = params.isScrollable;
-    this.isClickable = params.isClickable;
-    this.isEnabled = params.isEnabled;
-    this.stepId = params.stepId;
-  }
-
-  public get async(): NodeAsync {
-    return new NodeAsync(this);
+  constructor(node: Node) {
+    this.node = node;
   }
 
   /**
@@ -103,14 +38,14 @@ export class Node {
     switchWindowIntervalDelay?: number;
     clickDuration?: number;
   } = {}): Promise<boolean> {
-    Step.assert(this.stepId);
-    const result = await AssistsX.clickNodeByGesture(this, {
+    Step.assert(this.node.stepId);
+    const result = await AssistsXAsync.clickNodeByGesture(this.node, {
       offsetX,
       offsetY,
       switchWindowIntervalDelay,
       clickDuration,
     });
-    Step.assert(this.stepId);
+    Step.assert(this.node.stepId);
     return result;
   }
   /**
@@ -135,15 +70,15 @@ export class Node {
     clickDuration?: number;
     clickInterval?: number;
   } = {}): Promise<boolean> {
-    Step.assert(this.stepId);
-    const result = await AssistsX.doubleClickNodeByGesture(this, {
+    Step.assert(this.node.stepId);
+    const result = await AssistsXAsync.doubleClickNodeByGesture(this.node, {
       offsetX,
       offsetY,
       switchWindowIntervalDelay,
       clickDuration,
       clickInterval,
     });
-    Step.assert(this.stepId);
+    Step.assert(this.node.stepId);
     return result;
   }
 
@@ -161,14 +96,18 @@ export class Node {
       longPressDuration?: number;
     } = { matchedText: "粘贴", timeoutMillis: 1500, longPressDuration: 600 }
   ): Promise<boolean> {
-    Step.assert(this.stepId);
-    const result = await AssistsX.longPressNodeByGestureAutoPaste(this, text, {
-      matchedPackageName,
-      matchedText,
-      timeoutMillis,
-      longPressDuration,
-    });
-    Step.assert(this.stepId);
+    Step.assert(this.node.stepId);
+    const result = await AssistsXAsync.longPressNodeByGestureAutoPaste(
+      this.node,
+      text,
+      {
+        matchedPackageName,
+        matchedText,
+        timeoutMillis,
+        longPressDuration,
+      }
+    );
+    Step.assert(this.node.stepId);
     return result;
   }
 
@@ -180,23 +119,23 @@ export class Node {
    * @param filterDes 描述过滤
    * @returns 节点数组
    */
-  public findByTags(
+  public async findByTags(
     className: string,
     {
       filterText,
       filterViewId,
       filterDes,
     }: { filterText?: string; filterViewId?: string; filterDes?: string } = {}
-  ): Node[] {
-    Step.assert(this.stepId);
-    const result = AssistsX.findByTags(className, {
+  ): Promise<Node[]> {
+    Step.assert(this.node.stepId);
+    const result = await AssistsXAsync.findByTags(className, {
       filterText,
       filterViewId,
       filterDes,
-      node: this,
+      node: this.node,
     });
-    Step.assignIdsToNodes(result, this.stepId);
-    Step.assert(this.stepId);
+    Step.assignIdsToNodes(result, this.node.stepId);
+    Step.assert(this.node.stepId);
     return result;
   }
   /**
@@ -207,23 +146,23 @@ export class Node {
    * @param filterDes 描述过滤
    * @returns 节点数组
    */
-  public findById(
+  public async findById(
     id: string,
     {
       filterClass,
       filterText,
       filterDes,
     }: { filterClass?: string; filterText?: string; filterDes?: string } = {}
-  ): Node[] {
-    Step.assert(this.stepId);
-    const result = AssistsX.findById(id, {
+  ): Promise<Node[]> {
+    Step.assert(this.node.stepId);
+    const result = await AssistsXAsync.findById(id, {
       filterClass,
       filterText,
       filterDes,
-      node: this,
+      node: this.node,
     });
-    Step.assignIdsToNodes(result, this.stepId);
-    Step.assert(this.stepId);
+    Step.assignIdsToNodes(result, this.node.stepId);
+    Step.assert(this.node.stepId);
     return result;
   }
   /**
@@ -234,23 +173,23 @@ export class Node {
    * @param filterDes 描述过滤
    * @returns 节点数组
    */
-  public findByText(
+  public async findByText(
     text: string,
     {
       filterClass,
       filterViewId,
       filterDes,
     }: { filterClass?: string; filterViewId?: string; filterDes?: string } = {}
-  ): Node[] {
-    Step.assert(this.stepId);
-    const result = AssistsX.findByText(text, {
+  ): Promise<Node[]> {
+    Step.assert(this.node.stepId);
+    const result = await AssistsXAsync.findByText(text, {
       filterClass,
       filterViewId,
       filterDes,
-      node: this,
+      node: this.node,
     });
-    Step.assignIdsToNodes(result, this.stepId);
-    Step.assert(this.stepId);
+    Step.assignIdsToNodes(result, this.node.stepId);
+    Step.assert(this.node.stepId);
     return result;
   }
 
@@ -258,10 +197,10 @@ export class Node {
    * 向前滚动节点
    * @returns 是否滚动成功
    */
-  public scrollForward(): boolean {
-    Step.assert(this.stepId);
-    const response = AssistsX.scrollForward(this);
-    Step.assert(this.stepId);
+  public async scrollForward(): Promise<boolean> {
+    Step.assert(this.node.stepId);
+    const response = await AssistsXAsync.scrollForward(this.node);
+    Step.assert(this.node.stepId);
     return response;
   }
 
@@ -269,10 +208,10 @@ export class Node {
    * 向后滚动节点
    * @returns 是否滚动成功
    */
-  public scrollBackward(): boolean {
-    Step.assert(this.stepId);
-    const response = AssistsX.scrollBackward(this);
-    Step.assert(this.stepId);
+  public async scrollBackward(): Promise<boolean> {
+    Step.assert(this.node.stepId);
+    const response = await AssistsXAsync.scrollBackward(this.node);
+    Step.assert(this.node.stepId);
     return response;
   }
   /**
@@ -281,16 +220,19 @@ export class Node {
    * @param isFullyByCompareNode 是否完全可见
    * @returns 是否可见
    */
-  public isVisible({
+  public async isVisible({
     compareNode,
     isFullyByCompareNode,
-  }: { compareNode?: Node; isFullyByCompareNode?: boolean } = {}): boolean {
-    Step.assert(this.stepId);
-    const response = AssistsX.isVisible(this, {
+  }: {
+    compareNode?: Node;
+    isFullyByCompareNode?: boolean;
+  } = {}): Promise<boolean> {
+    Step.assert(this.node.stepId);
+    const response = await AssistsXAsync.isVisible(this.node, {
       compareNode,
       isFullyByCompareNode,
     });
-    Step.assert(this.stepId);
+    Step.assert(this.node.stepId);
     return response;
   }
   /**
@@ -301,12 +243,12 @@ export class Node {
   public async takeScreenshot(
     overlayHiddenScreenshotDelayMillis: number = 250
   ): Promise<string> {
-    Step.assert(this.stepId);
-    const result = await AssistsX.takeScreenshotNodes(
-      [this],
+    Step.assert(this.node.stepId);
+    const result = await AssistsXAsync.takeScreenshotNodes(
+      [this.node],
       overlayHiddenScreenshotDelayMillis
     );
-    Step.assert(this.stepId);
+    Step.assert(this.node.stepId);
     return result[0];
   }
   /**
@@ -314,22 +256,22 @@ export class Node {
    * @param text 要设置的文本
    * @returns 是否设置成功
    */
-  public setNodeText(text: string): boolean {
-    Step.assert(this.stepId);
-    const result = AssistsX.setNodeText(this, text);
-    Step.assert(this.stepId);
+  public async setNodeText(text: string): Promise<boolean> {
+    Step.assert(this.node.stepId);
+    const result = await AssistsXAsync.setNodeText(this.node, text);
+    Step.assert(this.node.stepId);
     return result;
   }
-  public paste(text: string): boolean {
-    Step.assert(this.stepId);
-    const result = AssistsX.paste(this, text);
-    Step.assert(this.stepId);
+  public async paste(text: string): Promise<boolean> {
+    Step.assert(this.node.stepId);
+    const result = await AssistsXAsync.paste(this.node, text);
+    Step.assert(this.node.stepId);
     return result;
   }
-  public focus(): boolean {
-    Step.assert(this.stepId);
-    const result = AssistsX.focus(this);
-    Step.assert(this.stepId);
+  public async focus(): Promise<boolean> {
+    Step.assert(this.node.stepId);
+    const result = await AssistsXAsync.focus(this.node);
+    Step.assert(this.node.stepId);
     return result;
   }
 
@@ -337,63 +279,63 @@ export class Node {
    * 点击节点
    * @returns 是否点击成功
    */
-  public click(): boolean {
-    Step.assert(this.stepId);
-    const result = AssistsX.click(this);
-    Step.assert(this.stepId);
+  public async click(): Promise<boolean> {
+    Step.assert(this.node.stepId);
+    const result = await AssistsXAsync.click(this.node);
+    Step.assert(this.node.stepId);
     return result;
   }
   /**
    * 长按节点
    * @returns 是否长按成功
    */
-  public longClick(): boolean {
-    Step.assert(this.stepId);
-    const result = AssistsX.longClick(this);
-    Step.assert(this.stepId);
+  public async longClick(): Promise<boolean> {
+    Step.assert(this.node.stepId);
+    const result = await AssistsXAsync.longClick(this.node);
+    Step.assert(this.node.stepId);
     return result;
   }
   /**
    * 查找第一个可点击的父节点
    * @returns 可点击的父节点
    */
-  public findFirstParentClickable(): Node {
-    Step.assert(this.stepId);
-    const result = AssistsX.findFirstParentClickable(this);
-    Step.assert(this.stepId);
-    Step.assignIdsToNodes([result], this.stepId);
+  public async findFirstParentClickable(): Promise<Node> {
+    Step.assert(this.node.stepId);
+    const result = await AssistsXAsync.findFirstParentClickable(this.node);
+    Step.assert(this.node.stepId);
+    Step.assignIdsToNodes([result], this.node.stepId);
     return result;
   }
   /**
    * 获取节点在屏幕中的边界
    * @returns 边界对象
    */
-  public getBoundsInScreen(): Bounds {
-    Step.assert(this.stepId);
-    const result = AssistsX.getBoundsInScreen(this);
-    Step.assert(this.stepId);
+  public async getBoundsInScreen(): Promise<Bounds> {
+    Step.assert(this.node.stepId);
+    const result = await AssistsXAsync.getBoundsInScreen(this.node);
+    Step.assert(this.node.stepId);
     return result;
   }
   /**
    * 获取节点的所有子节点
    * @returns 子节点数组
    */
-  public getNodes(): Node[] {
-    Step.assert(this.stepId);
-    const result = AssistsX.getNodes(this);
-    Step.assert(this.stepId);
-    Step.assignIdsToNodes(result, this.stepId);
+  public async getNodes(): Promise<Node[]> {
+    Step.assert(this.node.stepId);
+    const result = await AssistsXAsync.getNodes(this.node);
+    Step.assert(this.node.stepId);
+    Step.assignIdsToNodes(result, this.node.stepId);
     return result;
   }
   /**
    * 获取节点的直接子节点
    * @returns 子节点数组
    */
-  public getChildren(): Node[] {
-    Step.assert(this.stepId);
-    const result = AssistsX.getChildren(this);
-    Step.assert(this.stepId);
-    Step.assignIdsToNodes(result, this.stepId);
+  public async getChildren(): Promise<Node[]> {
+    Step.assert(this.node.stepId);
+    const result = await AssistsXAsync.getChildren(this.node);
+    Step.assert(this.node.stepId);
+    Step.assignIdsToNodes(result, this.node.stepId);
     return result;
   }
 
