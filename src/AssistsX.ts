@@ -411,9 +411,10 @@ export class AssistsX {
    * @param className 类名
    * @returns 父节点
    */
-  public static findFirstParentByTags(className: string): Node {
+  public static findFirstParentByTags(node: Node, className: string): Node {
     const response = this.call(CallMethod.findFirstParentByTags, {
       args: { className },
+      node,
     });
     return Node.create(response.getDataOrDefault("{}"));
   }

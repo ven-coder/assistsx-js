@@ -232,18 +232,6 @@ export class StepAsync {
   }
 
   /**
-   * 查找第一个匹配标签的父节点
-   * @param className 类名
-   * @returns 父节点
-   */
-  public async findFirstParentByTags(className: string): Promise<Node> {
-    Step.assert(this.step.stepId);
-    const node = await AssistsXAsync.findFirstParentByTags(className);
-    Step.assert(this.step.stepId);
-    return node;
-  }
-
-  /**
    * 执行点击手势
    * @param x 横坐标
    * @param y 纵坐标

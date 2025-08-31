@@ -551,18 +551,6 @@ export class Step {
   }
 
   /**
-   * 查找第一个匹配标签的父节点
-   * @param className 类名
-   * @returns 父节点
-   */
-  public findFirstParentByTags(className: string): Node {
-    Step.assert(this.stepId);
-    const node = AssistsX.findFirstParentByTags(className);
-    Step.assert(this.stepId);
-    return node;
-  }
-
-  /**
    * 执行点击手势
    * @param x 横坐标
    * @param y 纵坐标

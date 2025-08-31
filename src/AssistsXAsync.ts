@@ -347,9 +347,13 @@ export class AssistsXAsync {
    * @param className 类名
    * @returns 父节点
    */
-  public static async findFirstParentByTags(className: string): Promise<Node> {
+  public static async findFirstParentByTags(
+    node: Node,
+    className: string
+  ): Promise<Node> {
     const response = await this.asyncCall(CallMethod.findFirstParentByTags, {
       args: { className },
+      node,
     });
     return Node.create(response.getDataOrDefault("{}"));
   }

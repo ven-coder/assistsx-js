@@ -85,6 +85,18 @@ export class Node {
   }
 
   /**
+   * 查找第一个匹配标签的父节点
+   * @param className 类名
+   * @returns 父节点
+   */
+  public findFirstParentByTags(className: string): Node {
+    Step.assert(this.stepId);
+    const node = AssistsX.findFirstParentByTags(this, className);
+    Step.assert(this.stepId);
+    return node;
+  }
+
+  /**
    * 对节点执行点击手势
    * @param offsetX X轴偏移
    * @param offsetY Y轴偏移
