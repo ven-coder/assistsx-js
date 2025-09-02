@@ -31,7 +31,6 @@ export const accessibilityEventListeners: ((event: any) => void)[] = [];
 if (typeof window !== "undefined" && !window.assistsxCallback) {
   window.assistsxCallback = (data: string) => {
     try {
-      console.log(data);
       const json = decodeBase64UTF8(data);
       const response = JSON.parse(json);
       const callback = callbacks[response.callbackId];
