@@ -6,7 +6,7 @@ import { Node } from "./Node";
 import { CallMethod } from "./CallMethod";
 import { CallResponse } from "./CallResponse";
 import { Bounds } from "./Bounds";
-import { generateUUID } from "./Utils";
+import { decodeBase64UTF8, generateUUID } from "./Utils";
 
 /**
  * Web浮动窗口选项接口定义
@@ -30,10 +30,16 @@ export const accessibilityEventListeners: ((event: any) => void)[] = [];
 // 初始化全局回调函数
 if (typeof window !== "undefined" && !window.assistsxCallback) {
   window.assistsxCallback = (data: string) => {
-    const response = JSON.parse(data);
-    const callback = callbacks[response.callbackId];
-    if (callback) {
-      callback(data);
+    try {
+      console.log(data);
+      const json = decodeBase64UTF8(data);
+      const response = JSON.parse(json);
+      const callback = callbacks[response.callbackId];
+      if (callback) {
+        callback(json);
+      }
+    } catch (e) {
+      console.log(e);
     }
   };
 }

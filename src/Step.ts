@@ -10,6 +10,12 @@ import { generateUUID } from "./Utils";
 import { StepError } from "./StepError";
 import { StepAsync } from "./StepAsync";
 
+// 步骤结果类型，可以是Step实例或undefined
+export type StepResult = Step | undefined;
+
+// 步骤实现函数类型
+export type StepImpl = (step: Step) => Promise<StepResult>;
+
 export class Step {
   static delayMsDefault: number = 1000;
   static readonly repeatCountInfinite: number = -1;
@@ -29,18 +35,14 @@ export class Step {
    * @param delayMs 步骤延迟时间(毫秒)
    */
   static async run(
-    impl: (step: Step) => Promise<Step | undefined>,
+    impl: StepImpl,
     {
       tag,
       data,
-      backupSteps,
       delayMs = Step.delayMsDefault,
     }: {
       tag?: string | undefined;
       data?: any | undefined;
-      backupSteps?:
-        | { [key: string]: (step: Step) => Promise<Step | undefined> }
-        | undefined;
       delayMs?: number;
     } = {}
   ): Promise<Step> {
@@ -58,7 +60,6 @@ export class Step {
         impl,
         tag,
         data,
-        backupSteps,
         delayMs,
       });
       while (true) {
@@ -192,14 +193,7 @@ export class Step {
   /**
    * 步骤实现函数
    */
-  impl: (step: Step) => Promise<Step | undefined>;
-
-  /**
-   * 备份步骤，可用于在指定的步骤中转向其他步骤
-   */
-  backupSteps:
-    | { [key: string]: (step: Step) => Promise<Step | undefined> }
-    | undefined;
+  impl: StepImpl;
 
   /**
    * 构造函数
@@ -214,17 +208,13 @@ export class Step {
     impl,
     tag,
     data,
-    backupSteps,
     delayMs = Step.delayMsDefault,
     repeatCountMax = Step.repeatCountMaxDefault,
   }: {
     stepId: string;
-    impl: (step: Step) => Promise<Step | undefined>;
+    impl: StepImpl;
     tag?: string | undefined;
     data?: any | undefined;
-    backupSteps?:
-      | { [key: string]: (step: Step) => Promise<Step | undefined> }
-      | undefined;
     delayMs?: number;
     repeatCountMax?: number;
   }) {
@@ -232,7 +222,6 @@ export class Step {
     this.stepId = stepId;
     this.data = data;
     this.impl = impl;
-    this.backupSteps = backupSteps;
     this.delayMs = delayMs;
     this.repeatCountMax = repeatCountMax;
   }
@@ -249,19 +238,15 @@ export class Step {
    * @returns 新的步骤实例
    */
   next(
-    impl: (step: Step) => Promise<Step | undefined>,
+    impl: StepImpl,
     {
       tag,
       data,
-      backupSteps,
       delayMs = Step.delayMsDefault,
       repeatCountMax = Step.repeatCountMaxDefault,
     }: {
       tag?: string | undefined;
       data?: any | undefined;
-      backupSteps?:
-        | { [key: string]: (step: Step) => Promise<Step | undefined> }
-        | undefined;
       delayMs?: number;
       repeatCountMax?: number;
     } = {}
@@ -272,7 +257,6 @@ export class Step {
       impl,
       tag,
       data: data ?? this.data,
-      backupSteps: backupSteps ?? this.backupSteps,
       delayMs,
       repeatCountMax,
     });
@@ -290,16 +274,12 @@ export class Step {
     stepId = this.stepId,
     tag = this.tag,
     data = this.data,
-    backupSteps = this.backupSteps,
     delayMs = this.delayMs,
     repeatCountMax = this.repeatCountMax,
   }: {
     stepId?: string;
     tag?: string | undefined;
     data?: any | undefined;
-    backupSteps?:
-      | { [key: string]: (step: Step) => Promise<Step | undefined> }
-      | undefined;
     delayMs?: number;
     repeatCountMax?: number;
   } = {}): Step {
@@ -308,7 +288,6 @@ export class Step {
     this.stepId = stepId;
     this.tag = tag;
     this.data = data;
-    this.backupSteps = backupSteps;
     this.delayMs = delayMs;
     this.repeatCountMax = repeatCountMax;
     return this;
