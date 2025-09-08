@@ -16,6 +16,9 @@ export type StepResult = Step | undefined;
 // 步骤实现函数类型
 export type StepImpl = (step: Step) => Promise<StepResult>;
 
+// 步骤拦截器函数类型
+export type StepInterceptor = (step: Step) => StepResult | Promise<StepResult>;
+
 export class Step {
   static delayMsDefault: number = 1000;
   static readonly repeatCountInfinite: number = -1;
@@ -26,6 +29,11 @@ export class Step {
    * 当前执行步骤的ID
    */
   private static _stepId: string | undefined = undefined;
+
+  /**
+   * 步骤拦截器列表
+   */
+  private static _interceptors: StepInterceptor[] = [];
 
   /**
    * 运行步骤实现
@@ -77,7 +85,54 @@ export class Step {
             `执行步骤${implnName}，重复次数${currentStep.repeatCount}`
           );
         }
-        nextStep = await currentStep.impl(currentStep);
+
+        // 执行拦截器
+        let interceptedStep: StepResult = undefined;
+        for (const interceptor of this._interceptors) {
+          try {
+            const result = await interceptor(currentStep);
+            if (result !== undefined) {
+              interceptedStep = result;
+              if (Step.showLog) {
+                console.log(`步骤${implnName}被拦截器拦截，执行拦截后的步骤`);
+              }
+              break;
+            }
+          } catch (e: any) {
+            if (Step.showLog) {
+              console.error(`拦截器执行出错`, e);
+            }
+            // 拦截器出错不影响主流程，继续执行原步骤
+          }
+        }
+
+        // 如果被拦截，执行拦截后的步骤，否则执行原步骤
+        if (interceptedStep !== undefined) {
+          // 执行拦截后的步骤，需要处理延迟和重复次数
+          const stepToExecute = interceptedStep;
+
+          // 如果拦截后的步骤有延迟时间，先执行延迟
+          if (stepToExecute.delayMs) {
+            if (Step.showLog) {
+              console.log(`拦截步骤延迟${stepToExecute.delayMs}毫秒`);
+            }
+            await stepToExecute.delay(stepToExecute.delayMs);
+            Step.assert(stepToExecute.stepId);
+          }
+
+          // 打印拦截步骤的执行信息
+          const interceptedImplName = stepToExecute.impl.name;
+          if (Step.showLog) {
+            console.log(
+              `执行拦截步骤${interceptedImplName}，重复次数${stepToExecute.repeatCount}`
+            );
+          }
+
+          // 执行拦截后的步骤
+          nextStep = await stepToExecute.impl(stepToExecute);
+        } else {
+          nextStep = await currentStep.impl(currentStep);
+        }
         if (
           currentStep.repeatCountMax > Step.repeatCountInfinite &&
           currentStep.repeatCount > currentStep.repeatCountMax
@@ -158,6 +213,40 @@ export class Step {
    */
   static stop(): void {
     this._stepId = undefined;
+  }
+
+  /**
+   * 添加步骤拦截器
+   * @param interceptor 拦截器函数
+   */
+  static addInterceptor(interceptor: StepInterceptor): void {
+    this._interceptors.push(interceptor);
+  }
+
+  /**
+   * 移除步骤拦截器
+   * @param interceptor 要移除的拦截器函数
+   */
+  static removeInterceptor(interceptor: StepInterceptor): void {
+    const index = this._interceptors.indexOf(interceptor);
+    if (index > -1) {
+      this._interceptors.splice(index, 1);
+    }
+  }
+
+  /**
+   * 清空所有拦截器
+   */
+  static clearInterceptors(): void {
+    this._interceptors = [];
+  }
+
+  /**
+   * 获取所有拦截器
+   * @returns 拦截器数组
+   */
+  static getInterceptors(): StepInterceptor[] {
+    return [...this._interceptors];
   }
 
   /**

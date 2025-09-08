@@ -34,7 +34,7 @@ export class AssistsXAsync {
       };
       setTimeout(() => {
         resolve(new CallResponse(0, null, uuid));
-      }, 10000);
+      }, 30 * 1000);
     });
     const result = window.assistsxAsync.call(JSON.stringify(params));
     const promiseResult = await promise;

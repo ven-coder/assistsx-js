@@ -9,6 +9,33 @@ import { Bounds } from "./Bounds";
 import { decodeBase64UTF8, generateUUID } from "./Utils";
 
 /**
+ * 无障碍事件数据结构
+ */
+export interface AccessibilityEventData {
+  packageName: string;
+  className: string;
+  eventType: number;
+  action: number;
+  texts: string[];
+  node: Node;
+}
+
+/**
+ * 无障碍事件完整结构
+ */
+export interface AccessibilityEvent {
+  callbackId: string;
+  code: number;
+  data: AccessibilityEventData;
+  message: string;
+}
+
+/**
+ * 无障碍事件监听器类型
+ */
+export type AccessibilityEventListener = (event: AccessibilityEvent) => void;
+
+/**
  * Web浮动窗口选项接口定义
  */
 export interface WebFloatingWindowOptions {
@@ -25,7 +52,7 @@ export interface WebFloatingWindowOptions {
 export const callbacks: { [key: string]: (data: any) => void } = {};
 
 // 无障碍事件监听器存储
-export const accessibilityEventListeners: ((event: any) => void)[] = [];
+export const accessibilityEventListeners: AccessibilityEventListener[] = [];
 
 // 初始化全局回调函数
 if (typeof window !== "undefined" && !window.assistsxCallback) {
@@ -45,11 +72,14 @@ if (typeof window !== "undefined" && !window.assistsxCallback) {
 
 // 初始化全局无障碍事件函数
 if (typeof window !== "undefined" && !window.onAccessibilityEvent) {
-  window.onAccessibilityEvent = (event: any) => {
-    // 通知所有注册的监听器
+  window.onAccessibilityEvent = (event: string) => {
+    // 通知所有注册的监听器，每个监听器都有独立的错误处理
     accessibilityEventListeners.forEach((listener) => {
       try {
-        listener(event);
+        //base64 decode
+        const decodedEvent = decodeBase64UTF8(event);
+        const parsedEvent: AccessibilityEvent = JSON.parse(decodedEvent);
+        listener(parsedEvent);
       } catch (error) {
         console.error("Accessibility event listener error:", error);
       }
@@ -779,41 +809,25 @@ export class AssistsX {
   /**
    * 添加无障碍事件监听器
    * @param listener 监听器函数
-   * @returns 监听器ID，用于移除监听器
    */
   public static addAccessibilityEventListener(
-    listener: (event: any) => void
-  ): string {
-    const listenerId = generateUUID();
-    const wrappedListener = (event: any) => {
-      try {
-        listener(event);
-      } catch (error) {
-        console.error("Accessibility event listener error:", error);
-      }
-    };
-
-    // 将监听器包装并存储，使用ID作为键
-    (accessibilityEventListeners as any)[listenerId] = wrappedListener;
-    accessibilityEventListeners.push(wrappedListener);
-
-    return listenerId;
+    listener: AccessibilityEventListener
+  ): void {
+    accessibilityEventListeners.push(listener);
   }
 
   /**
    * 移除无障碍事件监听器
-   * @param listenerId 监听器ID
+   * @param listener 要移除的监听器函数
    * @returns 是否移除成功
    */
-  public static removeAccessibilityEventListener(listenerId: string): boolean {
-    const listener = (accessibilityEventListeners as any)[listenerId];
-    if (listener) {
-      const index = accessibilityEventListeners.indexOf(listener);
-      if (index > -1) {
-        accessibilityEventListeners.splice(index, 1);
-        delete (accessibilityEventListeners as any)[listenerId];
-        return true;
-      }
+  public static removeAccessibilityEventListener(
+    listener: AccessibilityEventListener
+  ): boolean {
+    const index = accessibilityEventListeners.indexOf(listener);
+    if (index > -1) {
+      accessibilityEventListeners.splice(index, 1);
+      return true;
     }
     return false;
   }
