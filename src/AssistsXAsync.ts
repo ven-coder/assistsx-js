@@ -29,12 +29,14 @@ export class AssistsXAsync {
       callbackId: uuid,
     };
     const promise = new Promise((resolve) => {
-      callbacks[uuid] = (data: any) => {
+      callbacks.set(uuid, (data: string) => {
         resolve(data);
-      };
+      });
       setTimeout(() => {
+        // 超时后删除回调函数
+        callbacks.delete(uuid);
         resolve(new CallResponse(0, null, uuid));
-      }, 30 * 1000);
+      }, 1000 * 30);
     });
     const result = window.assistsxAsync.call(JSON.stringify(params));
     const promiseResult = await promise;

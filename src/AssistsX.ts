@@ -49,7 +49,7 @@ export interface WebFloatingWindowOptions {
 }
 
 // 回调函数存储对象
-export const callbacks: { [key: string]: (data: any) => void } = {};
+export const callbacks: Map<string, (data: string) => void> = new Map();
 
 // 无障碍事件监听器存储
 export const accessibilityEventListeners: AccessibilityEventListener[] = [];
@@ -57,15 +57,24 @@ export const accessibilityEventListeners: AccessibilityEventListener[] = [];
 // 初始化全局回调函数
 if (typeof window !== "undefined" && !window.assistsxCallback) {
   window.assistsxCallback = (data: string) => {
+    let callbackId: string | undefined;
     try {
       const json = decodeBase64UTF8(data);
       const response = JSON.parse(json);
-      const callback = callbacks[response.callbackId];
-      if (callback) {
-        callback(json);
+      callbackId = response.callbackId;
+      if (callbackId) {
+        const callback = callbacks.get(callbackId);
+        if (callback) {
+          callback(json);
+        }
       }
     } catch (e) {
       console.log(e);
+    } finally {
+      // 无论成功还是失败，都删除回调函数
+      if (callbackId) {
+        callbacks.delete(callbackId);
+      }
     }
   };
 }
@@ -135,12 +144,14 @@ export class AssistsX {
       callbackId: uuid,
     };
     const promise = new Promise((resolve) => {
-      callbacks[uuid] = (data: any) => {
+      callbacks.set(uuid, (data: string) => {
         resolve(data);
-      };
+      });
       setTimeout(() => {
+        // 超时后删除回调函数
+        callbacks.delete(uuid);
         resolve(new CallResponse(0, null, uuid));
-      }, 10000);
+      }, 1000 * 30);
     });
     const result = window.assistsx.call(JSON.stringify(params));
     const promiseResult = await promise;
