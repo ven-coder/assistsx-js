@@ -17,7 +17,7 @@ export interface AccessibilityEventData {
   eventType: number;
   action: number;
   texts: string[];
-  node: Node;
+  node: Node | null;
 }
 
 /**
@@ -825,6 +825,16 @@ export class AssistsX {
     listener: AccessibilityEventListener
   ): void {
     accessibilityEventListeners.push(listener);
+  }
+  /**
+   * 判断是否包含无障碍事件监听器
+   * @param listener 监听器函数
+   * @returns 是否包含
+   */
+  public static containsAccessibilityEventListener(
+    listener: AccessibilityEventListener
+  ): boolean {
+    return accessibilityEventListeners.indexOf(listener) > -1;
   }
 
   /**
