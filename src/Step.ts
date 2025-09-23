@@ -387,18 +387,15 @@ export class Step {
    * @param ms 延迟时间(毫秒)
    * @returns Promise
    */
-  delay(ms: number): Promise<void> {
-    Step.assert(this.stepId);
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        try {
-          Step.assert(this.stepId);
-          resolve();
-        } catch (e) {
-          reject(e);
-        }
-      }, ms);
-    });
+  async delay(ms: number): Promise<void> {
+    while (true) {
+      ms -= 100;
+      if (ms <= 0) {
+        break;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      Step.assert(this.stepId);
+    }
   }
 
   /**
