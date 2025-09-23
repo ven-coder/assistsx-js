@@ -396,6 +396,16 @@ export class NodeAsync {
     isClickable: boolean;
     isEnabled: boolean;
     stepId: string | undefined;
+    hintText: string;
+    isCheckable: boolean;
+    isChecked: boolean;
+    isFocusable: boolean;
+    isFocused: boolean;
+    isLongClickable: boolean;
+    isPassword: boolean;
+    isSelected: boolean;
+    isVisibleToUser: boolean;
+    drawingOrder: number;
   }): Node {
     return new Node(params);
   }

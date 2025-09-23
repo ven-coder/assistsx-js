@@ -55,6 +55,56 @@ export class Node {
   stepId: string | undefined;
 
   /**
+   * 提示文本
+   */
+  hintText: string;
+
+  /**
+   * 是否可选择
+   */
+  isCheckable: boolean;
+
+  /**
+   * 是否已选中
+   */
+  isChecked: boolean;
+
+  /**
+   * 是否可聚焦
+   */
+  isFocusable: boolean;
+
+  /**
+   * 是否已聚焦
+   */
+  isFocused: boolean;
+
+  /**
+   * 是否可长按
+   */
+  isLongClickable: boolean;
+
+  /**
+   * 是否为密码字段
+   */
+  isPassword: boolean;
+
+  /**
+   * 是否已选中
+   */
+  isSelected: boolean;
+
+  /**
+   * 是否对用户可见
+   */
+  isVisibleToUser: boolean;
+
+  /**
+   * 绘制顺序
+   */
+  drawingOrder: number;
+
+  /**
    * 构造函数
    * @param params 节点参数对象
    */
@@ -68,6 +118,16 @@ export class Node {
     isClickable: boolean;
     isEnabled: boolean;
     stepId: string | undefined;
+    hintText: string;
+    isCheckable: boolean;
+    isChecked: boolean;
+    isFocusable: boolean;
+    isFocused: boolean;
+    isLongClickable: boolean;
+    isPassword: boolean;
+    isSelected: boolean;
+    isVisibleToUser: boolean;
+    drawingOrder: number;
   }) {
     this.nodeId = params.nodeId;
     this.text = params.text;
@@ -78,6 +138,16 @@ export class Node {
     this.isClickable = params.isClickable;
     this.isEnabled = params.isEnabled;
     this.stepId = params.stepId;
+    this.hintText = params.hintText;
+    this.isCheckable = params.isCheckable;
+    this.isChecked = params.isChecked;
+    this.isFocusable = params.isFocusable;
+    this.isFocused = params.isFocused;
+    this.isLongClickable = params.isLongClickable;
+    this.isPassword = params.isPassword;
+    this.isSelected = params.isSelected;
+    this.isVisibleToUser = params.isVisibleToUser;
+    this.drawingOrder = params.drawingOrder;
   }
 
   public get async(): NodeAsync {
@@ -453,6 +523,16 @@ export class Node {
     isClickable: boolean;
     isEnabled: boolean;
     stepId: string | undefined;
+    hintText: string;
+    isCheckable: boolean;
+    isChecked: boolean;
+    isFocusable: boolean;
+    isFocused: boolean;
+    isLongClickable: boolean;
+    isPassword: boolean;
+    isSelected: boolean;
+    isVisibleToUser: boolean;
+    drawingOrder: number;
   }): Node {
     return new Node(params);
   }
