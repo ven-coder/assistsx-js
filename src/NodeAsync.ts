@@ -406,6 +406,7 @@ export class NodeAsync {
     isSelected: boolean;
     isVisibleToUser: boolean;
     drawingOrder: number;
+    boundsInScreen: Bounds;
   }): Node {
     return new Node(params);
   }

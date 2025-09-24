@@ -105,6 +105,11 @@ export class Node {
   drawingOrder: number;
 
   /**
+   * 节点在屏幕中的边界
+   */
+  boundsInScreen: Bounds;
+
+  /**
    * 构造函数
    * @param params 节点参数对象
    */
@@ -128,6 +133,7 @@ export class Node {
     isSelected: boolean;
     isVisibleToUser: boolean;
     drawingOrder: number;
+    boundsInScreen: Bounds;
   }) {
     this.nodeId = params.nodeId;
     this.text = params.text;
@@ -148,6 +154,7 @@ export class Node {
     this.isSelected = params.isSelected;
     this.isVisibleToUser = params.isVisibleToUser;
     this.drawingOrder = params.drawingOrder;
+    this.boundsInScreen = params.boundsInScreen;
   }
 
   public get async(): NodeAsync {
@@ -533,6 +540,7 @@ export class Node {
     isSelected: boolean;
     isVisibleToUser: boolean;
     drawingOrder: number;
+    boundsInScreen: Bounds;
   }): Node {
     return new Node(params);
   }
