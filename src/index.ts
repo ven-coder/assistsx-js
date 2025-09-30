@@ -11,3 +11,4 @@ export * from "./WindowFlags";
 export * from "./NodeAsync";
 export * from "./AssistsXAsync";
 export * from "./StepAsync";
+export * from "./AccessibilityEventFilter";

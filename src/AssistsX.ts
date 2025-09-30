@@ -7,6 +7,7 @@ import { CallMethod } from "./CallMethod";
 import { CallResponse } from "./CallResponse";
 import { Bounds } from "./Bounds";
 import { decodeBase64UTF8, generateUUID } from "./Utils";
+import { AccessibilityEventFilter } from "AccessibilityEventFilter";
 
 /**
  * 无障碍事件数据结构
@@ -796,6 +797,22 @@ export class AssistsX {
   }
   public static async getMacAddress(): Promise<any> {
     const response = await this.asyncCall(CallMethod.getMacAddress);
+    return response.getDataOrDefault({});
+  }
+  public static async setAccessibilityEventFilters(
+    value: AccessibilityEventFilter[]
+  ): Promise<any> {
+    const response = this.call(CallMethod.setAccessibilityEventFilters, {
+      args: { value },
+    });
+    return response.getDataOrDefault({});
+  }
+  public static async addAccessibilityEventFilter(
+    value: AccessibilityEventFilter
+  ): Promise<any> {
+    const response = this.call(CallMethod.addAccessibilityEventFilter, {
+      args: { value },
+    });
     return response.getDataOrDefault({});
   }
 

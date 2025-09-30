@@ -91,7 +91,7 @@ export class Step {
         for (const interceptor of this._interceptors) {
           try {
             const result = await interceptor(currentStep);
-            if (result !== undefined) {
+            if (result) {
               interceptedStep = result;
               if (Step.showLog) {
                 console.log(`步骤${implnName}被拦截器拦截，执行拦截后的步骤`);
@@ -153,9 +153,7 @@ export class Step {
         }
       }
     } catch (e: any) {
-      if (Step.showLog) {
-        console.error(`步骤${implnName}执行出错`, e);
-      }
+      console.error(`步骤${implnName}执行出错`, e);
       //步骤执行出错
       const errorMsg = JSON.stringify({
         impl: implnName,
@@ -226,12 +224,62 @@ export class Step {
   /**
    * 移除步骤拦截器
    * @param interceptor 要移除的拦截器函数
+   * @returns 是否成功删除
    */
-  static removeInterceptor(interceptor: StepInterceptor): void {
+  static removeInterceptor(interceptor: StepInterceptor): boolean {
     const index = this._interceptors.indexOf(interceptor);
     if (index > -1) {
       this._interceptors.splice(index, 1);
+      return true;
     }
+    return false;
+  }
+
+  /**
+   * 按索引移除步骤拦截器
+   * @param index 要移除的拦截器索引
+   * @returns 是否成功删除
+   */
+  static removeInterceptorByIndex(index: number): boolean {
+    if (index >= 0 && index < this._interceptors.length) {
+      this._interceptors.splice(index, 1);
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * 移除所有匹配的步骤拦截器
+   * @param interceptor 要移除的拦截器函数
+   * @returns 删除的拦截器数量
+   */
+  static removeAllInterceptors(interceptor: StepInterceptor): number {
+    let removedCount = 0;
+    for (let i = this._interceptors.length - 1; i >= 0; i--) {
+      if (this._interceptors[i] === interceptor) {
+        this._interceptors.splice(i, 1);
+        removedCount++;
+      }
+    }
+    return removedCount;
+  }
+
+  /**
+   * 按条件移除步骤拦截器
+   * @param predicate 判断是否删除的条件函数
+   * @returns 删除的拦截器数量
+   */
+  static removeInterceptorByPredicate(
+    predicate: (interceptor: StepInterceptor, index: number) => boolean
+  ): number {
+    let removedCount = 0;
+    for (let i = this._interceptors.length - 1; i >= 0; i--) {
+      if (predicate(this._interceptors[i], i)) {
+        this._interceptors.splice(i, 1);
+        removedCount++;
+      }
+    }
+    return removedCount;
   }
 
   /**
