@@ -7,18 +7,30 @@ import { CallMethod } from "./CallMethod";
 import { CallResponse } from "./CallResponse";
 import { Bounds } from "./Bounds";
 import { generateUUID } from "./Utils";
-import { AssistsX, callbacks, WebFloatingWindowOptions } from "./AssistsX";
+import {
+  AssistsX,
+  callbacks,
+  WebFloatingWindowOptions,
+  HttpRequestOptions,
+  HttpResponse,
+} from "./AssistsX";
 
 export class AssistsXAsync {
   /**
    * 执行异步调用
    * @param method 方法名
    * @param args 参数对象
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns Promise<调用响应>
    */
   private static async asyncCall(
     method: string,
-    { args, node, nodes }: { args?: any; node?: Node; nodes?: Node[] } = {}
+    {
+      args,
+      node,
+      nodes,
+      timeout = 30,
+    }: { args?: any; node?: Node; nodes?: Node[]; timeout?: number } = {}
   ): Promise<CallResponse> {
     const uuid = generateUUID();
     const params = {
@@ -36,7 +48,7 @@ export class AssistsXAsync {
         // 超时后删除回调函数
         callbacks.delete(uuid);
         resolve(new CallResponse(0, null, uuid));
-      }, 1000 * 30);
+      }, timeout * 1000);
     });
     const result = window.assistsxAsync.call(JSON.stringify(params));
     const promiseResult = await promise;
@@ -55,22 +67,32 @@ export class AssistsXAsync {
   /**
    * 设置悬浮窗标志
    * @param flags 标志
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否设置成功
    */
-  public static async setOverlayFlags(flags: number): Promise<boolean> {
+  public static async setOverlayFlags(
+    flags: number,
+    timeout?: number
+  ): Promise<boolean> {
     const response = await this.asyncCall(CallMethod.setOverlayFlags, {
       args: { flags: flags },
+      timeout,
     });
     return response.getDataOrDefault(false);
   }
   /**
    * 设置悬浮窗标志
    * @param flags 标志
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否设置成功
    */
-  public static async setOverlayFlagList(flags: number[]): Promise<boolean> {
+  public static async setOverlayFlagList(
+    flags: number[],
+    timeout?: number
+  ): Promise<boolean> {
     const response = await this.asyncCall(CallMethod.setOverlayFlags, {
       args: { flags: flags },
+      timeout,
     });
     return response.getDataOrDefault(false);
   }
@@ -80,6 +102,7 @@ export class AssistsXAsync {
    * @param filterViewId 视图ID过滤
    * @param filterDes 描述过滤
    * @param filterText 文本过滤
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 节点数组
    */
   public static async getAllNodes({
@@ -87,14 +110,17 @@ export class AssistsXAsync {
     filterViewId,
     filterDes,
     filterText,
+    timeout,
   }: {
     filterClass?: string;
     filterViewId?: string;
     filterDes?: string;
     filterText?: string;
+    timeout?: number;
   } = {}): Promise<Node[]> {
     const response = await this.asyncCall(CallMethod.getAllNodes, {
       args: { filterClass, filterViewId, filterDes, filterText },
+      timeout,
     });
     return Node.fromJSONArray(response.getDataOrDefault("[]"));
   }
@@ -103,12 +129,18 @@ export class AssistsXAsync {
    * 设置节点文本
    * @param node 目标节点
    * @param text 要设置的文本
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否设置成功
    */
-  public static async setNodeText(node: Node, text: string): Promise<boolean> {
+  public static async setNodeText(
+    node: Node,
+    text: string,
+    timeout?: number
+  ): Promise<boolean> {
     const response = await this.asyncCall(CallMethod.setNodeText, {
       args: { text },
       node,
+      timeout,
     });
     return response.getDataOrDefault(false);
   }
@@ -117,27 +149,30 @@ export class AssistsXAsync {
    * 对指定节点进行截图
    * @param nodes 要截图的节点数组
    * @param overlayHiddenScreenshotDelayMillis 截图延迟时间(毫秒)
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 截图路径数组
    */
   public static async takeScreenshotNodes(
     nodes: Node[],
-    overlayHiddenScreenshotDelayMillis: number = 250
+    overlayHiddenScreenshotDelayMillis: number = 250,
+    timeout?: number
   ): Promise<string[]> {
     const response = await this.asyncCall(CallMethod.takeScreenshot, {
       nodes,
       args: { overlayHiddenScreenshotDelayMillis },
+      timeout,
     });
     const data = response.getDataOrDefault("");
     return data.images;
   }
-  public static async scanQR(): Promise<string> {
-    const response = await this.asyncCall(CallMethod.scanQR);
+  public static async scanQR(timeout?: number): Promise<string> {
+    const response = await this.asyncCall(CallMethod.scanQR, { timeout });
     const data = response.getDataOrDefault({ value: "" });
     return data.value;
   }
   public static async loadWebViewOverlay(
     url: string,
-    options: WebFloatingWindowOptions = {}
+    options: WebFloatingWindowOptions & { timeout?: number } = {}
   ): Promise<any> {
     const {
       initialWidth,
@@ -147,6 +182,7 @@ export class AssistsXAsync {
       maxWidth,
       maxHeight,
       initialCenter,
+      timeout,
     } = options;
     const response = await this.asyncCall(CallMethod.loadWebViewOverlay, {
       args: {
@@ -159,6 +195,7 @@ export class AssistsXAsync {
         maxHeight,
         initialCenter,
       },
+      timeout,
     });
     const data = response.getDataOrDefault({});
     return data;
@@ -167,41 +204,57 @@ export class AssistsXAsync {
   /**
    * 点击节点
    * @param node 要点击的节点
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否点击成功
    */
-  public static async click(node: Node): Promise<boolean> {
-    const response = await this.asyncCall(CallMethod.click, { node });
+  public static async click(node: Node, timeout?: number): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.click, { node, timeout });
     return response.getDataOrDefault(false);
   }
 
   /**
    * 长按节点
    * @param node 要长按的节点
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否长按成功
    */
-  public static async longClick(node: Node): Promise<boolean> {
-    const response = await this.asyncCall(CallMethod.longClick, { node });
+  public static async longClick(
+    node: Node,
+    timeout?: number
+  ): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.longClick, {
+      node,
+      timeout,
+    });
     return response.getDataOrDefault(false);
   }
 
   /**
    * 启动应用
    * @param packageName 应用包名
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否启动成功
    */
-  public static async launchApp(packageName: string): Promise<boolean> {
+  public static async launchApp(
+    packageName: string,
+    timeout?: number
+  ): Promise<boolean> {
     const response = await this.asyncCall(CallMethod.launchApp, {
       args: { packageName },
+      timeout,
     });
     return response.getDataOrDefault(false);
   }
 
   /**
    * 获取当前应用包名
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 包名
    */
-  public static async getPackageName(): Promise<string> {
-    const response = await this.asyncCall(CallMethod.getPackageName);
+  public static async getPackageName(timeout?: number): Promise<string> {
+    const response = await this.asyncCall(CallMethod.getPackageName, {
+      timeout,
+    });
     return response.getDataOrDefault("");
   }
 
@@ -209,14 +262,17 @@ export class AssistsXAsync {
    * 显示悬浮提示
    * @param text 提示文本
    * @param delay 显示时长(毫秒)
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否显示成功
    */
   public static async overlayToast(
     text: string,
-    delay: number = 2000
+    delay: number = 2000,
+    timeout?: number
   ): Promise<boolean> {
     const response = await this.asyncCall(CallMethod.overlayToast, {
       args: { text, delay },
+      timeout,
     });
     return response.getDataOrDefault(false);
   }
@@ -228,6 +284,7 @@ export class AssistsXAsync {
    * @param filterText 文本过滤
    * @param filterDes 描述过滤
    * @param node 父节点范围
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 节点数组
    */
   public static async findById(
@@ -237,16 +294,19 @@ export class AssistsXAsync {
       filterText,
       filterDes,
       node,
+      timeout,
     }: {
       filterClass?: string;
       filterText?: string;
       filterDes?: string;
       node?: Node;
+      timeout?: number;
     } = {}
   ): Promise<Node[]> {
     const response = await this.asyncCall(CallMethod.findById, {
       args: { id, filterClass, filterText, filterDes },
       node,
+      timeout,
     });
     return Node.fromJSONArray(response.getDataOrDefault("[]"));
   }
@@ -258,6 +318,7 @@ export class AssistsXAsync {
    * @param filterViewId 视图ID过滤
    * @param filterDes 描述过滤
    * @param node 父节点范围
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 节点数组
    */
   public static async findByText(
@@ -267,16 +328,19 @@ export class AssistsXAsync {
       filterViewId,
       filterDes,
       node,
+      timeout,
     }: {
       filterClass?: string;
       filterViewId?: string;
       filterDes?: string;
       node?: Node;
+      timeout?: number;
     } = {}
   ): Promise<Node[]> {
     const response = await this.asyncCall(CallMethod.findByText, {
       args: { text, filterClass, filterViewId, filterDes },
       node,
+      timeout,
     });
     return Node.fromJSONArray(response.getDataOrDefault("[]"));
   }
@@ -288,6 +352,7 @@ export class AssistsXAsync {
    * @param filterViewId 视图ID过滤
    * @param filterDes 描述过滤
    * @param node 父节点范围
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 节点数组
    */
   public static async findByTags(
@@ -297,16 +362,19 @@ export class AssistsXAsync {
       filterViewId,
       filterDes,
       node,
+      timeout,
     }: {
       filterText?: string;
       filterViewId?: string;
       filterDes?: string;
       node?: Node;
+      timeout?: number;
     } = {}
   ): Promise<Node[]> {
     const response = await this.asyncCall(CallMethod.findByTags, {
       args: { className, filterText, filterViewId, filterDes },
       node,
+      timeout,
     });
     return Node.fromJSONArray(response.getDataOrDefault("[]"));
   }
@@ -314,11 +382,16 @@ export class AssistsXAsync {
   /**
    * 查找所有匹配文本的节点
    * @param text 要查找的文本
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 节点数组
    */
-  public static async findByTextAllMatch(text: string): Promise<Node[]> {
+  public static async findByTextAllMatch(
+    text: string,
+    timeout?: number
+  ): Promise<Node[]> {
     const response = await this.asyncCall(CallMethod.findByTextAllMatch, {
       args: { text },
+      timeout,
     });
     return Node.fromJSONArray(response.getDataOrDefault("[]"));
   }
@@ -326,36 +399,45 @@ export class AssistsXAsync {
   /**
    * 检查是否包含指定文本
    * @param text 要检查的文本
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否包含
    */
-  public static async containsText(text: string): Promise<boolean> {
+  public static async containsText(
+    text: string,
+    timeout?: number
+  ): Promise<boolean> {
     const response = await this.asyncCall(CallMethod.containsText, {
       args: { text },
+      timeout,
     });
     return response.getDataOrDefault(false);
   }
 
   /**
    * 获取所有文本
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 文本数组
    */
-  public static async getAllText(): Promise<string[]> {
-    const response = await this.asyncCall(CallMethod.getAllText);
+  public static async getAllText(timeout?: number): Promise<string[]> {
+    const response = await this.asyncCall(CallMethod.getAllText, { timeout });
     return response.getDataOrDefault("[]");
   }
 
   /**
    * 查找第一个匹配标签的父节点
    * @param className 类名
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 父节点
    */
   public static async findFirstParentByTags(
     node: Node,
-    className: string
+    className: string,
+    timeout?: number
   ): Promise<Node> {
     const response = await this.asyncCall(CallMethod.findFirstParentByTags, {
       args: { className },
       node,
+      timeout,
     });
     return Node.create(response.getDataOrDefault("{}"));
   }
@@ -363,31 +445,47 @@ export class AssistsXAsync {
   /**
    * 获取节点的所有子节点
    * @param node 父节点
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 子节点数组
    */
-  public static async getNodes(node: Node): Promise<Node[]> {
-    const response = await this.asyncCall(CallMethod.getNodes, { node });
+  public static async getNodes(node: Node, timeout?: number): Promise<Node[]> {
+    const response = await this.asyncCall(CallMethod.getNodes, {
+      node,
+      timeout,
+    });
     return Node.fromJSONArray(response.getDataOrDefault("[]"));
   }
 
   /**
    * 获取节点的直接子节点
    * @param node 父节点
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 子节点数组
    */
-  public static async getChildren(node: Node): Promise<Node[]> {
-    const response = await this.asyncCall(CallMethod.getChildren, { node });
+  public static async getChildren(
+    node: Node,
+    timeout?: number
+  ): Promise<Node[]> {
+    const response = await this.asyncCall(CallMethod.getChildren, {
+      node,
+      timeout,
+    });
     return Node.fromJSONArray(response.getDataOrDefault([]));
   }
 
   /**
    * 查找第一个可点击的父节点
    * @param node 起始节点
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 可点击的父节点
    */
-  public static async findFirstParentClickable(node: Node): Promise<Node> {
+  public static async findFirstParentClickable(
+    node: Node,
+    timeout?: number
+  ): Promise<Node> {
     const response = await this.asyncCall(CallMethod.findFirstParentClickable, {
       node,
+      timeout,
     });
     return Node.create(response.getDataOrDefault("{}"));
   }
@@ -395,11 +493,16 @@ export class AssistsXAsync {
   /**
    * 获取节点在屏幕中的边界
    * @param node 目标节点
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 边界对象
    */
-  public static async getBoundsInScreen(node: Node): Promise<Bounds> {
+  public static async getBoundsInScreen(
+    node: Node,
+    timeout?: number
+  ): Promise<Bounds> {
     const response = await this.asyncCall(CallMethod.getBoundsInScreen, {
       node,
+      timeout,
     });
     return Bounds.fromData(response.getDataOrDefault({}));
   }
@@ -409,6 +512,7 @@ export class AssistsXAsync {
    * @param node 目标节点
    * @param compareNode 比较节点
    * @param isFullyByCompareNode 是否完全可见
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否可见
    */
   public static async isVisible(
@@ -416,11 +520,17 @@ export class AssistsXAsync {
     {
       compareNode,
       isFullyByCompareNode,
-    }: { compareNode?: Node; isFullyByCompareNode?: boolean } = {}
+      timeout,
+    }: {
+      compareNode?: Node;
+      isFullyByCompareNode?: boolean;
+      timeout?: number;
+    } = {}
   ): Promise<boolean> {
     const response = await this.asyncCall(CallMethod.isVisible, {
       node,
       args: { compareNode, isFullyByCompareNode },
+      timeout,
     });
     return response.getDataOrDefault(false);
   }
@@ -430,52 +540,61 @@ export class AssistsXAsync {
    * @param x 横坐标
    * @param y 纵坐标
    * @param duration 持续时间
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否成功
    */
   public static async clickByGesture(
     x: number,
     y: number,
-    duration: number
+    duration: number,
+    timeout?: number
   ): Promise<boolean> {
     const response = await this.asyncCall(CallMethod.clickByGesture, {
       args: { x, y, duration },
+      timeout,
     });
     return response.getDataOrDefault(false);
   }
 
   /**
    * 返回操作
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否成功
    */
-  public static async back(): Promise<boolean> {
-    const response = await this.asyncCall(CallMethod.back);
+  public static async back(timeout?: number): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.back, { timeout });
     return response.getDataOrDefault(false);
   }
 
   /**
    * 回到主页
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否成功
    */
-  public static async home(): Promise<boolean> {
-    const response = await this.asyncCall(CallMethod.home);
+  public static async home(timeout?: number): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.home, { timeout });
     return response.getDataOrDefault(false);
   }
 
   /**
    * 打开通知栏
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否成功
    */
-  public static async notifications(): Promise<boolean> {
-    const response = await this.asyncCall(CallMethod.notifications);
+  public static async notifications(timeout?: number): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.notifications, {
+      timeout,
+    });
     return response.getDataOrDefault(false);
   }
 
   /**
    * 显示最近应用
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否成功
    */
-  public static async recentApps(): Promise<boolean> {
-    const response = await this.asyncCall(CallMethod.recentApps);
+  public static async recentApps(timeout?: number): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.recentApps, { timeout });
     return response.getDataOrDefault(false);
   }
 
@@ -483,17 +602,23 @@ export class AssistsXAsync {
    * 在节点中粘贴文本
    * @param node 目标节点
    * @param text 要粘贴的文本
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否成功
    */
-  public static async paste(node: Node, text: string): Promise<boolean> {
+  public static async paste(
+    node: Node,
+    text: string,
+    timeout?: number
+  ): Promise<boolean> {
     const response = await this.asyncCall(CallMethod.paste, {
       args: { text },
       node,
+      timeout,
     });
     return response.getDataOrDefault(false);
   }
-  public static async focus(node: Node): Promise<boolean> {
-    const response = await this.asyncCall(CallMethod.focus, { node });
+  public static async focus(node: Node, timeout?: number): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.focus, { node, timeout });
     return response.getDataOrDefault(false);
   }
 
@@ -502,16 +627,19 @@ export class AssistsXAsync {
    * @param node 目标节点
    * @param selectionStart 选择起始位置
    * @param selectionEnd 选择结束位置
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否成功
    */
   public static async selectionText(
     node: Node,
     selectionStart: number,
-    selectionEnd: number
+    selectionEnd: number,
+    timeout?: number
   ): Promise<boolean> {
     const response = await this.asyncCall(CallMethod.selectionText, {
       args: { selectionStart, selectionEnd },
       node,
+      timeout,
     });
     return response.getDataOrDefault(false);
   }
@@ -519,11 +647,16 @@ export class AssistsXAsync {
   /**
    * 向前滚动
    * @param node 可滚动节点
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否成功
    */
-  public static async scrollForward(node: Node): Promise<boolean> {
+  public static async scrollForward(
+    node: Node,
+    timeout?: number
+  ): Promise<boolean> {
     const response = await this.asyncCall(CallMethod.scrollForward, {
       node,
+      timeout,
     });
     return response.getDataOrDefault(false);
   }
@@ -531,11 +664,16 @@ export class AssistsXAsync {
   /**
    * 向后滚动
    * @param node 可滚动节点
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否成功
    */
-  public static async scrollBackward(node: Node): Promise<boolean> {
+  public static async scrollBackward(
+    node: Node,
+    timeout?: number
+  ): Promise<boolean> {
     const response = await this.asyncCall(CallMethod.scrollBackward, {
       node,
+      timeout,
     });
     return response.getDataOrDefault(false);
   }
@@ -547,6 +685,7 @@ export class AssistsXAsync {
    * @param offsetY Y轴偏移
    * @param switchWindowIntervalDelay 窗口切换延迟
    * @param clickDuration 点击持续时间
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否成功
    */
   public static async clickNodeByGesture(
@@ -556,16 +695,19 @@ export class AssistsXAsync {
       offsetY,
       switchWindowIntervalDelay,
       clickDuration,
+      timeout,
     }: {
       offsetX?: number;
       offsetY?: number;
       switchWindowIntervalDelay?: number;
       clickDuration?: number;
+      timeout?: number;
     } = {}
   ): Promise<boolean> {
     const response = await this.asyncCall(CallMethod.clickNodeByGesture, {
       node,
       args: { offsetX, offsetY, switchWindowIntervalDelay, clickDuration },
+      timeout,
     });
     return response.getDataOrDefault(false);
   }
@@ -578,6 +720,7 @@ export class AssistsXAsync {
    * @param switchWindowIntervalDelay 窗口切换延迟
    * @param clickDuration 点击持续时间
    * @param clickInterval 点击间隔
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否成功
    */
   public static async doubleClickNodeByGesture(
@@ -588,12 +731,14 @@ export class AssistsXAsync {
       switchWindowIntervalDelay,
       clickDuration,
       clickInterval,
+      timeout,
     }: {
       offsetX?: number;
       offsetY?: number;
       switchWindowIntervalDelay?: number;
       clickDuration?: number;
       clickInterval?: number;
+      timeout?: number;
     } = {}
   ): Promise<boolean> {
     const response = await this.asyncCall(CallMethod.doubleClickNodeByGesture, {
@@ -605,6 +750,7 @@ export class AssistsXAsync {
         clickDuration,
         clickInterval,
       },
+      timeout,
     });
     return response.getDataOrDefault(false);
   }
@@ -613,15 +759,17 @@ export class AssistsXAsync {
    * @param startPoint
    * @param endPoint
    * @param param2
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns
    */
   public static async performLinearGesture(
     startPoint: { x: number; y: number },
     endPoint: { x: number; y: number },
-    { duration }: { duration?: number } = {}
+    { duration, timeout }: { duration?: number; timeout?: number } = {}
   ): Promise<boolean> {
     const response = await this.asyncCall(CallMethod.performLinearGesture, {
       args: { startPoint, endPoint, duration },
+      timeout,
     });
     return response.getDataOrDefault(false);
   }
@@ -633,11 +781,13 @@ export class AssistsXAsync {
       matchedText,
       timeoutMillis,
       longPressDuration,
+      timeout,
     }: {
       matchedPackageName?: string;
       matchedText?: string;
       timeoutMillis?: number;
       longPressDuration?: number;
+      timeout?: number;
     } = { matchedText: "粘贴", timeoutMillis: 1500, longPressDuration: 600 }
   ): Promise<boolean> {
     const response = await this.asyncCall(
@@ -651,6 +801,7 @@ export class AssistsXAsync {
           timeoutMillis,
           longPressDuration,
         },
+        timeout,
       }
     );
     return response.getDataOrDefault(false);
@@ -664,11 +815,13 @@ export class AssistsXAsync {
       matchedText,
       timeoutMillis,
       longPressDuration,
+      timeout,
     }: {
       matchedPackageName?: string;
       matchedText?: string;
       timeoutMillis?: number;
       longPressDuration?: number;
+      timeout?: number;
     } = { matchedText: "粘贴", timeoutMillis: 1500, longPressDuration: 600 }
   ): Promise<boolean> {
     const response = await this.asyncCall(
@@ -682,44 +835,85 @@ export class AssistsXAsync {
           timeoutMillis,
           longPressDuration,
         },
+        timeout,
       }
     );
     return response.getDataOrDefault(false);
   }
-  public static async getAppInfo(packageName: string): Promise<any> {
+  public static async getAppInfo(
+    packageName: string,
+    timeout?: number
+  ): Promise<any> {
     const response = await this.asyncCall(CallMethod.getAppInfo, {
       args: { packageName },
+      timeout,
     });
     return response.getDataOrDefault({});
   }
-  public static async getUniqueDeviceId(): Promise<any> {
-    const response = await this.asyncCall(CallMethod.getUniqueDeviceId);
+  public static async getUniqueDeviceId(timeout?: number): Promise<any> {
+    const response = await this.asyncCall(CallMethod.getUniqueDeviceId, {
+      timeout,
+    });
     return response.getDataOrDefault("");
   }
-  public static async getAndroidID(): Promise<any> {
-    const response = await this.asyncCall(CallMethod.getAndroidID);
+  public static async getAndroidID(timeout?: number): Promise<any> {
+    const response = await this.asyncCall(CallMethod.getAndroidID, { timeout });
     return response.getDataOrDefault("");
   }
-  public static async getMacAddress(): Promise<any> {
-    const response = await this.asyncCall(CallMethod.getMacAddress);
+  public static async getMacAddress(timeout?: number): Promise<any> {
+    const response = await this.asyncCall(CallMethod.getMacAddress, {
+      timeout,
+    });
+    return response.getDataOrDefault({});
+  }
+  public static async getDeviceInfo(timeout?: number): Promise<any> {
+    const response = await this.asyncCall(CallMethod.getDeviceInfo, {
+      timeout,
+    });
     return response.getDataOrDefault({});
   }
 
   /**
    * 获取屏幕尺寸
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 屏幕尺寸对象
    */
-  public static async getScreenSize(): Promise<any> {
-    const response = await this.asyncCall(CallMethod.getScreenSize);
+  public static async getScreenSize(timeout?: number): Promise<any> {
+    const response = await this.asyncCall(CallMethod.getScreenSize, {
+      timeout,
+    });
     return response.getDataOrDefault("{}");
   }
 
   /**
    * 获取应用窗口尺寸
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 应用窗口尺寸对象
    */
-  public static async getAppScreenSize(): Promise<any> {
-    const response = await this.asyncCall(CallMethod.getAppScreenSize);
+  public static async getAppScreenSize(timeout?: number): Promise<any> {
+    const response = await this.asyncCall(CallMethod.getAppScreenSize, {
+      timeout,
+    });
     return response.getDataOrDefault("{}");
   }
+
+  /**
+   * 发送HTTP请求
+   * @param options 请求选项
+   * @returns HTTP响应
+   */
+  // public static async httpRequest(
+  //   options: HttpRequestOptions
+  // ): Promise<HttpResponse> {
+  //   const { url, method = "GET", headers, body, timeout = 30 } = options;
+  //   const response = await this.asyncCall(CallMethod.httpRequest, {
+  //     args: { url, method, headers, body, timeout },
+  //   });
+  //   return response.getDataOrDefault({
+  //     statusCode: -1,
+  //     statusMessage: "",
+  //     body: "",
+  //     headers: {},
+  //   });
+  // }
 }

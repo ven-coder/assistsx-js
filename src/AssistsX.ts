@@ -49,6 +49,27 @@ export interface WebFloatingWindowOptions {
   initialCenter?: boolean;
 }
 
+/**
+ * HTTP请求选项接口定义
+ */
+export interface HttpRequestOptions {
+  url: string;
+  method?: "GET" | "POST";
+  headers?: Record<string, string>;
+  body?: string;
+  timeout?: number;
+}
+
+/**
+ * HTTP响应数据接口定义
+ */
+export interface HttpResponse {
+  statusCode: number;
+  statusMessage: string;
+  body: string;
+  headers: Record<string, string>;
+}
+
 // 回调函数存储对象
 export const callbacks: Map<string, (data: string) => void> = new Map();
 
@@ -130,11 +151,17 @@ export class AssistsX {
    * 执行异步调用
    * @param method 方法名
    * @param args 参数对象
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns Promise<调用响应>
    */
   public static async asyncCall(
     method: string,
-    { args, node, nodes }: { args?: any; node?: Node; nodes?: Node[] } = {}
+    {
+      args,
+      node,
+      nodes,
+      timeout = 30,
+    }: { args?: any; node?: Node; nodes?: Node[]; timeout?: number } = {}
   ): Promise<CallResponse> {
     const uuid = generateUUID();
     const params = {
@@ -152,7 +179,7 @@ export class AssistsX {
         // 超时后删除回调函数
         callbacks.delete(uuid);
         resolve(new CallResponse(0, null, uuid));
-      }, 1000 * 30);
+      }, timeout * 1000);
     });
     const result = window.assistsx.call(JSON.stringify(params));
     const promiseResult = await promise;
@@ -228,32 +255,41 @@ export class AssistsX {
     });
     return response.getDataOrDefault(false);
   }
+  public static isAppInstalled(packageName: string): boolean {
+    const response = this.call(CallMethod.isAppInstalled, {
+      args: { packageName },
+    });
+    return response.getDataOrDefault(false);
+  }
 
   /**
    * 对指定节点进行截图
    * @param nodes 要截图的节点数组
    * @param overlayHiddenScreenshotDelayMillis 截图延迟时间(毫秒)
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 截图路径数组
    */
   public static async takeScreenshotNodes(
     nodes: Node[],
-    overlayHiddenScreenshotDelayMillis: number = 250
+    overlayHiddenScreenshotDelayMillis: number = 250,
+    timeout?: number
   ): Promise<string[]> {
     const response = await this.asyncCall(CallMethod.takeScreenshot, {
       nodes,
       args: { overlayHiddenScreenshotDelayMillis },
+      timeout,
     });
     const data = response.getDataOrDefault("");
     return data.images;
   }
-  public static async scanQR(): Promise<string> {
-    const response = await this.asyncCall(CallMethod.scanQR);
+  public static async scanQR(timeout?: number): Promise<string> {
+    const response = await this.asyncCall(CallMethod.scanQR, { timeout });
     const data = response.getDataOrDefault({ value: "" });
     return data.value;
   }
   public static async loadWebViewOverlay(
     url: string,
-    options: WebFloatingWindowOptions = {}
+    options: WebFloatingWindowOptions & { timeout?: number } = {}
   ): Promise<any> {
     const {
       initialWidth,
@@ -263,6 +299,7 @@ export class AssistsX {
       maxWidth,
       maxHeight,
       initialCenter,
+      timeout,
     } = options;
     const response = await this.asyncCall(CallMethod.loadWebViewOverlay, {
       args: {
@@ -275,6 +312,7 @@ export class AssistsX {
         maxHeight,
         initialCenter,
       },
+      timeout,
     });
     const data = response.getDataOrDefault({});
     return data;
@@ -532,15 +570,18 @@ export class AssistsX {
    * @param x 横坐标
    * @param y 纵坐标
    * @param duration 持续时间
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否成功
    */
   public static async clickByGesture(
     x: number,
     y: number,
-    duration: number
+    duration: number,
+    timeout?: number
   ): Promise<boolean> {
     const response = await this.asyncCall(CallMethod.clickByGesture, {
       args: { x, y, duration },
+      timeout,
     });
     return response.getDataOrDefault(false);
   }
@@ -642,6 +683,7 @@ export class AssistsX {
    * @param offsetY Y轴偏移
    * @param switchWindowIntervalDelay 窗口切换延迟
    * @param clickDuration 点击持续时间
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否成功
    */
   public static async clickNodeByGesture(
@@ -651,16 +693,19 @@ export class AssistsX {
       offsetY,
       switchWindowIntervalDelay,
       clickDuration,
+      timeout,
     }: {
       offsetX?: number;
       offsetY?: number;
       switchWindowIntervalDelay?: number;
       clickDuration?: number;
+      timeout?: number;
     } = {}
   ): Promise<boolean> {
     const response = await this.asyncCall(CallMethod.clickNodeByGesture, {
       node,
       args: { offsetX, offsetY, switchWindowIntervalDelay, clickDuration },
+      timeout,
     });
     return response.getDataOrDefault(false);
   }
@@ -673,6 +718,7 @@ export class AssistsX {
    * @param switchWindowIntervalDelay 窗口切换延迟
    * @param clickDuration 点击持续时间
    * @param clickInterval 点击间隔
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns 是否成功
    */
   public static async doubleClickNodeByGesture(
@@ -683,12 +729,14 @@ export class AssistsX {
       switchWindowIntervalDelay,
       clickDuration,
       clickInterval,
+      timeout,
     }: {
       offsetX?: number;
       offsetY?: number;
       switchWindowIntervalDelay?: number;
       clickDuration?: number;
       clickInterval?: number;
+      timeout?: number;
     } = {}
   ): Promise<boolean> {
     const response = await this.asyncCall(CallMethod.doubleClickNodeByGesture, {
@@ -700,6 +748,7 @@ export class AssistsX {
         clickDuration,
         clickInterval,
       },
+      timeout,
     });
     return response.getDataOrDefault(false);
   }
@@ -708,15 +757,17 @@ export class AssistsX {
    * @param startPoint
    * @param endPoint
    * @param param2
+   * @param timeout 超时时间(秒)，默认30秒
    * @returns
    */
   public static async performLinearGesture(
     startPoint: { x: number; y: number },
     endPoint: { x: number; y: number },
-    { duration }: { duration?: number } = {}
+    { duration, timeout }: { duration?: number; timeout?: number } = {}
   ): Promise<boolean> {
     const response = await this.asyncCall(CallMethod.performLinearGesture, {
       args: { startPoint, endPoint, duration },
+      timeout,
     });
     return response.getDataOrDefault(false);
   }
@@ -728,11 +779,13 @@ export class AssistsX {
       matchedText,
       timeoutMillis,
       longPressDuration,
+      timeout,
     }: {
       matchedPackageName?: string;
       matchedText?: string;
       timeoutMillis?: number;
       longPressDuration?: number;
+      timeout?: number;
     } = { matchedText: "粘贴", timeoutMillis: 1500, longPressDuration: 600 }
   ): Promise<boolean> {
     const response = await this.asyncCall(
@@ -746,6 +799,7 @@ export class AssistsX {
           timeoutMillis,
           longPressDuration,
         },
+        timeout,
       }
     );
     return response.getDataOrDefault(false);
@@ -759,11 +813,13 @@ export class AssistsX {
       matchedText,
       timeoutMillis,
       longPressDuration,
+      timeout,
     }: {
       matchedPackageName?: string;
       matchedText?: string;
       timeoutMillis?: number;
       longPressDuration?: number;
+      timeout?: number;
     } = { matchedText: "粘贴", timeoutMillis: 1500, longPressDuration: 600 }
   ): Promise<boolean> {
     const response = await this.asyncCall(
@@ -777,13 +833,18 @@ export class AssistsX {
           timeoutMillis,
           longPressDuration,
         },
+        timeout,
       }
     );
     return response.getDataOrDefault(false);
   }
-  public static async getAppInfo(packageName: string): Promise<any> {
+  public static async getAppInfo(
+    packageName: string,
+    timeout?: number
+  ): Promise<any> {
     const response = await this.asyncCall(CallMethod.getAppInfo, {
       args: { packageName },
+      timeout,
     });
     return response.getDataOrDefault({});
   }
@@ -795,8 +856,22 @@ export class AssistsX {
     const response = this.call(CallMethod.getAndroidID);
     return response.getDataOrDefault("");
   }
-  public static async getMacAddress(): Promise<any> {
-    const response = await this.asyncCall(CallMethod.getMacAddress);
+  public static async getMacAddress(timeout?: number): Promise<any> {
+    const response = await this.asyncCall(CallMethod.getMacAddress, {
+      timeout,
+    });
+    return response.getDataOrDefault({});
+  }
+  public static async getDeviceInfo(timeout?: number): Promise<any> {
+    const response = await this.asyncCall(CallMethod.getDeviceInfo, {
+      timeout,
+    });
+    return response.getDataOrDefault({});
+  }
+  public static async getNetworkType(timeout?: number): Promise<any> {
+    const response = await this.asyncCall(CallMethod.getNetworkType, {
+      timeout,
+    });
     return response.getDataOrDefault({});
   }
   public static async setAccessibilityEventFilters(
@@ -884,4 +959,24 @@ export class AssistsX {
   public static getAccessibilityEventListenerCount(): number {
     return accessibilityEventListeners.length;
   }
+
+  /**
+   * 发送HTTP请求
+   * @param options 请求选项
+   * @returns HTTP响应
+   */
+  // public static async httpRequest(
+  //   options: HttpRequestOptions
+  // ): Promise<HttpResponse> {
+  //   const { url, method = "GET", headers, body, timeout = 30 } = options;
+  //   const response = await this.asyncCall(CallMethod.httpRequest, {
+  //     args: { url, method, headers, body, timeout },
+  //   });
+  //   return response.getDataOrDefault({
+  //     statusCode: -1,
+  //     statusMessage: "",
+  //     body: "",
+  //     headers: {},
+  //   });
+  // }
 }

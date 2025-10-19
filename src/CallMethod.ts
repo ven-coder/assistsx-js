@@ -48,6 +48,11 @@ export const CallMethod = {
 
   addAccessibilityEventFilter: "addAccessibilityEventFilter",
   setAccessibilityEventFilters: "setAccessibilityEventFilters",
+
+  httpRequest: "httpRequest",
+  getDeviceInfo: "getDeviceInfo",
+  getNetworkType: "getNetworkType",
+  isAppInstalled: "isAppInstalled",
 } as const;
 
 // 导出类型定义
