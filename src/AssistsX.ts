@@ -8,6 +8,7 @@ import { CallResponse } from "./CallResponse";
 import { Bounds } from "./Bounds";
 import { decodeBase64UTF8, generateUUID } from "./Utils";
 import { AccessibilityEventFilter } from "AccessibilityEventFilter";
+import { AppInfo } from "./AppInfo";
 
 /**
  * 无障碍事件数据结构
@@ -255,6 +256,15 @@ export class AssistsX {
     });
     return response.getDataOrDefault(false);
   }
+  /**
+   * 获取剪贴板最新文本
+   * @returns 剪贴板最新文本
+   */
+  public static getClipboardLatestText(): any {
+    const response = this.call(CallMethod.getClipboardLatestText);
+    return response.getDataOrDefault({});
+  }
+
   public static isAppInstalled(packageName: string): boolean {
     const response = this.call(CallMethod.isAppInstalled, {
       args: { packageName },
@@ -841,12 +851,12 @@ export class AssistsX {
   public static async getAppInfo(
     packageName: string,
     timeout?: number
-  ): Promise<any> {
+  ): Promise<AppInfo> {
     const response = await this.asyncCall(CallMethod.getAppInfo, {
       args: { packageName },
       timeout,
     });
-    return response.getDataOrDefault({});
+    return AppInfo.fromJSON(response.getDataOrDefault({}));
   }
   public static getUniqueDeviceId(): any {
     const response = this.call(CallMethod.getUniqueDeviceId);

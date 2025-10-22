@@ -53,6 +53,7 @@ export const CallMethod = {
   getDeviceInfo: "getDeviceInfo",
   getNetworkType: "getNetworkType",
   isAppInstalled: "isAppInstalled",
+  getClipboardLatestText: "getClipboardLatestText",
 } as const;
 
 // 导出类型定义

@@ -7,6 +7,7 @@ import { CallMethod } from "./CallMethod";
 import { CallResponse } from "./CallResponse";
 import { Bounds } from "./Bounds";
 import { generateUUID } from "./Utils";
+import { AppInfo } from "./AppInfo";
 import {
   AssistsX,
   callbacks,
@@ -843,12 +844,12 @@ export class AssistsXAsync {
   public static async getAppInfo(
     packageName: string,
     timeout?: number
-  ): Promise<any> {
+  ): Promise<AppInfo> {
     const response = await this.asyncCall(CallMethod.getAppInfo, {
       args: { packageName },
       timeout,
     });
-    return response.getDataOrDefault({});
+    return AppInfo.fromJSON(response.getDataOrDefault({}));
   }
   public static async getUniqueDeviceId(timeout?: number): Promise<any> {
     const response = await this.asyncCall(CallMethod.getUniqueDeviceId, {
