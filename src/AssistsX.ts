@@ -9,6 +9,7 @@ import { Bounds } from "./Bounds";
 import { decodeBase64UTF8, generateUUID } from "./Utils";
 import { AccessibilityEventFilter } from "AccessibilityEventFilter";
 import { AppInfo } from "./AppInfo";
+import { DeviceInfo } from "./DeviceInfo";
 
 /**
  * 无障碍事件数据结构
@@ -872,11 +873,11 @@ export class AssistsX {
     });
     return response.getDataOrDefault({});
   }
-  public static async getDeviceInfo(timeout?: number): Promise<any> {
+  public static async getDeviceInfo(timeout?: number): Promise<DeviceInfo> {
     const response = await this.asyncCall(CallMethod.getDeviceInfo, {
       timeout,
     });
-    return response.getDataOrDefault({});
+    return DeviceInfo.fromJSON(response.getDataOrDefault({}));
   }
   public static async getNetworkType(timeout?: number): Promise<any> {
     const response = await this.asyncCall(CallMethod.getNetworkType, {

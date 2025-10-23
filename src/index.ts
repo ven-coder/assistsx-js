@@ -13,3 +13,4 @@ export * from "./AssistsXAsync";
 export * from "./StepAsync";
 export * from "./AccessibilityEventFilter";
 export * from "./AppInfo";
+export * from "./DeviceInfo";

@@ -8,6 +8,7 @@ import { CallResponse } from "./CallResponse";
 import { Bounds } from "./Bounds";
 import { generateUUID } from "./Utils";
 import { AppInfo } from "./AppInfo";
+import { DeviceInfo } from "./DeviceInfo";
 import {
   AssistsX,
   callbacks,
@@ -867,11 +868,11 @@ export class AssistsXAsync {
     });
     return response.getDataOrDefault({});
   }
-  public static async getDeviceInfo(timeout?: number): Promise<any> {
+  public static async getDeviceInfo(timeout?: number): Promise<DeviceInfo> {
     const response = await this.asyncCall(CallMethod.getDeviceInfo, {
       timeout,
     });
-    return response.getDataOrDefault({});
+    return DeviceInfo.fromJSON(response.getDataOrDefault({}));
   }
 
   /**
