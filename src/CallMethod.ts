@@ -54,6 +54,9 @@ export const CallMethod = {
   getNetworkType: "getNetworkType",
   isAppInstalled: "isAppInstalled",
   getClipboardLatestText: "getClipboardLatestText",
+  openUrlInBrowser: "openUrlInBrowser",
+  keepScreenOn: "keepScreenOn",
+  clearKeepScreenOn: "clearKeepScreenOn",
 } as const;
 
 // 导出类型定义

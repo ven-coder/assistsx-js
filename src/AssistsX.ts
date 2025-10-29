@@ -266,6 +266,33 @@ export class AssistsX {
     return response.getDataOrDefault({});
   }
 
+  /**
+   * 在浏览器中打开URL
+   * @param url 要打开的URL
+   * @returns 是否成功打开
+   */
+  public static openUrlInBrowser(url: string): boolean {
+    const response = this.call(CallMethod.openUrlInBrowser, {
+      args: { url },
+    });
+    return response.getDataOrDefault(false);
+  }
+
+  /**
+   * 保持屏幕常亮
+   * @param tip 提示文本
+   * @returns 是否保持屏幕常亮成功
+   */
+  public static keepScreenOn(tip?: string): boolean {
+    const response = this.call(CallMethod.keepScreenOn, {
+      args: { tip },
+    });
+    return response.getDataOrDefault(false);
+  }
+  public static clearKeepScreenOn(): boolean {
+    const response = this.call(CallMethod.clearKeepScreenOn, {});
+    return response.getDataOrDefault(false);
+  }
   public static isAppInstalled(packageName: string): boolean {
     const response = this.call(CallMethod.isAppInstalled, {
       args: { packageName },

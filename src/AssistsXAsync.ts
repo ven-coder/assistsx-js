@@ -900,6 +900,23 @@ export class AssistsXAsync {
   }
 
   /**
+   * 在浏览器中打开URL
+   * @param url 要打开的URL
+   * @param timeout 超时时间(秒)，默认30秒
+   * @returns 是否成功打开
+   */
+  public static async openUrlInBrowser(
+    url: string,
+    timeout?: number
+  ): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.openUrlInBrowser, {
+      args: { url },
+      timeout,
+    });
+    return response.getDataOrDefault(false);
+  }
+
+  /**
    * 发送HTTP请求
    * @param options 请求选项
    * @returns HTTP响应
