@@ -915,6 +915,44 @@ export class AssistsXAsync {
     });
     return response.getDataOrDefault(false);
   }
+  public static async download(
+    url: string,
+    timeout?: number
+  ): Promise<string | null | undefined> {
+    const response = await this.asyncCall(CallMethod.download, {
+      args: { url },
+      timeout,
+    });
+    return response.getDataOrDefault(null);
+  }
+  public static async audioPlayFromFile(
+    filePath: string,
+    {
+      volume = undefined,
+      useAbsoluteVolume = false,
+      timeout = 30,
+    }: {
+      volume?: number;
+      useAbsoluteVolume?: boolean;
+      timeout?: number;
+    }
+  ): Promise<string | null | undefined> {
+    const response = await this.asyncCall(CallMethod.audioPlayFromFile, {
+      args: { filePath, volume, useAbsoluteVolume },
+      timeout,
+    });
+    return response.getDataOrDefault(null);
+  }
+  public static async audioStop({
+    timeout = 30,
+  }: {
+    timeout?: number;
+  }): Promise<boolean | null | undefined> {
+    const response = await this.asyncCall(CallMethod.audioStop, {
+      timeout,
+    });
+    return response.getDataOrDefault(false);
+  }
 
   /**
    * 发送HTTP请求

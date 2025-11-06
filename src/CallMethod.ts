@@ -57,6 +57,9 @@ export const CallMethod = {
   openUrlInBrowser: "openUrlInBrowser",
   keepScreenOn: "keepScreenOn",
   clearKeepScreenOn: "clearKeepScreenOn",
+  download: "download",
+  audioPlayFromFile: "audioPlayFromFile",
+  audioStop: "audioStop",
 } as const;
 
 // 导出类型定义
