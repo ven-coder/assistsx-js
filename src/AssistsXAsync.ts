@@ -17,6 +17,40 @@ import {
   HttpResponse,
 } from "./AssistsX";
 
+/**
+ * 截图识别位置信息
+ */
+export interface RecognizeTextInScreenshotPosition {
+  text: string;
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+  width: number;
+  height: number;
+}
+
+/**
+ * 截图识别结果
+ */
+export interface RecognizeTextInScreenshotResult {
+  fullText: string;
+  processingTimeMillis: number;
+  positions: RecognizeTextInScreenshotPosition[];
+}
+
+/**
+ * 截图识别区域参数
+ */
+export interface RecognizeTextRegion {
+  left?: number;
+  top?: number;
+  right?: number;
+  bottom?: number;
+  width?: number;
+  height?: number;
+}
+
 export class AssistsXAsync {
   /**
    * 执行异步调用
@@ -166,6 +200,48 @@ export class AssistsXAsync {
     });
     const data = response.getDataOrDefault("");
     return data.images;
+  }
+  /**
+   * 截图识别文本
+   * @param param0 识别参数
+   * @returns 截图识别结果
+   */
+  public static async recognizeTextInScreenshot(
+    targetText: string,
+    options: {
+      rotationDegrees?: number;
+      overlayHiddenScreenshotDelayMillis?: number;
+      restoreOverlay?: boolean;
+      region?: RecognizeTextRegion;
+      timeout?: number;
+    } = {}
+  ): Promise<RecognizeTextInScreenshotResult> {
+    const {
+      rotationDegrees = 0,
+      overlayHiddenScreenshotDelayMillis = 250,
+      restoreOverlay = true,
+      region,
+      timeout,
+    } = options;
+
+    const response = await this.asyncCall(
+      CallMethod.recognizeTextInScreenshot,
+      {
+        args: {
+          targetText,
+          rotationDegrees,
+          overlayHiddenScreenshotDelayMillis,
+          restoreOverlay,
+          region,
+        },
+        timeout,
+      }
+    );
+    return response.getDataOrDefault({
+      fullText: "",
+      processingTimeMillis: 0,
+      positions: [],
+    });
   }
   public static async scanQR(timeout?: number): Promise<string> {
     const response = await this.asyncCall(CallMethod.scanQR, { timeout });

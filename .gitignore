@@ -73,4 +73,5 @@ temp/
 *.tgz
 
 # TypeScript
-typings/ 
+typings/
+tools/

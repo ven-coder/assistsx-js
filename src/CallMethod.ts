@@ -34,6 +34,7 @@ export const CallMethod = {
   setOverlayFlags: "setOverlayFlags",
   scanQR: "scanQR",
   loadWebViewOverlay: "loadWebViewOverlay",
+  recognizeTextInScreenshot: "recognizeTextInScreenshot",
 
   clickByGesture: "clickByGesture",
   clickNodeByGesture: "clickNodeByGesture",
