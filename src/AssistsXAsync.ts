@@ -51,6 +51,17 @@ export interface RecognizeTextRegion {
   height?: number;
 }
 
+/**
+ * 联系人信息
+ */
+export interface Contact {
+  id: string;
+  name: string;
+  phoneNumbers: string[];
+  emails: string[];
+  address: string;
+}
+
 export class AssistsXAsync {
   /**
    * 执行异步调用
@@ -1028,6 +1039,37 @@ export class AssistsXAsync {
       timeout,
     });
     return response.getDataOrDefault(false);
+  }
+
+  /**
+   * 添加联系人
+   * @param name 联系人姓名（必填）
+   * @param phoneNumber 电话号码（必填）
+   * @param timeout 超时时间(秒)，默认30秒
+   * @returns 是否添加成功
+   */
+  public static async addContact(
+    name: string,
+    phoneNumber: string,
+    timeout?: number
+  ): Promise<boolean> {
+    const response = await this.asyncCall(CallMethod.addContact, {
+      args: { name, phoneNumber },
+      timeout,
+    });
+    return response.getDataOrDefault(false);
+  }
+
+  /**
+   * 获取所有联系人
+   * @param timeout 超时时间(秒)，默认30秒
+   * @returns 联系人列表
+   */
+  public static async getAllContacts(timeout?: number): Promise<Contact[]> {
+    const response = await this.asyncCall(CallMethod.getAllContacts, {
+      timeout,
+    });
+    return response.getDataOrDefault([]);
   }
 
   /**

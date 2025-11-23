@@ -1,43 +1,43 @@
 {
-  "name": "assistsx-js",
-  "version": "0.0.2039",
-  "description": "assistsx-js自动化开发SDK",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist",
-    "src"
-  ],
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+    "name": "assistsx-js",
+    "version": "0.0.2047",
+    "description": "assistsx-js自动化开发SDK",
+    "main": "dist/index.js",
+    "module": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist",
+        "src"
+    ],
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "require": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "build": "tsc",
+        "prepublish": "npm run build",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "assistsx",
+        "assists",
+        "android assistsx",
+        "assistsx webview",
+        "AccessibilityService",
+        "dev"
+    ],
+    "author": "Ven",
+    "license": "MIT",
+    "devDependencies": {
+        "typescript": "^5.3.3"
+    },
+    "dependencies": {
+        "pinia": "^3.0.3"
     }
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {
-    "build": "tsc",
-    "prepublish": "npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "assistsx",
-    "assists",
-    "android assistsx",
-    "assistsx webview",
-    "AccessibilityService",
-    "dev"
-  ],
-  "author": "Ven",
-  "license": "MIT",
-  "devDependencies": {
-    "typescript": "^5.3.3"
-  },
-  "dependencies": {
-    "pinia": "^3.0.3"
-  }
 }

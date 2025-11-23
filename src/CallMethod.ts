@@ -61,6 +61,10 @@ export const CallMethod = {
   download: "download",
   audioPlayFromFile: "audioPlayFromFile",
   audioStop: "audioStop",
+
+  // 通讯录相关方法
+  addContact: "addContact",
+  getAllContacts: "getAllContacts",
 } as const;
 
 // 导出类型定义
