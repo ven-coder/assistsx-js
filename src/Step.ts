@@ -7,7 +7,7 @@ import { Node } from "./Node";
 import { CallMethod } from "./CallMethod";
 import { useStepStore } from "./StepStateStore";
 import { generateUUID } from "./Utils";
-import { StepError } from "./StepError";
+import { StepError, StepStopError } from "./StepError";
 import { StepAsync } from "./StepAsync";
 
 // 步骤结果类型，可以是Step实例或undefined
@@ -36,6 +36,11 @@ export class Step {
     private static _interceptors: StepInterceptor[] = [];
 
     /**
+     * 步骤异常变量，默认为空
+     */
+    public static exception: StepError | undefined = undefined;
+
+    /**
      * 运行步骤实现
      * @param impl 步骤实现函数
      * @param tag 步骤标签
@@ -56,6 +61,7 @@ export class Step {
             delayMs?: number;
         } = {}
     ): Promise<Step | undefined> {
+        this.exception = undefined;
         const stepStore = useStepStore();
         let implnName = impl.name;
         let currentStep: Step | undefined;
@@ -180,14 +186,7 @@ export class Step {
                 error: e?.message ?? String(e),
             });
             stepStore.setError(errorMsg);
-            throw new StepError(
-                errorMsg,
-                implnName,
-                tag,
-                data,
-                e,
-                currentStep || undefined
-            );
+            throw e
         }
         //步骤执行结束
         stepStore.completeStep();
@@ -206,11 +205,12 @@ export class Step {
      * @param stepId 要验证的步骤ID
      */
     static assert(stepId: string | undefined) {
+        // 检查异常变量，如果不为空则直接抛出
+        if (Step.exception) {
+            throw Step.exception;
+        }
         if (stepId && Step.stepId != stepId) {
-            if (Step.stepId === "STEP_STOP") {
-                throw new Error("主动中断步骤");
-            }
-            throw new Error("StepId mismatch");
+            throw new StepError("StepId mismatch", { stepId, currentStepId: Step.stepId });
         }
     }
 
@@ -229,9 +229,15 @@ export class Step {
 
     /**
      * 停止当前步骤执行
+     * @param exception 可选的异常对象，如果传入则使用该异常，否则使用默认的StepStopError
      */
-    static stop(): void {
+    static stop(exception?: StepError): void {
         this._stepId = "STEP_STOP";
+        if (exception) {
+            this.exception = exception;
+        } else {
+            this.exception = new StepStopError("主动中断步骤", { stepId: this._stepId });
+        }
     }
 
     /**

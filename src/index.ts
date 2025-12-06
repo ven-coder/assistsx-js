@@ -14,3 +14,4 @@ export * from "./StepAsync";
 export * from "./AccessibilityEventFilter";
 export * from "./AppInfo";
 export * from "./DeviceInfo";
+export * from "./StepError";
