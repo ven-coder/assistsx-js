@@ -241,7 +241,7 @@ export class AssistsX {
         const response = this.call(CallMethod.getAllNodes, {
             args: { filterClass, filterViewId, filterDes, filterText },
         });
-        return Node.fromJSONArray(response.getDataOrDefault("[]"));
+        return Node.fromJSONArray(response.getDataOrDefault([]));
     }
 
     /**
@@ -435,7 +435,7 @@ export class AssistsX {
             args: { id, filterClass, filterText, filterDes },
             node,
         });
-        return Node.fromJSONArray(response.getDataOrDefault("[]"));
+        return Node.fromJSONArray(response.getDataOrDefault([]));
     }
 
     /**
@@ -465,7 +465,7 @@ export class AssistsX {
             args: { text, filterClass, filterViewId, filterDes },
             node,
         });
-        return Node.fromJSONArray(response.getDataOrDefault("[]"));
+        return Node.fromJSONArray(response.getDataOrDefault([]));
     }
 
     /**
@@ -495,7 +495,7 @@ export class AssistsX {
             args: { className, filterText, filterViewId, filterDes },
             node,
         });
-        return Node.fromJSONArray(response.getDataOrDefault("[]"));
+        return Node.fromJSONArray(response.getDataOrDefault([]));
     }
 
     /**
@@ -507,7 +507,7 @@ export class AssistsX {
         const response = this.call(CallMethod.findByTextAllMatch, {
             args: { text },
         });
-        return Node.fromJSONArray(response.getDataOrDefault("[]"));
+        return Node.fromJSONArray(response.getDataOrDefault([]));
     }
 
     /**
@@ -526,7 +526,7 @@ export class AssistsX {
      */
     public static getAllText(): string[] {
         const response = this.call(CallMethod.getAllText);
-        return response.getDataOrDefault("[]");
+        return response.getDataOrDefault([]);
     }
 
     /**
@@ -549,7 +549,7 @@ export class AssistsX {
      */
     public static getNodes(node: Node): Node[] {
         const response = this.call(CallMethod.getNodes, { node });
-        return Node.fromJSONArray(response.getDataOrDefault("[]"));
+        return Node.fromJSONArray(response.getDataOrDefault([]));
     }
 
     /**

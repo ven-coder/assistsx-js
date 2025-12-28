@@ -169,7 +169,7 @@ export class AssistsXAsync {
             args: { filterClass, filterViewId, filterDes, filterText },
             timeout,
         });
-        return Node.fromJSONArray(response.getDataOrDefault("[]"));
+        return Node.fromJSONArray(response.getDataOrDefault([]));
     }
 
     /**
@@ -397,7 +397,7 @@ export class AssistsXAsync {
             node,
             timeout,
         });
-        return Node.fromJSONArray(response.getDataOrDefault("[]"));
+        return Node.fromJSONArray(response.getDataOrDefault([]));
     }
 
     /**
@@ -431,7 +431,7 @@ export class AssistsXAsync {
             node,
             timeout,
         });
-        return Node.fromJSONArray(response.getDataOrDefault("[]"));
+        return Node.fromJSONArray(response.getDataOrDefault([]));
     }
 
     /**
@@ -465,7 +465,7 @@ export class AssistsXAsync {
             node,
             timeout,
         });
-        return Node.fromJSONArray(response.getDataOrDefault("[]"));
+        return Node.fromJSONArray(response.getDataOrDefault([]));
     }
 
     /**
@@ -482,7 +482,7 @@ export class AssistsXAsync {
             args: { text },
             timeout,
         });
-        return Node.fromJSONArray(response.getDataOrDefault("[]"));
+        return Node.fromJSONArray(response.getDataOrDefault([]));
     }
 
     /**
@@ -509,7 +509,7 @@ export class AssistsXAsync {
      */
     public static async getAllText(timeout?: number): Promise<string[]> {
         const response = await this.asyncCall(CallMethod.getAllText, { timeout });
-        return response.getDataOrDefault("[]");
+        return response.getDataOrDefault([]);
     }
 
     /**
@@ -542,7 +542,7 @@ export class AssistsXAsync {
             node,
             timeout,
         });
-        return Node.fromJSONArray(response.getDataOrDefault("[]"));
+        return Node.fromJSONArray(response.getDataOrDefault([]));
     }
 
     /**
