@@ -152,15 +152,15 @@ export class Step {
                     nextStep = await currentStep.impl?.(currentStep);
                 }
                 if (
-                    currentStep.repeatCountMax > Step.repeatCountInfinite &&
-                    currentStep.repeatCount > currentStep.repeatCountMax
+                    currentStep.repeatCountMax >= Step.repeatCountInfinite &&
+                    currentStep.repeatCount >= currentStep.repeatCountMax
                 ) {
                     if (Step.showLog) {
                         console.log(
                             `重复次数${currentStep.repeatCount}超过最大次数${currentStep.repeatCountMax}，停止执行`
                         );
                     }
-                    break;
+                    throw new StepError("步骤重复次数达到最大次数", { stepId: currentStep.stepId, repeatCount: currentStep.repeatCount, repeatCountMax: currentStep.repeatCountMax });
                 }
 
                 Step.assert(currentStep.stepId);
