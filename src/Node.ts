@@ -554,6 +554,13 @@ export class Node {
      * @returns 节点数组
      */
     static fromJSONArray(array: Array<any>): Node[] {
+        // 如果 array 不是数组，抛出详细异常
+        if (!Array.isArray(array)) {
+            throw new Error(
+                `Node.fromJSONArray: Expected array, but got ${typeof array}. ` +
+                `Value: ${JSON.stringify(array)}`
+            );
+        }
         return array.map((data) => new Node(data));
     }
 }

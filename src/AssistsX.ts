@@ -241,7 +241,14 @@ export class AssistsX {
         const response = this.call(CallMethod.getAllNodes, {
             args: { filterClass, filterViewId, filterDes, filterText },
         });
-        return Node.fromJSONArray(response.getDataOrDefault([]));
+        const data = response.getDataOrDefault([]);
+        if (!Array.isArray(data)) {
+            throw new Error(
+                `AssistsX.getAllNodes: Expected array, but got ${typeof data}. ` +
+                `Value: ${JSON.stringify(data)}`
+            );
+        }
+        return Node.fromJSONArray(data);
     }
 
     /**
@@ -317,7 +324,7 @@ export class AssistsX {
             args: { overlayHiddenScreenshotDelayMillis },
             timeout,
         });
-        const data = response.getDataOrDefault("");
+        const data = response.getDataOrDefault({ images: [] });
         return data.images;
     }
     public static async scanQR(timeout?: number): Promise<string> {
@@ -435,7 +442,14 @@ export class AssistsX {
             args: { id, filterClass, filterText, filterDes },
             node,
         });
-        return Node.fromJSONArray(response.getDataOrDefault([]));
+        const data = response.getDataOrDefault([]);
+        if (!Array.isArray(data)) {
+            throw new Error(
+                `AssistsX.findById: Expected array, but got ${typeof data}. ` +
+                `Value: ${JSON.stringify(data)}`
+            );
+        }
+        return Node.fromJSONArray(data);
     }
 
     /**
@@ -465,7 +479,14 @@ export class AssistsX {
             args: { text, filterClass, filterViewId, filterDes },
             node,
         });
-        return Node.fromJSONArray(response.getDataOrDefault([]));
+        const data = response.getDataOrDefault([]);
+        if (!Array.isArray(data)) {
+            throw new Error(
+                `AssistsX.findByText: Expected array, but got ${typeof data}. ` +
+                `Value: ${JSON.stringify(data)}`
+            );
+        }
+        return Node.fromJSONArray(data);
     }
 
     /**
@@ -495,7 +516,14 @@ export class AssistsX {
             args: { className, filterText, filterViewId, filterDes },
             node,
         });
-        return Node.fromJSONArray(response.getDataOrDefault([]));
+        const data = response.getDataOrDefault([]);
+        if (!Array.isArray(data)) {
+            throw new Error(
+                `AssistsX.findByTags: Expected array, but got ${typeof data}. ` +
+                `Value: ${JSON.stringify(data)}`
+            );
+        }
+        return Node.fromJSONArray(data);
     }
 
     /**
@@ -507,7 +535,14 @@ export class AssistsX {
         const response = this.call(CallMethod.findByTextAllMatch, {
             args: { text },
         });
-        return Node.fromJSONArray(response.getDataOrDefault([]));
+        const data = response.getDataOrDefault([]);
+        if (!Array.isArray(data)) {
+            throw new Error(
+                `AssistsX.findByTextAllMatch: Expected array, but got ${typeof data}. ` +
+                `Value: ${JSON.stringify(data)}`
+            );
+        }
+        return Node.fromJSONArray(data);
     }
 
     /**
@@ -526,7 +561,14 @@ export class AssistsX {
      */
     public static getAllText(): string[] {
         const response = this.call(CallMethod.getAllText);
-        return response.getDataOrDefault([]);
+        const data = response.getDataOrDefault([]);
+        if (!Array.isArray(data)) {
+            throw new Error(
+                `AssistsX.getAllText: Expected array, but got ${typeof data}. ` +
+                `Value: ${JSON.stringify(data)}`
+            );
+        }
+        return data;
     }
 
     /**
@@ -539,7 +581,7 @@ export class AssistsX {
             args: { className },
             node,
         });
-        return Node.create(response.getDataOrDefault("{}"));
+        return Node.create(response.getDataOrDefault({}));
     }
 
     /**
@@ -549,7 +591,14 @@ export class AssistsX {
      */
     public static getNodes(node: Node): Node[] {
         const response = this.call(CallMethod.getNodes, { node });
-        return Node.fromJSONArray(response.getDataOrDefault([]));
+        const data = response.getDataOrDefault([]);
+        if (!Array.isArray(data)) {
+            throw new Error(
+                `AssistsX.getNodes: Expected array, but got ${typeof data}. ` +
+                `Value: ${JSON.stringify(data)}`
+            );
+        }
+        return Node.fromJSONArray(data);
     }
 
     /**
@@ -559,7 +608,14 @@ export class AssistsX {
      */
     public static getChildren(node: Node): Node[] {
         const response = this.call(CallMethod.getChildren, { node });
-        return Node.fromJSONArray(response.getDataOrDefault([]));
+        const data = response.getDataOrDefault([]);
+        if (!Array.isArray(data)) {
+            throw new Error(
+                `AssistsX.getChildren: Expected array, but got ${typeof data}. ` +
+                `Value: ${JSON.stringify(data)}`
+            );
+        }
+        return Node.fromJSONArray(data);
     }
 
     /**
@@ -569,7 +625,7 @@ export class AssistsX {
      */
     public static findFirstParentClickable(node: Node): Node {
         const response = this.call(CallMethod.findFirstParentClickable, { node });
-        return Node.create(response.getDataOrDefault("{}"));
+        return Node.create(response.getDataOrDefault({}));
     }
 
     /**
@@ -957,7 +1013,7 @@ export class AssistsX {
      */
     public static getScreenSize(): any {
         const response = this.call(CallMethod.getScreenSize);
-        return response.getDataOrDefault("{}");
+        return response.getDataOrDefault({});
     }
 
     /**
@@ -966,7 +1022,7 @@ export class AssistsX {
      */
     public static getAppScreenSize(): any {
         const response = this.call(CallMethod.getAppScreenSize);
-        return response.getDataOrDefault("{}");
+        return response.getDataOrDefault({});
     }
 
     /**

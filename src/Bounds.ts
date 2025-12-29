@@ -63,6 +63,17 @@ export class Bounds {
     }
 
     static fromData(data: any): Bounds {
+        // 如果 data 为 null 或 undefined，返回一个空的 Bounds
+        if (data == null) {
+            return new Bounds(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, true);
+        }
+        // 如果 data 不是对象类型，抛出详细异常
+        if (typeof data !== "object" || Array.isArray(data)) {
+            throw new Error(
+                `Bounds.fromData: Expected object, but got ${typeof data}. ` +
+                `Value: ${JSON.stringify(data)}`
+            );
+        }
         return new Bounds(
             data.left,
             data.top,

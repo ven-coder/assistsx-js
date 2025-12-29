@@ -169,7 +169,14 @@ export class AssistsXAsync {
             args: { filterClass, filterViewId, filterDes, filterText },
             timeout,
         });
-        return Node.fromJSONArray(response.getDataOrDefault([]));
+        const data = response.getDataOrDefault([]);
+        if (!Array.isArray(data)) {
+            throw new Error(
+                `AssistsXAsync.getAllNodes: Expected array, but got ${typeof data}. ` +
+                `Value: ${JSON.stringify(data)}`
+            );
+        }
+        return Node.fromJSONArray(data);
     }
 
     /**
@@ -209,7 +216,7 @@ export class AssistsXAsync {
             args: { overlayHiddenScreenshotDelayMillis },
             timeout,
         });
-        const data = response.getDataOrDefault("");
+        const data = response.getDataOrDefault({ images: [] });
         return data.images;
     }
     /**
@@ -397,7 +404,14 @@ export class AssistsXAsync {
             node,
             timeout,
         });
-        return Node.fromJSONArray(response.getDataOrDefault([]));
+        const data = response.getDataOrDefault([]);
+        if (!Array.isArray(data)) {
+            throw new Error(
+                `AssistsXAsync.findById: Expected array, but got ${typeof data}. ` +
+                `Value: ${JSON.stringify(data)}`
+            );
+        }
+        return Node.fromJSONArray(data);
     }
 
     /**
@@ -431,7 +445,14 @@ export class AssistsXAsync {
             node,
             timeout,
         });
-        return Node.fromJSONArray(response.getDataOrDefault([]));
+        const data = response.getDataOrDefault([]);
+        if (!Array.isArray(data)) {
+            throw new Error(
+                `AssistsXAsync.findByText: Expected array, but got ${typeof data}. ` +
+                `Value: ${JSON.stringify(data)}`
+            );
+        }
+        return Node.fromJSONArray(data);
     }
 
     /**
@@ -465,7 +486,14 @@ export class AssistsXAsync {
             node,
             timeout,
         });
-        return Node.fromJSONArray(response.getDataOrDefault([]));
+        const data = response.getDataOrDefault([]);
+        if (!Array.isArray(data)) {
+            throw new Error(
+                `AssistsXAsync.findByTags: Expected array, but got ${typeof data}. ` +
+                `Value: ${JSON.stringify(data)}`
+            );
+        }
+        return Node.fromJSONArray(data);
     }
 
     /**
@@ -482,7 +510,14 @@ export class AssistsXAsync {
             args: { text },
             timeout,
         });
-        return Node.fromJSONArray(response.getDataOrDefault([]));
+        const data = response.getDataOrDefault([]);
+        if (!Array.isArray(data)) {
+            throw new Error(
+                `AssistsXAsync.findByTextAllMatch: Expected array, but got ${typeof data}. ` +
+                `Value: ${JSON.stringify(data)}`
+            );
+        }
+        return Node.fromJSONArray(data);
     }
 
     /**
@@ -509,7 +544,14 @@ export class AssistsXAsync {
      */
     public static async getAllText(timeout?: number): Promise<string[]> {
         const response = await this.asyncCall(CallMethod.getAllText, { timeout });
-        return response.getDataOrDefault([]);
+        const data = response.getDataOrDefault([]);
+        if (!Array.isArray(data)) {
+            throw new Error(
+                `AssistsXAsync.getAllText: Expected array, but got ${typeof data}. ` +
+                `Value: ${JSON.stringify(data)}`
+            );
+        }
+        return data;
     }
 
     /**
@@ -528,7 +570,7 @@ export class AssistsXAsync {
             node,
             timeout,
         });
-        return Node.create(response.getDataOrDefault("{}"));
+        return Node.create(response.getDataOrDefault({}));
     }
 
     /**
@@ -542,7 +584,14 @@ export class AssistsXAsync {
             node,
             timeout,
         });
-        return Node.fromJSONArray(response.getDataOrDefault([]));
+        const data = response.getDataOrDefault([]);
+        if (!Array.isArray(data)) {
+            throw new Error(
+                `AssistsXAsync.getNodes: Expected array, but got ${typeof data}. ` +
+                `Value: ${JSON.stringify(data)}`
+            );
+        }
+        return Node.fromJSONArray(data);
     }
 
     /**
@@ -559,7 +608,14 @@ export class AssistsXAsync {
             node,
             timeout,
         });
-        return Node.fromJSONArray(response.getDataOrDefault([]));
+        const data = response.getDataOrDefault([]);
+        if (!Array.isArray(data)) {
+            throw new Error(
+                `AssistsXAsync.getChildren: Expected array, but got ${typeof data}. ` +
+                `Value: ${JSON.stringify(data)}`
+            );
+        }
+        return Node.fromJSONArray(data);
     }
 
     /**
@@ -576,7 +632,7 @@ export class AssistsXAsync {
             node,
             timeout,
         });
-        return Node.create(response.getDataOrDefault("{}"));
+        return Node.create(response.getDataOrDefault({}));
     }
 
     /**
@@ -971,7 +1027,7 @@ export class AssistsXAsync {
         const response = await this.asyncCall(CallMethod.getScreenSize, {
             timeout,
         });
-        return response.getDataOrDefault("{}");
+        return response.getDataOrDefault({});
     }
 
     /**
@@ -983,7 +1039,7 @@ export class AssistsXAsync {
         const response = await this.asyncCall(CallMethod.getAppScreenSize, {
             timeout,
         });
-        return response.getDataOrDefault("{}");
+        return response.getDataOrDefault({});
     }
 
     /**
@@ -1101,7 +1157,14 @@ export class AssistsXAsync {
         const response = await this.asyncCall(CallMethod.getAllContacts, {
             timeout,
         });
-        return response.getDataOrDefault([]);
+        const data = response.getDataOrDefault([]);
+        if (!Array.isArray(data)) {
+            throw new Error(
+                `AssistsXAsync.getAllContacts: Expected array, but got ${typeof data}. ` +
+                `Value: ${JSON.stringify(data)}`
+            );
+        }
+        return data;
     }
 
     /**
