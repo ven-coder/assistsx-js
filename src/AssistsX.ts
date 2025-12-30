@@ -51,27 +51,6 @@ export interface WebFloatingWindowOptions {
     initialCenter?: boolean;
 }
 
-/**
- * HTTP请求选项接口定义
- */
-export interface HttpRequestOptions {
-    url: string;
-    method?: "GET" | "POST";
-    headers?: Record<string, string>;
-    body?: string;
-    timeout?: number;
-}
-
-/**
- * HTTP响应数据接口定义
- */
-export interface HttpResponse {
-    statusCode: number;
-    statusMessage: string;
-    body: string;
-    headers: Record<string, string>;
-}
-
 // 回调函数存储对象
 export const callbacks: Map<string, (data: string) => void> = new Map();
 
@@ -1076,23 +1055,4 @@ export class AssistsX {
         return accessibilityEventListeners.length;
     }
 
-    /**
-     * 发送HTTP请求
-     * @param options 请求选项
-     * @returns HTTP响应
-     */
-    // public static async httpRequest(
-    //   options: HttpRequestOptions
-    // ): Promise<HttpResponse> {
-    //   const { url, method = "GET", headers, body, timeout = 30 } = options;
-    //   const response = await this.asyncCall(CallMethod.httpRequest, {
-    //     args: { url, method, headers, body, timeout },
-    //   });
-    //   return response.getDataOrDefault({
-    //     statusCode: -1,
-    //     statusMessage: "",
-    //     body: "",
-    //     headers: {},
-    //   });
-    // }
 }

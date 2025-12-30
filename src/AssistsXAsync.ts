@@ -13,8 +13,6 @@ import {
     AssistsX,
     callbacks,
     WebFloatingWindowOptions,
-    HttpRequestOptions,
-    HttpResponse,
 } from "./AssistsX";
 
 /**

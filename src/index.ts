@@ -15,3 +15,7 @@ export * from "./AccessibilityEventFilter";
 export * from "./AppInfo";
 export * from "./DeviceInfo";
 export * from "./StepError";
+export * from "./network/http";
+export * from "./filesystem/path";
+export * from "./filesystem/fileio/file-io";
+export * from "./filesystem/fileutils/file-utils";
