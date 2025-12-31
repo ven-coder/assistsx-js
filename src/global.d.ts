@@ -27,6 +27,10 @@ declare global {
             call(method: string): string | null;
         };
         assistsxHttpCallback: (data: string) => void;
+        assistsxIme: {
+            call(method: string): string | null;
+        };
+        assistsxImeCallback: (data: string) => void;
     }
 }
 
