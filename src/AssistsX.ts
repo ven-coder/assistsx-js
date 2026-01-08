@@ -101,6 +101,11 @@ if (typeof window !== "undefined" && !window.onAccessibilityEvent) {
 
 export class AssistsX {
     /**
+     * 屏幕尺寸静态变量，在 assistsxCallback 初始化后自动加载
+     */
+    public static screenSize: any = null;
+
+    /**
      * 执行同步调用
      * @param method 方法名
      * @param args 参数对象
@@ -1055,4 +1060,17 @@ export class AssistsX {
         return accessibilityEventListeners.length;
     }
 
+}
+
+// 在 assistsxCallback 初始化后，初始化屏幕尺寸
+if (typeof window !== "undefined") {
+    try {
+        // 检查 assistsx 是否可用，如果可用则初始化屏幕尺寸
+        if ((window as any).assistsx && typeof (window as any).assistsx.call === "function") {
+            AssistsX.screenSize = AssistsX.getScreenSize();
+        }
+    } catch (e) {
+        // 如果初始化失败，screenSize 保持为 null
+        console.log("Failed to initialize screen size:", e);
+    }
 }

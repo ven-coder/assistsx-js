@@ -1,6 +1,7 @@
 // CallMethod 常量对象
 export const CallMethod = {
     takeScreenshot: "takeScreenshot",
+    takeScreenshotSave: "takeScreenshotSave",
     overlayToast: "overlayToast",
     setNodeText: "setNodeText",
     findByTags: "findByTags",
@@ -67,6 +68,9 @@ export const CallMethod = {
     // 通讯录相关方法
     addContact: "addContact",
     getAllContacts: "getAllContacts",
+
+    // 节点树相关方法
+    saveRootNodeTreeJson: "saveRootNodeTreeJson",
 } as const;
 
 // 导出类型定义

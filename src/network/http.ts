@@ -35,6 +35,16 @@ export interface HttpDownloadResponse {
     headers: Record<string, string>;
 }
 
+/**
+ * 文件上传信息接口定义
+ */
+export interface FileUploadInfo {
+    filePath: string;
+    fieldName?: string;
+    fileName?: string;
+    contentType?: string;
+}
+
 // 回调函数存储对象
 const callbacks: Map<string, (data: string) => void> = new Map();
 
@@ -153,27 +163,53 @@ export class Http {
 
     /**
      * 执行文件上传 POST 请求
-     * @param url 请求 URL
-     * @param filePath 文件路径
-     * @param fieldName 表单字段名，默认为 "file"
-     * @param fileName 文件名，如果不提供则使用文件路径中的文件名
-     * @param formData 其他表单数据
-     * @param headers 请求头
+     * 支持单个文件和多文件上传，同时支持多个表单字段
+     * 
+     * @param url 请求 URL（必需）
+     * @param files 文件数组（必需），每个文件对象包含：
+     *   - filePath: 文件路径（必需）
+     *   - fieldName: 字段名（可选，默认 "file"）
+     *   - fileName: 文件名（可选，默认使用文件原名）
+     *   - contentType: 文件类型（可选，默认 "application/octet-stream"）
+     * @param formData 表单字段（可选），支持字符串值或字符串数组（同名字段多个值）
+     * @param headers 请求头（可选）
      * @param timeout 超时时间(秒)，默认30秒
      * @returns Promise<HTTP响应>
+     * 
+     * @example
+     * // 单文件上传
+     * await http.httpPostFile("https://example.com/upload", [
+     *   { filePath: "/path/to/file.jpg", fieldName: "file" }
+     * ]);
+     * 
+     * @example
+     * // 多文件上传
+     * await http.httpPostFile("https://example.com/upload", [
+     *   { filePath: "/path/to/file1.jpg", fieldName: "file1" },
+     *   { filePath: "/path/to/file2.jpg", fieldName: "file2" }
+     * ], { description: "My files" });
      */
     async httpPostFile(
         url: string,
-        filePath: string,
-        fieldName: string = "file",
-        fileName?: string,
-        formData?: Record<string, string>,
+        files: FileUploadInfo[],
+        formData?: Record<string, string | string[]>,
         headers?: Record<string, string>,
         timeout?: number
     ): Promise<HttpResponse> {
+        if (!files || files.length === 0) {
+            throw new Error("files参数不能为空，至少需要上传一个文件");
+        }
+
+        // 验证每个文件对象
+        for (const file of files) {
+            if (!file.filePath) {
+                throw new Error("files数组中的filePath参数不能为空");
+            }
+        }
+
         const response = await this.asyncCall(
             "httpPostFile",
-            { url, filePath, fieldName, fileName, formData, headers },
+            { url, files, formData, headers },
             timeout
         );
         if (!response.isSuccess()) {

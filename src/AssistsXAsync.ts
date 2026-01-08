@@ -217,6 +217,43 @@ export class AssistsXAsync {
         const data = response.getDataOrDefault({ images: [] });
         return data.images;
     }
+
+    /**
+     * 保存全屏截图到文件
+     * @param options 截图保存选项
+     * @param options.filePath 文件路径（可选，不提供则自动生成）
+     * @param options.format 图片格式，支持 "PNG"、"JPEG"、"JPG"、"WEBP"，默认为 "PNG"
+     * @param options.overlayHiddenScreenshotDelayMillis 截图延迟时间(毫秒)，默认为 250
+     * @param options.timeout 超时时间(秒)，默认30秒
+     * @returns 保存的文件路径
+     */
+    public static async takeScreenshotSave(
+        options: {
+            filePath?: string;
+            format?: "PNG" | "JPEG" | "JPG" | "WEBP";
+            overlayHiddenScreenshotDelayMillis?: number;
+            timeout?: number;
+        } = {}
+    ): Promise<string> {
+        const {
+            filePath,
+            format = "PNG",
+            overlayHiddenScreenshotDelayMillis = 250,
+            timeout,
+        } = options;
+
+        const response = await this.asyncCall(CallMethod.takeScreenshotSave, {
+            args: {
+                filePath,
+                format,
+                overlayHiddenScreenshotDelayMillis,
+            },
+            timeout,
+        });
+        const data = response.getDataOrDefault({ file: "" });
+        return data.file;
+    }
+
     /**
      * 截图识别文本
      * @param param0 识别参数
@@ -1163,6 +1200,38 @@ export class AssistsXAsync {
             );
         }
         return data;
+    }
+
+    /**
+     * 保存根节点树为JSON文件
+     * @param options 保存选项
+     * @param options.filePath 文件路径（可选，不提供则自动生成）
+     * @param options.prettyPrint 是否格式化输出，默认为 true
+     * @param options.timeout 超时时间(秒)，默认30秒
+     * @returns 保存的文件路径
+     */
+    public static async saveRootNodeTreeJson(
+        options: {
+            filePath?: string;
+            prettyPrint?: boolean;
+            timeout?: number;
+        } = {}
+    ): Promise<string> {
+        const {
+            filePath,
+            prettyPrint = true,
+            timeout,
+        } = options;
+
+        const response = await this.asyncCall(CallMethod.saveRootNodeTreeJson, {
+            args: {
+                filePath,
+                prettyPrint,
+            },
+            timeout,
+        });
+        const data = response.getDataOrDefault({ file: "" });
+        return data.file;
     }
 
     /**

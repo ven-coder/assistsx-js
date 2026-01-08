@@ -177,6 +177,7 @@ export class FileIO {
      * @param filePath 文件路径
      * @param content 文件内容
      * @param append 是否追加，默认为 false
+     * @param threadSafe 是否线程安全写入，默认为 false
      * @param timeout 超时时间(秒)，默认30秒
      * @returns Promise<是否成功>
      */
@@ -184,11 +185,12 @@ export class FileIO {
         filePath: string,
         content: string,
         append: boolean = false,
+        threadSafe: boolean = false,
         timeout?: number
     ): Promise<boolean> {
         const response = await this.asyncCall(
             "writeFileFromString",
-            { filePath, content, append },
+            { filePath, content, append, threadSafe },
             timeout
         );
         if (!response.isSuccess()) {

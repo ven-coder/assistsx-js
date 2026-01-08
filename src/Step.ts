@@ -24,6 +24,7 @@ export class Step {
     static readonly repeatCountInfinite: number = -1;
     static repeatCountMaxDefault: number = Step.repeatCountInfinite;
     static showLog: boolean = false;
+    static exceptionRetryCountMaxDefault: number = 3;
 
     /**
      * 当前执行步骤的ID
@@ -54,11 +55,13 @@ export class Step {
             tag,
             data,
             delayMs = Step.delayMsDefault,
+            exceptionRetryCountMax = Step.exceptionRetryCountMaxDefault,
         }: {
             stepId?: string | undefined;
             tag?: string | undefined;
             data?: any | undefined;
             delayMs?: number;
+            exceptionRetryCountMax?: number;
         } = {}
     ): Promise<Step | undefined> {
         this.exception = undefined;
@@ -87,93 +90,133 @@ export class Step {
                 tag,
                 data,
                 delayMs,
+                exceptionRetryCountMax,
             });
             while (true) {
-                if (currentStep.delayMs) {
-                    if (Step.showLog) {
-                        console.log(`延迟${currentStep.delayMs}毫秒`);
-                    }
-                    await currentStep.delay(currentStep.delayMs);
-                    Step.assert(currentStep.stepId);
-                }
-                //执行步骤
-                implnName = currentStep.impl?.name ?? "undefined";
-                if (Step.showLog) {
-                    console.log(
-                        `执行步骤${implnName}，重复次数${currentStep.repeatCount}`
-                    );
-                }
-
-                // 执行拦截器
+                // 在循环开始处定义变量，以便在 catch 块中访问
                 let interceptedStep: StepResult = undefined;
-                for (const interceptor of this._interceptors) {
-                    try {
-                        const result = await interceptor(currentStep);
-                        if (result) {
-                            interceptedStep = result;
+                let stepForRetry: Step = currentStep; // 用于异常重试的步骤配置
+                try {
+                    if (currentStep.delayMs) {
+                        if (Step.showLog) {
+                            console.log(`延迟${currentStep.delayMs}毫秒`);
+                        }
+                        await currentStep.delay(currentStep.delayMs);
+                        Step.assert(currentStep.stepId);
+                    }
+                    //执行步骤
+                    implnName = currentStep.impl?.name ?? "undefined";
+                    if (Step.showLog) {
+                        console.log(
+                            `执行步骤${implnName}，重复次数${currentStep.repeatCount}`
+                        );
+                    }
+
+                    // 执行拦截器
+                    for (const interceptor of this._interceptors) {
+                        try {
+                            const result = await interceptor(currentStep);
+                            if (result) {
+                                interceptedStep = result;
+                                if (Step.showLog) {
+                                    console.log(`步骤${implnName}被拦截器拦截，执行拦截后的步骤`);
+                                }
+                                break;
+                            }
+                        } catch (e: any) {
                             if (Step.showLog) {
-                                console.log(`步骤${implnName}被拦截器拦截，执行拦截后的步骤`);
+                                console.error(`拦截器执行出错`, e);
+                            }
+                            // 拦截器出错不影响主流程，继续执行原步骤
+                        }
+                    }
+
+                    // 如果被拦截，执行拦截后的步骤，否则执行原步骤
+                    stepForRetry = currentStep; // 默认使用当前步骤的重试配置
+                    if (interceptedStep !== undefined) {
+                        // 执行拦截后的步骤，需要处理延迟和重复次数
+                        const stepToExecute = interceptedStep;
+                        stepForRetry = stepToExecute; // 使用拦截后步骤的重试配置
+
+                        // 如果拦截后的步骤有延迟时间，先执行延迟
+                        if (stepToExecute.delayMs) {
+                            if (Step.showLog) {
+                                console.log(`拦截步骤延迟${stepToExecute.delayMs}毫秒`);
+                            }
+                            await stepToExecute.delay(stepToExecute.delayMs);
+                            Step.assert(stepToExecute.stepId);
+                        }
+
+                        // 打印拦截步骤的执行信息
+                        const interceptedImplName = stepToExecute.impl?.name;
+                        if (Step.showLog) {
+                            console.log(
+                                `执行拦截步骤${interceptedImplName}，重复次数${stepToExecute.repeatCount}`
+                            );
+                        }
+
+                        // 执行拦截后的步骤
+                        nextStep = await stepToExecute.impl?.(stepToExecute);
+                    } else {
+                        nextStep = await currentStep.impl?.(currentStep);
+                    }
+                    if (
+                        currentStep.repeatCountMax >= Step.repeatCountInfinite &&
+                        currentStep.repeatCount >= currentStep.repeatCountMax
+                    ) {
+                        if (Step.showLog) {
+                            console.log(
+                                `重复次数${currentStep.repeatCount}超过最大次数${currentStep.repeatCountMax}，停止执行`
+                            );
+                        }
+                        throw new StepError("步骤重复次数达到最大次数", { stepId: currentStep.stepId, repeatCount: currentStep.repeatCount, repeatCountMax: currentStep.repeatCountMax });
+                    }
+
+                    Step.assert(currentStep.stepId);
+
+                    // 执行成功，重置异常重试次数（使用实际执行的步骤配置）
+                    stepForRetry.exceptionRetryCount = 0;
+
+                    if (nextStep) {
+                        currentStep = nextStep;
+                        if (currentStep.isEnd) {
+                            if (Step.showLog) {
+                                console.log(`步骤${implnName}结束`);
                             }
                             break;
                         }
-                    } catch (e: any) {
-                        if (Step.showLog) {
-                            console.error(`拦截器执行出错`, e);
-                        }
-                        // 拦截器出错不影响主流程，继续执行原步骤
-                    }
-                }
-
-                // 如果被拦截，执行拦截后的步骤，否则执行原步骤
-                if (interceptedStep !== undefined) {
-                    // 执行拦截后的步骤，需要处理延迟和重复次数
-                    const stepToExecute = interceptedStep;
-
-                    // 如果拦截后的步骤有延迟时间，先执行延迟
-                    if (stepToExecute.delayMs) {
-                        if (Step.showLog) {
-                            console.log(`拦截步骤延迟${stepToExecute.delayMs}毫秒`);
-                        }
-                        await stepToExecute.delay(stepToExecute.delayMs);
-                        Step.assert(stepToExecute.stepId);
-                    }
-
-                    // 打印拦截步骤的执行信息
-                    const interceptedImplName = stepToExecute.impl?.name;
-                    if (Step.showLog) {
-                        console.log(
-                            `执行拦截步骤${interceptedImplName}，重复次数${stepToExecute.repeatCount}`
-                        );
-                    }
-
-                    // 执行拦截后的步骤
-                    nextStep = await stepToExecute.impl?.(stepToExecute);
-                } else {
-                    nextStep = await currentStep.impl?.(currentStep);
-                }
-                if (
-                    currentStep.repeatCountMax >= Step.repeatCountInfinite &&
-                    currentStep.repeatCount >= currentStep.repeatCountMax
-                ) {
-                    if (Step.showLog) {
-                        console.log(
-                            `重复次数${currentStep.repeatCount}超过最大次数${currentStep.repeatCountMax}，停止执行`
-                        );
-                    }
-                    throw new StepError("步骤重复次数达到最大次数", { stepId: currentStep.stepId, repeatCount: currentStep.repeatCount, repeatCountMax: currentStep.repeatCountMax });
-                }
-
-                Step.assert(currentStep.stepId);
-                if (nextStep) {
-                    currentStep = nextStep;
-                    if (currentStep.isEnd) {
-                        if (Step.showLog) {
-                            console.log(`步骤${implnName}结束`);
-                        }
+                    } else {
                         break;
                     }
-                } else {
-                    break;
+                } catch (e: any) {
+                    // 如果是步骤重复次数达到最大次数的异常，直接抛出，不进行重试
+                    if (e?.message === "步骤重复次数达到最大次数") {
+                        throw e;
+                    }
+
+                    // 捕获循环内部的异常
+                    // stepForRetry 已在循环开始处定义，如果执行的是拦截后的步骤，使用拦截后步骤的配置
+                    stepForRetry.exceptionRetryCount++;
+                    if (stepForRetry.exceptionRetryCount < stepForRetry.exceptionRetryCountMax) {
+                        // 未达到最大重试次数，继续重试
+                        if (Step.showLog) {
+                            console.warn(
+                                `步骤${implnName}执行异常，重试第${stepForRetry.exceptionRetryCount}次，最大重试次数${stepForRetry.exceptionRetryCountMax}`,
+                                e
+                            );
+                        }
+                        // 继续循环，重试执行
+                        continue;
+                    } else {
+                        // 达到最大重试次数，抛出异常
+                        if (Step.showLog) {
+                            console.error(
+                                `步骤${implnName}执行异常，已达到最大重试次数${stepForRetry.exceptionRetryCountMax}，停止重试`,
+                                e
+                            );
+                        }
+                        throw e;
+                    }
                 }
             }
         } catch (e: any) {
@@ -340,6 +383,16 @@ export class Step {
     repeatCountMax: number = Step.repeatCountMaxDefault;
 
     /**
+     * 异常重试次数
+     */
+    exceptionRetryCount: number = 0;
+
+    /**
+     * 异常重试最大次数,默认3次
+     */
+    exceptionRetryCountMax: number = Step.exceptionRetryCountMaxDefault;
+
+    /**
      * 步骤标签
      */
     tag: string | undefined;
@@ -375,6 +428,7 @@ export class Step {
         data,
         delayMs = Step.delayMsDefault,
         repeatCountMax = Step.repeatCountMaxDefault,
+        exceptionRetryCountMax = Step.exceptionRetryCountMaxDefault,
         isEnd = false,
     }: {
         stepId: string;
@@ -383,14 +437,16 @@ export class Step {
         data?: any | undefined;
         delayMs?: number;
         repeatCountMax?: number;
+        exceptionRetryCountMax?: number;
         isEnd?: boolean;
     }) {
         this.tag = tag;
         this.stepId = stepId;
-        this.data = data;
+        this.data = data ?? {};
         this.impl = impl;
         this.delayMs = delayMs;
         this.repeatCountMax = repeatCountMax;
+        this.exceptionRetryCountMax = exceptionRetryCountMax;
         this.isEnd = isEnd;
     }
 
@@ -412,11 +468,13 @@ export class Step {
             data,
             delayMs = Step.delayMsDefault,
             repeatCountMax = Step.repeatCountMaxDefault,
+            exceptionRetryCountMax = Step.exceptionRetryCountMaxDefault,
         }: {
             tag?: string | undefined;
             data?: any | undefined;
             delayMs?: number;
             repeatCountMax?: number;
+            exceptionRetryCountMax?: number;
         } = {}
     ): Step {
         Step.assert(this.stepId);
@@ -424,9 +482,10 @@ export class Step {
             stepId: this.stepId,
             impl,
             tag,
-            data: data ?? this.data,
+            data: data ?? this.data ?? {},
             delayMs,
             repeatCountMax,
+            exceptionRetryCountMax,
         });
     }
     end(
@@ -435,11 +494,13 @@ export class Step {
             data,
             delayMs = Step.delayMsDefault,
             repeatCountMax = Step.repeatCountMaxDefault,
+            exceptionRetryCountMax = Step.exceptionRetryCountMaxDefault,
         }: {
             tag?: string | undefined;
             data?: any | undefined;
             delayMs?: number;
             repeatCountMax?: number;
+            exceptionRetryCountMax?: number;
         } = {}
     ): Step {
         Step.assert(this.stepId);
@@ -447,9 +508,10 @@ export class Step {
             stepId: this.stepId,
             impl: undefined,
             tag,
-            data: data ?? this.data,
+            data: data ?? this.data ?? {},
             delayMs,
             repeatCountMax,
+            exceptionRetryCountMax,
             isEnd: true,
         });
     }
@@ -465,15 +527,17 @@ export class Step {
     repeat({
         stepId = this.stepId,
         tag = this.tag,
-        data = this.data,
+        data = this.data ?? {},
         delayMs = this.delayMs,
         repeatCountMax = this.repeatCountMax,
+        exceptionRetryCountMax = this.exceptionRetryCountMax,
     }: {
         stepId?: string;
         tag?: string | undefined;
         data?: any | undefined;
         delayMs?: number;
         repeatCountMax?: number;
+        exceptionRetryCountMax?: number;
     } = {}): Step {
         Step.assert(this.stepId);
         this.repeatCount++;
@@ -482,6 +546,9 @@ export class Step {
         this.data = data;
         this.delayMs = delayMs;
         this.repeatCountMax = repeatCountMax;
+        this.exceptionRetryCountMax = exceptionRetryCountMax;
+        // 重复执行时重置异常重试次数
+        this.exceptionRetryCount = 0;
         return this;
     }
 
