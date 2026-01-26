@@ -20,3 +20,4 @@ export * from "./filesystem/path";
 export * from "./filesystem/fileio/file-io";
 export * from "./filesystem/fileutils/file-utils";
 export * from "./ime/ime";
+export * from "./imageutils/image-utils";

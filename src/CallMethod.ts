@@ -2,6 +2,7 @@
 export const CallMethod = {
     takeScreenshot: "takeScreenshot",
     takeScreenshotSave: "takeScreenshotSave",
+    takeScreenshotToFile: "takeScreenshotToFile",
     overlayToast: "overlayToast",
     setNodeText: "setNodeText",
     findByTags: "findByTags",

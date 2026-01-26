@@ -255,6 +255,52 @@ export class AssistsXAsync {
     }
 
     /**
+     * 保存截图到文件（支持多个节点）
+     * @param options 截图保存选项
+     * @param options.nodes 要截图的节点数组（可选，不提供则保存全屏截图）
+     * @param options.filePath 文件路径（可选，不提供则自动生成。多个节点时会自动添加索引后缀）
+     * @param options.format 图片格式，支持 "PNG"、"JPEG"、"JPG"、"WEBP"，默认为 "PNG"
+     * @param options.overlayHiddenScreenshotDelayMillis 截图延迟时间(毫秒)，默认为 250
+     * @param options.timeout 超时时间(秒)，默认30秒
+     * @returns 保存的文件路径数组
+     */
+    public static async takeScreenshotToFile(
+        options: {
+            nodes?: Node[];
+            filePath?: string;
+            format?: "PNG" | "JPEG" | "JPG" | "WEBP";
+            overlayHiddenScreenshotDelayMillis?: number;
+            timeout?: number;
+        } = {}
+    ): Promise<string[]> {
+        const {
+            nodes,
+            filePath,
+            format = "PNG",
+            overlayHiddenScreenshotDelayMillis = 250,
+            timeout,
+        } = options;
+
+        const response = await this.asyncCall(CallMethod.takeScreenshotToFile, {
+            nodes,
+            args: {
+                filePath,
+                format,
+                overlayHiddenScreenshotDelayMillis,
+            },
+            timeout,
+        });
+        const data = response.getDataOrDefault({ files: [] });
+        if (!Array.isArray(data.files)) {
+            throw new Error(
+                `AssistsXAsync.takeScreenshotToFile: Expected files array, but got ${typeof data.files}. ` +
+                `Value: ${JSON.stringify(data.files)}`
+            );
+        }
+        return data.files;
+    }
+
+    /**
      * 截图识别文本
      * @param param0 识别参数
      * @returns 截图识别结果

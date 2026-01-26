@@ -4,6 +4,7 @@
  */
 import { Bounds } from "./Bounds";
 import { AssistsX } from "./AssistsX";
+import { AssistsXAsync } from "./AssistsXAsync";
 import { Step } from "./Step";
 import { NodeAsync } from "./NodeAsync";
 
@@ -398,6 +399,29 @@ export class Node {
             [this],
             overlayHiddenScreenshotDelayMillis
         );
+        Step.assert(this.stepId);
+        return result[0];
+    }
+    /**
+     * 保存节点截图到文件
+     * @param options 截图保存选项
+     * @param options.filePath 文件路径（可选，不提供则自动生成）
+     * @param options.format 图片格式，支持 "PNG"、"JPEG"、"JPG"、"WEBP"，默认为 "PNG"
+     * @param options.overlayHiddenScreenshotDelayMillis 截图延迟时间(毫秒)，默认为 250
+     * @returns 保存的文件路径
+     */
+    public async takeScreenshotToFile(
+        options: {
+            filePath?: string;
+            format?: "PNG" | "JPEG" | "JPG" | "WEBP";
+            overlayHiddenScreenshotDelayMillis?: number;
+        } = {}
+    ): Promise<string> {
+        Step.assert(this.stepId);
+        const result = await AssistsXAsync.takeScreenshotToFile({
+            nodes: [this],
+            ...options,
+        });
         Step.assert(this.stepId);
         return result[0];
     }
