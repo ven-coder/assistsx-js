@@ -219,6 +219,8 @@ export class Step {
                     }
                 }
             }
+            //步骤执行完成
+            stepStore.completeStep();
         } catch (e: any) {
             console.error(`步骤${implnName}执行出错`, e);
             //步骤执行出错
@@ -231,8 +233,6 @@ export class Step {
             stepStore.setError(errorMsg);
             throw e
         }
-        //步骤执行结束
-        stepStore.completeStep();
         return currentStep;
     }
 

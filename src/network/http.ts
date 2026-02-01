@@ -33,6 +33,9 @@ export interface HttpDownloadResponse {
     savePath: string;
     fileSize: number;
     saveToGallerySuccess?: boolean;
+    galleryUri?: string;
+    galleryId?: number;
+    galleryType?: string;
     headers: Record<string, string>;
 }
 
@@ -225,6 +228,7 @@ export class Http {
      * @param savePath 保存路径
      * @param headers 请求头
      * @param saveToGallery 是否保存到系统相册（仅支持图片和视频文件），默认 false
+     * @param displayName 保存到相册时的显示名称（可选，默认使用文件名）
      * @param timeout 超时时间(秒)，默认30秒
      * @returns Promise<下载响应>
      */
@@ -233,11 +237,12 @@ export class Http {
         savePath: string,
         headers?: Record<string, string>,
         saveToGallery?: boolean,
+        displayName?: string,
         timeout?: number
     ): Promise<HttpDownloadResponse> {
         const response = await this.asyncCall(
             "httpDownload",
-            { url, savePath, headers, saveToGallery },
+            { url, savePath, headers, saveToGallery, displayName },
             timeout
         );
         if (!response.isSuccess()) {
