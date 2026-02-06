@@ -1281,6 +1281,19 @@ export class AssistsXAsync {
     }
 
     /**
+     * 获取剪贴板文本内容
+     * @param timeout 超时时间(秒)，默认30秒
+     * @returns 剪贴板文本内容，如果获取失败则返回空字符串
+     */
+    public static async getClipboardText(timeout?: number): Promise<string> {
+        const response = await this.asyncCall(CallMethod.getClipboardText, {
+            timeout,
+        });
+        const data = response.getDataOrDefault({ text: "" });
+        return data.text || "";
+    }
+
+    /**
      * 发送HTTP请求
      * @param options 请求选项
      * @returns HTTP响应

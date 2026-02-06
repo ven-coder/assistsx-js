@@ -258,6 +258,19 @@ export class AssistsX {
     }
 
     /**
+     * 获取剪贴板文本内容（异步）
+     * @param timeout 超时时间(秒)，默认30秒
+     * @returns 剪贴板文本内容，如果获取失败则返回空字符串
+     */
+    public static async getClipboardText(timeout?: number): Promise<string> {
+        const response = await this.asyncCall(CallMethod.getClipboardText, {
+            timeout,
+        });
+        const data = response.getDataOrDefault({ text: "" });
+        return data.text || "";
+    }
+
+    /**
      * 在浏览器中打开URL
      * @param url 要打开的URL
      * @returns 是否成功打开

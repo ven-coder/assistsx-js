@@ -1,6 +1,6 @@
 {
     "name": "assistsx-js",
-    "version": "0.1.27",
+    "version": "0.1.29",
     "description": "assistsx-js自动化开发SDK",
     "main": "dist/index.js",
     "module": "dist/index.js",

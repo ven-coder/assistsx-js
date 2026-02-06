@@ -22,3 +22,5 @@ export * from "./filesystem/fileutils/file-utils";
 export * from "./ime/ime";
 export * from "./imageutils/image-utils";
 export * from "./gallery/gallery";
+export * from "./mlkit/mlkit";
+export * from "./mlkit/MlkitCallMethod";

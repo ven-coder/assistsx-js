@@ -57,6 +57,7 @@ export const CallMethod = {
     getNetworkType: "getNetworkType",
     isAppInstalled: "isAppInstalled",
     getClipboardLatestText: "getClipboardLatestText",
+    getClipboardText: "getClipboardText",
     openUrlInBrowser: "openUrlInBrowser",
     keepScreenOn: "keepScreenOn",
     clearKeepScreenOn: "clearKeepScreenOn",
