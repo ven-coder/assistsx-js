@@ -44,11 +44,21 @@ export type AccessibilityEventListener = (event: AccessibilityEvent) => void;
 export interface WebFloatingWindowOptions {
     initialWidth?: number;
     initialHeight?: number;
+    /** Initial window X position (default 0) */
+    initialX?: number;
+    /** Initial window Y position (default 0) */
+    initialY?: number;
     minWidth?: number;
     minHeight?: number;
     maxWidth?: number;
     maxHeight?: number;
     initialCenter?: boolean;
+    /** Whether to show top operation area (title bar, close button, etc.) */
+    showTopOperationArea?: boolean;
+    /** Whether to show bottom operation area (zoom, back/forward/refresh, etc.) */
+    showBottomOperationArea?: boolean;
+    /** Background color: hex string (e.g. "#ffffff") or Android color int */
+    backgroundColor?: string | number;
 }
 
 // 回调函数存储对象
@@ -336,11 +346,16 @@ export class AssistsX {
         const {
             initialWidth,
             initialHeight,
+            initialX,
+            initialY,
             minWidth,
             minHeight,
             maxWidth,
             maxHeight,
             initialCenter,
+            showTopOperationArea,
+            showBottomOperationArea,
+            backgroundColor,
             timeout,
         } = options;
         const response = await this.asyncCall(CallMethod.loadWebViewOverlay, {
@@ -348,11 +363,16 @@ export class AssistsX {
                 url,
                 initialWidth,
                 initialHeight,
+                initialX,
+                initialY,
                 minWidth,
                 minHeight,
                 maxWidth,
                 maxHeight,
                 initialCenter,
+                showTopOperationArea,
+                showBottomOperationArea,
+                backgroundColor,
             },
             timeout,
         });

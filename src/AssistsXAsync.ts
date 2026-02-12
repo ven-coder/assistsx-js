@@ -354,11 +354,16 @@ export class AssistsXAsync {
         const {
             initialWidth,
             initialHeight,
+            initialX,
+            initialY,
             minWidth,
             minHeight,
             maxWidth,
             maxHeight,
             initialCenter,
+            showTopOperationArea,
+            showBottomOperationArea,
+            backgroundColor,
             timeout,
         } = options;
         const response = await this.asyncCall(CallMethod.loadWebViewOverlay, {
@@ -366,16 +371,33 @@ export class AssistsXAsync {
                 url,
                 initialWidth,
                 initialHeight,
+                initialX,
+                initialY,
                 minWidth,
                 minHeight,
                 maxWidth,
                 maxHeight,
                 initialCenter,
+                showTopOperationArea,
+                showBottomOperationArea,
+                backgroundColor,
             },
             timeout,
         });
         const data = response.getDataOrDefault({});
         return data;
+    }
+
+    /**
+     * 关闭当前 WebView 悬浮窗
+     * @param timeout 超时时间(秒)，默认30秒
+     * @returns 是否关闭成功（当前页面在悬浮窗内时返回 true，否则 false）
+     */
+    public static async closeOverlay(timeout?: number): Promise<boolean> {
+        const response = await this.asyncCall(CallMethod.closeOverlay, {
+            timeout,
+        });
+        return response.getDataOrDefault(false);
     }
 
     /**

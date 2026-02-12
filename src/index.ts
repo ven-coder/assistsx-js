@@ -24,3 +24,7 @@ export * from "./imageutils/image-utils";
 export * from "./gallery/gallery";
 export * from "./mlkit/mlkit";
 export * from "./mlkit/MlkitCallMethod";
+export * from "./barutils/bar-utils";
+export * from "./barutils/BarUtilsCallMethod";
+export * from "./floatingwindow/float";
+export * from "./floatingwindow/FloatCallMethod";

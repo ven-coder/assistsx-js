@@ -43,6 +43,14 @@ declare global {
             call(method: string): string | null;
         };
         assistsxMlkitCallback: (data: string) => void;
+        assistsxBarUtils: {
+            call(method: string): string | null;
+        };
+        assistsxBarUtilsCallback: (data: string) => void;
+        assistsxFloat: {
+            call(method: string): string | null;
+        };
+        assistsxFloatCallback: (data: string) => void;
     }
 }
 
