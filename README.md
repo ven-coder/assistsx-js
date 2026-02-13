@@ -78,7 +78,7 @@ export default defineConfig({
 
 ## 示例
 
-示例源码及使用教程：[https://github.com/ven-coder/assistsx-js-simple](https://github.com/ven-coder/assistsx-js-simple)
+示例源码及使用教程：[assistsx-js-simple](https://github.com/ven-coder/assists-examples/tree/main/assistsx-js-simple)
 
 ## 🙋有问题欢迎反馈交流
 
