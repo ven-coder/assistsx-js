@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AssistsX JS - HTML 直接引用示例</title>
+</head>
+<body>
+  <h1>AssistsX JS 浏览器示例</h1>
+  <p>通过 &lt;script&gt; 标签直接引用，无需构建工具。</p>
+  <button id="btn">测试按钮</button>
+
+  <!-- 方式1: 通过 CDN 引入（推荐，发布后使用） -->
+  <script src="https://unpkg.com/assistsx-js/dist/index.global.js"></script>
+  <!-- 方式2: 本地构建后引用（开发时使用 npm run build 后） -->
+  <!-- <script src="../dist/index.global.js"></script> -->
+
+  <script>
+    const { AssistsX, float } = AssistsXJS;
+    // 调用 open 方法（异步）
+    document.getElementById('btn').onclick = async () => {
+        try {
+            const ok = await float.open('/examples/html-browser.html', {
+                initialWidth: 400,
+                initialHeight: 600,
+                initialCenter: true,
+                showTopOperationArea: true,
+                showBottomOperationArea: true,
+            });
+            console.log('浮动窗口已打开:', ok);
+        } catch (err) {
+            console.error('打开失败:', err);
+        }
+    };
+  </script>
+</body>
+</html>

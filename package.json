@@ -1,26 +1,31 @@
 {
     "name": "assistsx-js",
-    "version": "0.1.41",
+    "version": "0.1.42",
     "description": "assistsx-js自动化开发SDK",
-    "main": "dist/index.js",
+    "main": "dist/index.cjs",
     "module": "dist/index.js",
     "types": "dist/index.d.ts",
+    "unpkg": "dist/index.global.js",
+    "jsdelivr": "dist/index.global.js",
     "files": [
         "dist",
         "src"
     ],
     "exports": {
         ".": {
+            "types": "./dist/index.d.ts",
             "import": "./dist/index.js",
-            "require": "./dist/index.js",
-            "types": "./dist/index.d.ts"
+            "require": "./dist/index.cjs"
+        },
+        "./global": {
+            "default": "./dist/index.global.js"
         }
     },
     "publishConfig": {
         "access": "public"
     },
     "scripts": {
-        "build": "tsc",
+        "build": "tsup",
         "prepublish": "npm run build",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
@@ -35,6 +40,7 @@
     "author": "Ven",
     "license": "MIT",
     "devDependencies": {
+        "tsup": "^8.5.0",
         "typescript": "^5.3.3"
     },
     "dependencies": {

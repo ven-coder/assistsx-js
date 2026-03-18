@@ -16,6 +16,38 @@
 **[Assistsx源码](https://github.com/ven-coder/assistsx)**
 
 # 快速开始
+
+## 方式一：HTML 直接引用（无需构建工具）
+
+在 HTML 中通过 `<script>` 标签直接引入即可使用，适合快速 prototyping 或简单页面：
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>AssistsX 示例</title>
+</head>
+<body>
+  <button id="btn">测试按钮</button>
+
+  <!-- 通过 CDN 引入 -->
+  <script src="https://unpkg.com/assistsx-js/dist/index.global.js"></script>
+  <!-- 或使用 jsdelivr: <script src="https://cdn.jsdelivr.net/npm/assistsx-js/dist/index.global.js"></script> -->
+
+  <script>
+    const { AssistsX } = AssistsXJS;
+    document.getElementById('btn').onclick = () => {
+      AssistsX.findById('com.tencent.mm:id/jha')[0].click();
+    };
+  </script>
+</body>
+</html>
+```
+
+引入后，所有 API 通过全局变量 `AssistsXJS` 访问，例如：`AssistsXJS.AssistsX`、`AssistsXJS.Node` 等。
+
+## 方式二：Vite / Vue 项目
 ## 1. 创建项目
 - 创建`vite`模版项目：`npm create vite@latest assistsx-helloword -- --template vue`
 - 安装`assistsx-js`依赖：`npm install assistsx-js@latest`

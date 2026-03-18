@@ -7,7 +7,7 @@ import { CallMethod } from "./CallMethod";
 import { CallResponse } from "./CallResponse";
 import { Bounds } from "./Bounds";
 import { decodeBase64UTF8, generateUUID } from "./Utils";
-import { AccessibilityEventFilter } from "AccessibilityEventFilter";
+import { AccessibilityEventFilter } from "./AccessibilityEventFilter";
 import { AppInfo } from "./AppInfo";
 import { DeviceInfo } from "./DeviceInfo";
 
