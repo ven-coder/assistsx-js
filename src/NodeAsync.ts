@@ -406,7 +406,9 @@ export class NodeAsync {
         isSelected: boolean;
         isVisibleToUser: boolean;
         drawingOrder: number;
-        boundsInScreen: Bounds;
+        bounds?: Bounds;
+        /** @deprecated 请使用 bounds 替代 */
+        boundsInScreen?: Bounds;
     }): Node {
         return new Node(params);
     }

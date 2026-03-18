@@ -67,6 +67,17 @@ export const callbacks: Map<string, (data: string) => void> = new Map();
 // 无障碍事件监听器存储
 export const accessibilityEventListeners: AccessibilityEventListener[] = [];
 
+/**
+ * 屏幕尺寸类型（width/height 为整型像素值）
+ */
+export interface Screen {
+    width: number;
+    height: number;
+}
+
+/** 全局屏幕尺寸，在 assistsxCallback 初始化后自动加载 */
+export let screen: Screen | null = null;
+
 // 初始化全局回调函数
 if (typeof window !== "undefined" && !window.assistsxCallback) {
     window.assistsxCallback = (data: string) => {
@@ -111,9 +122,18 @@ if (typeof window !== "undefined" && !window.onAccessibilityEvent) {
 
 export class AssistsX {
     /**
-     * 屏幕尺寸静态变量，在 assistsxCallback 初始化后自动加载
+     * 屏幕尺寸（与全局变量 screen 同源）
+     * @deprecated 已过时，请使用全局变量 {@link screen}
      */
-    public static screenSize: any = null;
+    public static get screenSize(): any {
+        if (screen == null) return null;
+        return {
+            width: screen.width,
+            height: screen.height,
+            screenWidth: screen.width,
+            screenHeight: screen.height,
+        };
+    }
 
     /**
      * 执行同步调用
@@ -1026,11 +1046,12 @@ export class AssistsX {
 
     /**
      * 获取屏幕尺寸
-     * @returns 屏幕尺寸对象
+     * @returns 屏幕尺寸对象（width, height）
      */
-    public static getScreenSize(): any {
+    public static getScreenSize(): Screen | null {
         const response = this.call(CallMethod.getScreenSize);
-        return response.getDataOrDefault({});
+        const data = response.getDataOrDefault({});
+        return normalizeScreen(data);
     }
 
     /**
@@ -1095,15 +1116,24 @@ export class AssistsX {
 
 }
 
+/** 将原生返回的 screenWidth/screenHeight 规范为 width/height */
+function normalizeScreen(data: any): Screen | null {
+    if (data == null) return null;
+    const w = typeof data.width === "number" ? data.width : data.screenWidth;
+    const h = typeof data.height === "number" ? data.height : data.screenHeight;
+    if (typeof w !== "number" || typeof h !== "number") return null;
+    return { width: Math.floor(w), height: Math.floor(h) };
+}
+
 // 在 assistsxCallback 初始化后，初始化屏幕尺寸
 if (typeof window !== "undefined") {
     try {
         // 检查 assistsx 是否可用，如果可用则初始化屏幕尺寸
         if ((window as any).assistsx && typeof (window as any).assistsx.call === "function") {
-            AssistsX.screenSize = AssistsX.getScreenSize();
+            screen = AssistsX.getScreenSize();
         }
     } catch (e) {
-        // 如果初始化失败，screenSize 保持为 null
+        // 如果初始化失败，screen 保持为 null
         console.log("Failed to initialize screen size:", e);
     }
 }

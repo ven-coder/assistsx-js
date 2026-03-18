@@ -108,7 +108,15 @@ export class Node {
     /**
      * 节点在屏幕中的边界
      */
-    boundsInScreen: Bounds;
+    bounds: Bounds;
+
+    /**
+     * 节点在屏幕中的边界
+     * @deprecated 请使用 bounds 字段替代
+     */
+    get boundsInScreen(): Bounds {
+        return this.bounds;
+    }
 
     /**
      * 构造函数
@@ -134,7 +142,9 @@ export class Node {
         isSelected: boolean;
         isVisibleToUser: boolean;
         drawingOrder: number;
-        boundsInScreen: Bounds | any;
+        /** @deprecated 请使用 bounds 替代 */
+        boundsInScreen?: Bounds | any;
+        bounds?: Bounds | any;
     }) {
         this.nodeId = params.nodeId;
         this.text = params.text;
@@ -155,10 +165,9 @@ export class Node {
         this.isSelected = params.isSelected;
         this.isVisibleToUser = params.isVisibleToUser;
         this.drawingOrder = params.drawingOrder;
-        // 确保 boundsInScreen 是 Bounds 实例，如果不是则转换
-        this.boundsInScreen = params.boundsInScreen instanceof Bounds
-            ? params.boundsInScreen
-            : Bounds.fromData(params.boundsInScreen);
+        // 优先使用 bounds，兼容旧的 boundsInScreen；确保为 Bounds 实例
+        const rawBounds = params.bounds ?? params.boundsInScreen;
+        this.bounds = rawBounds instanceof Bounds ? rawBounds : Bounds.fromData(rawBounds);
     }
 
     public get async(): NodeAsync {
@@ -567,7 +576,9 @@ export class Node {
         isSelected: boolean;
         isVisibleToUser: boolean;
         drawingOrder: number;
-        boundsInScreen: Bounds;
+        bounds?: Bounds;
+        /** @deprecated 请使用 bounds 替代 */
+        boundsInScreen?: Bounds;
     }): Node {
         return new Node(params);
     }
