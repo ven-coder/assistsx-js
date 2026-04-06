@@ -2,10 +2,10 @@
  * Float window API for WebView.
  * Requires assistsxFloat native bridge. Matches FloatJsInterface.kt.
  */
-import { CallResponse } from "../CallResponse";
-import { decodeBase64UTF8, generateUUID } from "../Utils";
-import { FloatCallMethod } from "./FloatCallMethod";
-import type { WebFloatingWindowOptions } from "../AssistsX";
+import { CallResponse } from "../call-response";
+import { decodeBase64UTF8, generateUUID } from "../utils";
+import { FloatCallMethod } from "./float-call-method";
+import type { WebFloatingWindowOptions } from "../assistsx";
 
 const callbacks: Map<string, (data: string) => void> = new Map();
 

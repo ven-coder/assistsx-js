@@ -2,9 +2,9 @@
  * ML Kit 文字识别相关功能
  * 提供识别屏幕中指定词组位置、识别屏幕文字内容位置的能力
  */
-import { CallResponse } from "../CallResponse";
-import { decodeBase64UTF8, generateUUID } from "../Utils";
-import { MlkitCallMethod } from "./MlkitCallMethod";
+import { CallResponse } from "../call-response";
+import { decodeBase64UTF8, generateUUID } from "../utils";
+import { MlkitCallMethod } from "./mlkit-call-method";
 
 /**
  * 识别区域接口，用于限定识别范围

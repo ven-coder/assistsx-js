@@ -2,8 +2,8 @@
  * 系统相册相关功能
  * 提供添加图片/视频到相册和从相册删除的功能
  */
-import { CallResponse } from "../CallResponse";
-import { decodeBase64UTF8, generateUUID } from "../Utils";
+import { CallResponse } from "../call-response";
+import { decodeBase64UTF8, generateUUID } from "../utils";
 
 /**
  * 相册操作响应接口定义

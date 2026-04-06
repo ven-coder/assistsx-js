@@ -1,4 +1,4 @@
-import { Node } from "./Node";
+import { Node } from "./node";
 
 // 扩展 Window 接口
 declare global {
@@ -51,6 +51,11 @@ declare global {
             call(method: string): string | null;
         };
         assistsxFloatCallback: (data: string) => void;
+        assistsxLog: {
+            call(method: string): string | null;
+        };
+        assistsxLogCallback: (data: string) => void;
+        onAssistsLogUpdate: (encoded: string) => void;
     }
 }
 

@@ -4,5 +4,5 @@
     "versionCode": 1,
     "description": "示例",
     "packageName": "com.assistsx.example",
-    "indexInOverlay": false
+    "indexInOverlay": true
 }

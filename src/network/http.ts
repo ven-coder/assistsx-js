@@ -2,8 +2,8 @@
  * HTTP 请求相关功能
  * 提供 HTTP 请求相关的功能，包括 GET、POST、文件上传和下载
  */
-import { CallResponse } from "../CallResponse";
-import { decodeBase64UTF8, generateUUID } from "../Utils";
+import { CallResponse } from "../call-response";
+import { decodeBase64UTF8, generateUUID } from "../utils";
 
 /**
  * HTTP 响应数据接口定义

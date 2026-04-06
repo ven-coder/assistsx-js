@@ -2,18 +2,18 @@
  * AssistsX 类
  * 提供与移动应用程序界面交互的工具类，包括节点查找、手势操作、屏幕操作等功能
  */
-import { Node } from "./Node";
-import { CallMethod } from "./CallMethod";
-import { CallResponse } from "./CallResponse";
-import { Bounds } from "./Bounds";
-import { generateUUID } from "./Utils";
-import { AppInfo } from "./AppInfo";
-import { DeviceInfo } from "./DeviceInfo";
+import { Node } from "./node";
+import { CallMethod } from "./call-method";
+import { CallResponse } from "./call-response";
+import { Bounds } from "./bounds";
+import { generateUUID } from "./utils";
+import { AppInfo } from "./app-info";
+import { DeviceInfo } from "./device-info";
 import {
     AssistsX,
     callbacks,
     WebFloatingWindowOptions,
-} from "./AssistsX";
+} from "./assistsx";
 
 /**
  * 截图识别位置信息

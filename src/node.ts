@@ -2,11 +2,11 @@
  * 节点类
  * 表示界面上的一个可交互元素，包含元素的属性和可执行的操作
  */
-import { Bounds } from "./Bounds";
-import { AssistsX } from "./AssistsX";
-import { AssistsXAsync } from "./AssistsXAsync";
-import { Step } from "./Step";
-import { NodeAsync } from "./NodeAsync";
+import { Bounds } from "./bounds";
+import { AssistsX } from "./assistsx";
+import { AssistsXAsync } from "./assistsx-async";
+import { Step } from "./step";
+import { NodeAsync } from "./node-async";
 
 // 将接口改造为类
 export class Node {

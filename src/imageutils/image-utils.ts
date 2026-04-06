@@ -2,8 +2,8 @@
  * 图片工具相关功能
  * 提供图片处理相关的功能，包括转换、处理、压缩、保存等
  */
-import { CallResponse } from "../CallResponse";
-import { decodeBase64UTF8, generateUUID } from "../Utils";
+import { CallResponse } from "../call-response";
+import { decodeBase64UTF8, generateUUID } from "../utils";
 
 /**
  * 图片尺寸信息

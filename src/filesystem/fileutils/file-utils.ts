@@ -2,8 +2,8 @@
  * 文件工具相关功能
  * 提供文件操作相关的功能
  */
-import { CallResponse } from "../../CallResponse";
-import { decodeBase64UTF8, generateUUID } from "../../Utils";
+import { CallResponse } from "../../call-response";
+import { decodeBase64UTF8, generateUUID } from "../../utils";
 
 /**
  * 文件信息接口定义

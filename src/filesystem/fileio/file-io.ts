@@ -2,8 +2,8 @@
  * 文件IO相关功能
  * 提供文件读写相关的功能
  */
-import { CallResponse } from "../../CallResponse";
-import { decodeBase64UTF8, generateUUID } from "../../Utils";
+import { CallResponse } from "../../call-response";
+import { decodeBase64UTF8, generateUUID } from "../../utils";
 
 // 回调函数存储对象
 const callbacks: Map<string, (data: string) => void> = new Map();

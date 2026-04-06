@@ -2,9 +2,9 @@
  * Bar utils (status bar, nav bar, action bar) for WebView.
  * Requires Activity context on native side. Matches BarUtilsJavascriptInterface.kt.
  */
-import { CallResponse } from "../CallResponse";
-import { decodeBase64UTF8, generateUUID } from "../Utils";
-import { BarUtilsCallMethod } from "./BarUtilsCallMethod";
+import { CallResponse } from "../call-response";
+import { decodeBase64UTF8, generateUUID } from "../utils";
+import { BarUtilsCallMethod } from "./bar-utils-call-method";
 
 const callbacks: Map<string, (data: string) => void> = new Map();
 
