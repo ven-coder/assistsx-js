@@ -7,9 +7,9 @@
 
 **扫码下载**
 
-<img width="112" alt="image" src="https://github.com/user-attachments/assets/c28ecc41-01f8-4e52-9ddc-80dc5c6d0ed5" />
+<img width="112" alt="image" src="https://github.com/user-attachments/assets/6c371313-4ca1-4598-91b3-f716ec369e7b" />
 
-**下载链接：[https://www.pgyer.com/SqGaCx8C](https://www.pgyer.com/SqGaCx8C)**
+**下载链接：[https://www.pgyer.com/assistsx](https://www.pgyer.com/assistsx)**
 
 > 下载安装后会默认安装一个示例插件，可长按删除
 
