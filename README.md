@@ -114,9 +114,9 @@ export default defineConfig({
 
 ## 🙋有问题欢迎反馈交流
 
-| QQ交流群| 个人微信 |
+| QQ交流群| 作者微信 |
 |:---------:|:-----------:|
-| <img src="https://github.com/user-attachments/assets/732c38a5-7473-44ca-be76-d1fabb27aa5d" width=200/> | <img src="https://github.com/user-attachments/assets/b805f5a0-223b-415d-a34b-7659aa0bdf0a" width=200/>
+| <img src="https://github.com/user-attachments/assets/ec705332-5c07-47cb-aaa4-27199064ea1f" width=200/> | <img src="https://github.com/user-attachments/assets/b805f5a0-223b-415d-a34b-7659aa0bdf0a" width=200/>
 
 # 💝 支持开源
 
