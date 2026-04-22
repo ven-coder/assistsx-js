@@ -22,7 +22,7 @@ export type StepInterceptor = (step: Step) => StepResult | Promise<StepResult>;
 export class Step {
     static delayMsDefault: number = 1000;
     static readonly repeatCountInfinite: number = -1;
-    static repeatCountMaxDefault: number = Step.repeatCountInfinite;
+    static repeatCountMaxDefault: number = 15;
     static showLog: boolean = false;
     static exceptionRetryCountMaxDefault: number = 3;
 
@@ -161,7 +161,7 @@ export class Step {
                         nextStep = await currentStep.impl?.(currentStep);
                     }
                     if (
-                        currentStep.repeatCountMax >= Step.repeatCountInfinite &&
+                        currentStep.repeatCountMax > Step.repeatCountInfinite &&
                         currentStep.repeatCount >= currentStep.repeatCountMax
                     ) {
                         if (Step.showLog) {
@@ -378,7 +378,7 @@ export class Step {
     repeatCount: number = 0;
 
     /**
-     * 步骤重复执行最大次数,默认不限制
+     * 步骤重复执行最大次数,默认15次
      */
     repeatCountMax: number = Step.repeatCountMaxDefault;
 
