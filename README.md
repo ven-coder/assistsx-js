@@ -15,6 +15,8 @@
 
 **[Assistsx源码](https://github.com/ven-coder/assistsx)**
 
+**[更新日志](./CHANGELOG.md)**
+
 # 快速开始
 
 ## 方式一：HTML 直接引用（无需构建工具）
