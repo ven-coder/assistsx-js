@@ -2,13 +2,14 @@
  * 步骤执行控制类
  * 用于管理和执行自动化步骤，提供步骤的生命周期管理、状态控制和界面操作功能
  */
-import { AssistsX } from "./assistsx";
+import { AssistsX } from "./AssistsX1";
 import { Node } from "./node";
 import { CallMethod } from "./call-method";
 import { useStepStore } from "./step-state-store";
 import { generateUUID } from "./utils";
 import { StepError, StepStopError } from "./step-error";
 import { StepAsync } from "./step-async";
+import type { NodeLookupScope } from "./node-lookup-scope";
 
 // 步骤结果类型，可以是Step实例或undefined
 export type StepResult = Step | undefined;
@@ -631,11 +632,13 @@ export class Step {
         filterViewId,
         filterDes,
         filterText,
+        scope,
     }: {
         filterClass?: string;
         filterViewId?: string;
         filterDes?: string;
         filterText?: string;
+        scope?: NodeLookupScope;
     } = {}): Node[] {
         Step.assert(this.stepId);
         const nodes = AssistsX.getAllNodes({
@@ -643,6 +646,7 @@ export class Step {
             filterViewId,
             filterDes,
             filterText,
+            scope,
         });
         Step.assert(this.stepId);
         Step.assignIdsToNodes(nodes, this.stepId);
@@ -663,11 +667,11 @@ export class Step {
 
     /**
      * 获取当前应用包名
-     * @returns 包名
+     * @param options.scope 节点查找范围（可选）
      */
-    public getPackageName(): string {
+    public getPackageName(options: { scope?: NodeLookupScope } = {}): string {
         Step.assert(this.stepId);
-        const result = AssistsX.getPackageName();
+        const result = AssistsX.getPackageName(options);
         Step.assert(this.stepId);
         return result;
     }
@@ -686,10 +690,21 @@ export class Step {
             filterClass,
             filterText,
             filterDes,
-        }: { filterClass?: string; filterText?: string; filterDes?: string } = {}
+            scope,
+        }: {
+            filterClass?: string;
+            filterText?: string;
+            filterDes?: string;
+            scope?: NodeLookupScope;
+        } = {}
     ): Node[] {
         Step.assert(this.stepId);
-        const nodes = AssistsX.findById(id, { filterClass, filterText, filterDes });
+        const nodes = AssistsX.findById(id, {
+            filterClass,
+            filterText,
+            filterDes,
+            scope,
+        });
         Step.assert(this.stepId);
         Step.assignIdsToNodes(nodes, this.stepId);
         return nodes;
@@ -709,13 +724,20 @@ export class Step {
             filterClass,
             filterViewId,
             filterDes,
-        }: { filterClass?: string; filterViewId?: string; filterDes?: string } = {}
+            scope,
+        }: {
+            filterClass?: string;
+            filterViewId?: string;
+            filterDes?: string;
+            scope?: NodeLookupScope;
+        } = {}
     ): Node[] {
         Step.assert(this.stepId);
         const nodes = AssistsX.findByText(text, {
             filterClass,
             filterViewId,
             filterDes,
+            scope,
         });
         Step.assert(this.stepId);
         Step.assignIdsToNodes(nodes, this.stepId);
@@ -736,13 +758,20 @@ export class Step {
             filterText,
             filterViewId,
             filterDes,
-        }: { filterText?: string; filterViewId?: string; filterDes?: string } = {}
+            scope,
+        }: {
+            filterText?: string;
+            filterViewId?: string;
+            filterDes?: string;
+            scope?: NodeLookupScope;
+        } = {}
     ): Node[] {
         Step.assert(this.stepId);
         const nodes = AssistsX.findByTags(className, {
             filterText,
             filterViewId,
             filterDes,
+            scope,
         });
         Step.assert(this.stepId);
         Step.assignIdsToNodes(nodes, this.stepId);
@@ -752,11 +781,14 @@ export class Step {
     /**
      * 查找所有匹配文本的节点
      * @param text 要查找的文本
-     * @returns 节点数组
+     * @param options.scope 节点查找范围（可选）
      */
-    public findByTextAllMatch(text: string): Node[] {
+    public findByTextAllMatch(
+        text: string,
+        { scope }: { scope?: NodeLookupScope } = {}
+    ): Node[] {
         Step.assert(this.stepId);
-        const nodes = AssistsX.findByTextAllMatch(text);
+        const nodes = AssistsX.findByTextAllMatch(text, { scope });
         Step.assert(this.stepId);
         Step.assignIdsToNodes(nodes, this.stepId);
         return nodes;

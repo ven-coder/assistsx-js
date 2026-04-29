@@ -9,11 +9,12 @@ import { Bounds } from "./bounds";
 import { generateUUID } from "./utils";
 import { AppInfo } from "./app-info";
 import { DeviceInfo } from "./device-info";
+import type { NodeLookupScope } from "./node-lookup-scope";
 import {
     AssistsX,
     callbacks,
     WebFloatingWindowOptions,
-} from "./assistsx";
+} from "./AssistsX1";
 
 /**
  * 截图识别位置信息
@@ -156,15 +157,23 @@ export class AssistsXAsync {
         filterDes,
         filterText,
         timeout,
+        scope,
     }: {
         filterClass?: string;
         filterViewId?: string;
         filterDes?: string;
         filterText?: string;
         timeout?: number;
+        scope?: NodeLookupScope;
     } = {}): Promise<Node[]> {
         const response = await this.asyncCall(CallMethod.getAllNodes, {
-            args: { filterClass, filterViewId, filterDes, filterText },
+            args: {
+                filterClass,
+                filterViewId,
+                filterDes,
+                filterText,
+                ...(scope !== undefined ? { scope } : {}),
+            },
             timeout,
         });
         const data = response.getDataOrDefault([]);
@@ -448,10 +457,27 @@ export class AssistsXAsync {
     /**
      * 获取当前应用包名
      * @param timeout 超时时间(秒)，默认30秒
-     * @returns 包名
      */
-    public static async getPackageName(timeout?: number): Promise<string> {
+    public static async getPackageName(timeout?: number): Promise<string>;
+    /**
+     * 获取当前应用包名
+     * @param options.timeout 超时时间(秒)，默认30秒
+     * @param options.scope 节点查找范围（可选）
+     */
+    public static async getPackageName(options: {
+        timeout?: number;
+        scope?: NodeLookupScope;
+    }): Promise<string>;
+    public static async getPackageName(
+        timeoutOrOptions?: number | { timeout?: number; scope?: NodeLookupScope }
+    ): Promise<string> {
+        const normalized =
+            typeof timeoutOrOptions === "number"
+                ? { timeout: timeoutOrOptions as number }
+                : (timeoutOrOptions ?? {});
+        const { timeout, scope } = normalized;
         const response = await this.asyncCall(CallMethod.getPackageName, {
+            args: scope !== undefined ? { scope } : undefined,
             timeout,
         });
         return response.getDataOrDefault("");
@@ -494,16 +520,24 @@ export class AssistsXAsync {
             filterDes,
             node,
             timeout,
+            scope,
         }: {
             filterClass?: string;
             filterText?: string;
             filterDes?: string;
             node?: Node;
             timeout?: number;
+            scope?: NodeLookupScope;
         } = {}
     ): Promise<Node[]> {
         const response = await this.asyncCall(CallMethod.findById, {
-            args: { id, filterClass, filterText, filterDes },
+            args: {
+                id,
+                filterClass,
+                filterText,
+                filterDes,
+                ...(scope !== undefined ? { scope } : {}),
+            },
             node,
             timeout,
         });
@@ -535,16 +569,24 @@ export class AssistsXAsync {
             filterDes,
             node,
             timeout,
+            scope,
         }: {
             filterClass?: string;
             filterViewId?: string;
             filterDes?: string;
             node?: Node;
             timeout?: number;
+            scope?: NodeLookupScope;
         } = {}
     ): Promise<Node[]> {
         const response = await this.asyncCall(CallMethod.findByText, {
-            args: { text, filterClass, filterViewId, filterDes },
+            args: {
+                text,
+                filterClass,
+                filterViewId,
+                filterDes,
+                ...(scope !== undefined ? { scope } : {}),
+            },
             node,
             timeout,
         });
@@ -576,16 +618,24 @@ export class AssistsXAsync {
             filterDes,
             node,
             timeout,
+            scope,
         }: {
             filterText?: string;
             filterViewId?: string;
             filterDes?: string;
             node?: Node;
             timeout?: number;
+            scope?: NodeLookupScope;
         } = {}
     ): Promise<Node[]> {
         const response = await this.asyncCall(CallMethod.findByTags, {
-            args: { className, filterText, filterViewId, filterDes },
+            args: {
+                className,
+                filterText,
+                filterViewId,
+                filterDes,
+                ...(scope !== undefined ? { scope } : {}),
+            },
             node,
             timeout,
         });
@@ -603,14 +653,35 @@ export class AssistsXAsync {
      * 查找所有匹配文本的节点
      * @param text 要查找的文本
      * @param timeout 超时时间(秒)，默认30秒
-     * @returns 节点数组
      */
     public static async findByTextAllMatch(
         text: string,
         timeout?: number
+    ): Promise<Node[]>;
+    /**
+     * 查找所有匹配文本的节点
+     * @param text 要查找的文本
+     * @param options.timeout 超时时间(秒)，默认30秒
+     * @param options.scope 节点查找范围（可选）
+     */
+    public static async findByTextAllMatch(
+        text: string,
+        options: { timeout?: number; scope?: NodeLookupScope }
+    ): Promise<Node[]>;
+    public static async findByTextAllMatch(
+        text: string,
+        timeoutOrOptions?: number | { timeout?: number; scope?: NodeLookupScope }
     ): Promise<Node[]> {
+        const normalized =
+            typeof timeoutOrOptions === "number"
+                ? { timeout: timeoutOrOptions as number }
+                : (timeoutOrOptions ?? {});
+        const { timeout, scope } = normalized;
         const response = await this.asyncCall(CallMethod.findByTextAllMatch, {
-            args: { text },
+            args: {
+                text,
+                ...(scope !== undefined ? { scope } : {}),
+            },
             timeout,
         });
         const data = response.getDataOrDefault([]);
@@ -1276,6 +1347,7 @@ export class AssistsXAsync {
      * @param options.filePath 文件路径（可选，不提供则自动生成）
      * @param options.prettyPrint 是否格式化输出，默认为 true
      * @param options.timeout 超时时间(秒)，默认30秒
+     * @param options.scope 节点查找范围（可选）
      * @returns 保存的文件路径
      */
     public static async saveRootNodeTreeJson(
@@ -1283,18 +1355,21 @@ export class AssistsXAsync {
             filePath?: string;
             prettyPrint?: boolean;
             timeout?: number;
+            scope?: NodeLookupScope;
         } = {}
     ): Promise<string> {
         const {
             filePath,
             prettyPrint = true,
             timeout,
+            scope,
         } = options;
 
         const response = await this.asyncCall(CallMethod.saveRootNodeTreeJson, {
             args: {
                 filePath,
                 prettyPrint,
+                ...(scope !== undefined ? { scope } : {}),
             },
             timeout,
         });

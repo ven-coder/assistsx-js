@@ -2,14 +2,15 @@
  * 步骤执行控制类
  * 用于管理和执行自动化步骤，提供步骤的生命周期管理、状态控制和界面操作功能
  */
-import { AssistsX } from "./assistsx";
+import { AssistsX } from "./AssistsX1";
 import { Node } from "./node";
 import { CallMethod } from "./call-method";
 import { useStepStore } from "./step-state-store";
 import { generateUUID } from "./utils";
 import { StepError } from "./step-error";
 import { AssistsXAsync } from "./assistsx-async";
-import { Step } from "./step";
+import { Step } from "./Step";
+import type { NodeLookupScope } from "./node-lookup-scope";
 
 export class StepAsync {
     private step: Step;
@@ -73,11 +74,13 @@ export class StepAsync {
         filterViewId,
         filterDes,
         filterText,
+        scope,
     }: {
         filterClass?: string;
         filterViewId?: string;
         filterDes?: string;
         filterText?: string;
+        scope?: NodeLookupScope;
     } = {}): Promise<Node[]> {
         Step.assert(this.step.stepId);
         const nodes = await AssistsXAsync.getAllNodes({
@@ -85,6 +88,7 @@ export class StepAsync {
             filterViewId,
             filterDes,
             filterText,
+            scope,
         });
         Step.assert(this.step.stepId);
         Step.assignIdsToNodes(nodes, this.step.stepId);
@@ -105,11 +109,26 @@ export class StepAsync {
 
     /**
      * 获取当前应用包名
-     * @returns 包名
+     * @param timeout 超时时间(秒)，默认30秒
      */
-    public async getPackageName(): Promise<string> {
+    public async getPackageName(timeout?: number): Promise<string>;
+    /**
+     * 获取当前应用包名
+     * @param options.timeout 超时时间(秒)，默认30秒
+     * @param options.scope 节点查找范围（可选）
+     */
+    public async getPackageName(options: {
+        timeout?: number;
+        scope?: NodeLookupScope;
+    }): Promise<string>;
+    public async getPackageName(
+        timeoutOrOptions?: number | { timeout?: number; scope?: NodeLookupScope }
+    ): Promise<string> {
         Step.assert(this.step.stepId);
-        const result = await AssistsXAsync.getPackageName();
+        const result =
+            typeof timeoutOrOptions === "number"
+                ? await AssistsXAsync.getPackageName(timeoutOrOptions)
+                : await AssistsXAsync.getPackageName(timeoutOrOptions ?? {});
         Step.assert(this.step.stepId);
         return result;
     }
@@ -128,13 +147,20 @@ export class StepAsync {
             filterClass,
             filterText,
             filterDes,
-        }: { filterClass?: string; filterText?: string; filterDes?: string } = {}
+            scope,
+        }: {
+            filterClass?: string;
+            filterText?: string;
+            filterDes?: string;
+            scope?: NodeLookupScope;
+        } = {}
     ): Promise<Node[]> {
         Step.assert(this.step.stepId);
         const nodes = await AssistsXAsync.findById(id, {
             filterClass,
             filterText,
             filterDes,
+            scope,
         });
         Step.assert(this.step.stepId);
         Step.assignIdsToNodes(nodes, this.step.stepId);
@@ -155,13 +181,20 @@ export class StepAsync {
             filterClass,
             filterViewId,
             filterDes,
-        }: { filterClass?: string; filterViewId?: string; filterDes?: string } = {}
+            scope,
+        }: {
+            filterClass?: string;
+            filterViewId?: string;
+            filterDes?: string;
+            scope?: NodeLookupScope;
+        } = {}
     ): Promise<Node[]> {
         Step.assert(this.step.stepId);
         const nodes = await AssistsXAsync.findByText(text, {
             filterClass,
             filterViewId,
             filterDes,
+            scope,
         });
         Step.assert(this.step.stepId);
         Step.assignIdsToNodes(nodes, this.step.stepId);
@@ -182,13 +215,20 @@ export class StepAsync {
             filterText,
             filterViewId,
             filterDes,
-        }: { filterText?: string; filterViewId?: string; filterDes?: string } = {}
+            scope,
+        }: {
+            filterText?: string;
+            filterViewId?: string;
+            filterDes?: string;
+            scope?: NodeLookupScope;
+        } = {}
     ): Promise<Node[]> {
         Step.assert(this.step.stepId);
         const nodes = await AssistsXAsync.findByTags(className, {
             filterText,
             filterViewId,
             filterDes,
+            scope,
         });
         Step.assert(this.step.stepId);
         Step.assignIdsToNodes(nodes, this.step.stepId);
@@ -198,11 +238,33 @@ export class StepAsync {
     /**
      * 查找所有匹配文本的节点
      * @param text 要查找的文本
-     * @returns 节点数组
+     * @param timeout 超时时间(秒)，默认30秒
      */
-    public async findByTextAllMatch(text: string): Promise<Node[]> {
+    public async findByTextAllMatch(
+        text: string,
+        timeout?: number
+    ): Promise<Node[]>;
+    /**
+     * 查找所有匹配文本的节点
+     * @param text 要查找的文本
+     * @param options.timeout 超时时间(秒)，默认30秒
+     * @param options.scope 节点查找范围（可选）
+     */
+    public async findByTextAllMatch(
+        text: string,
+        options: { timeout?: number; scope?: NodeLookupScope }
+    ): Promise<Node[]>;
+    public async findByTextAllMatch(
+        text: string,
+        timeoutOrOptions?: number | { timeout?: number; scope?: NodeLookupScope }
+    ): Promise<Node[]> {
         Step.assert(this.step.stepId);
-        const nodes = await AssistsXAsync.findByTextAllMatch(text);
+        const nodes =
+            typeof timeoutOrOptions === "number"
+                ? await AssistsXAsync.findByTextAllMatch(text, timeoutOrOptions)
+                : timeoutOrOptions !== undefined
+                    ? await AssistsXAsync.findByTextAllMatch(text, timeoutOrOptions)
+                    : await AssistsXAsync.findByTextAllMatch(text);
         Step.assert(this.step.stepId);
         Step.assignIdsToNodes(nodes, this.step.stepId);
         return nodes;

@@ -3,8 +3,8 @@
  * 表示界面上的一个可交互元素，包含元素的属性和可执行的操作
  */
 import { Bounds } from "./bounds";
-import { AssistsX } from "./assistsx";
-import { Step } from "./step";
+import { AssistsX } from "./AssistsX1";
+import { Step } from "./Step";
 import { AssistsXAsync } from "./assistsx-async";
 import { Node } from "./node";
 

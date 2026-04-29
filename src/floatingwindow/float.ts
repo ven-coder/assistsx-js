@@ -5,7 +5,7 @@
 import { CallResponse } from "../call-response";
 import { decodeBase64UTF8, generateUUID } from "../utils";
 import { FloatCallMethod } from "./float-call-method";
-import type { WebFloatingWindowOptions } from "../assistsx";
+import type { WebFloatingWindowOptions } from "../AssistsX1";
 
 const callbacks: Map<string, (data: string) => void> = new Map();
 

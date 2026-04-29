@@ -10,6 +10,7 @@ import { decodeBase64UTF8, generateUUID } from "./utils";
 import { AccessibilityEventFilter } from "./accessibility-event-filter";
 import { AppInfo } from "./app-info";
 import { DeviceInfo } from "./device-info";
+import type { NodeLookupScope } from "./node-lookup-scope";
 
 /**
  * 无障碍事件数据结构
@@ -76,7 +77,7 @@ export interface Screen {
 }
 
 /** 全局屏幕尺寸，在 assistsxCallback 初始化后自动加载 */
-export let screen: Screen | null = null;
+export let screen: Screen;
 
 // 初始化全局回调函数
 if (typeof window !== "undefined" && !window.assistsxCallback) {
@@ -246,14 +247,22 @@ export class AssistsX {
         filterViewId,
         filterDes,
         filterText,
+        scope,
     }: {
         filterClass?: string;
         filterViewId?: string;
         filterDes?: string;
         filterText?: string;
+        scope?: NodeLookupScope;
     } = {}): Node[] {
         const response = this.call(CallMethod.getAllNodes, {
-            args: { filterClass, filterViewId, filterDes, filterText },
+            args: {
+                filterClass,
+                filterViewId,
+                filterDes,
+                filterText,
+                ...(scope !== undefined ? { scope } : {}),
+            },
         });
         const data = response.getDataOrDefault([]);
         if (!Array.isArray(data)) {
@@ -434,8 +443,12 @@ export class AssistsX {
      * 获取当前应用包名
      * @returns 包名
      */
-    public static getPackageName(): string {
-        const response = this.call(CallMethod.getPackageName);
+    public static getPackageName(options: { scope?: NodeLookupScope } = {}): string {
+        const { scope } = options;
+        const response = this.call(
+            CallMethod.getPackageName,
+            scope !== undefined ? { args: { scope } } : {}
+        );
         return response.getDataOrDefault("");
     }
 
@@ -468,15 +481,23 @@ export class AssistsX {
             filterText,
             filterDes,
             node,
+            scope,
         }: {
             filterClass?: string;
             filterText?: string;
             filterDes?: string;
             node?: Node;
+            scope?: NodeLookupScope;
         } = {}
     ): Node[] {
         const response = this.call(CallMethod.findById, {
-            args: { id, filterClass, filterText, filterDes },
+            args: {
+                id,
+                filterClass,
+                filterText,
+                filterDes,
+                ...(scope !== undefined ? { scope } : {}),
+            },
             node,
         });
         const data = response.getDataOrDefault([]);
@@ -505,15 +526,23 @@ export class AssistsX {
             filterViewId,
             filterDes,
             node,
+            scope,
         }: {
             filterClass?: string;
             filterViewId?: string;
             filterDes?: string;
             node?: Node;
+            scope?: NodeLookupScope;
         } = {}
     ): Node[] {
         const response = this.call(CallMethod.findByText, {
-            args: { text, filterClass, filterViewId, filterDes },
+            args: {
+                text,
+                filterClass,
+                filterViewId,
+                filterDes,
+                ...(scope !== undefined ? { scope } : {}),
+            },
             node,
         });
         const data = response.getDataOrDefault([]);
@@ -542,15 +571,23 @@ export class AssistsX {
             filterViewId,
             filterDes,
             node,
+            scope,
         }: {
             filterText?: string;
             filterViewId?: string;
             filterDes?: string;
             node?: Node;
+            scope?: NodeLookupScope;
         } = {}
     ): Node[] {
         const response = this.call(CallMethod.findByTags, {
-            args: { className, filterText, filterViewId, filterDes },
+            args: {
+                className,
+                filterText,
+                filterViewId,
+                filterDes,
+                ...(scope !== undefined ? { scope } : {}),
+            },
             node,
         });
         const data = response.getDataOrDefault([]);
@@ -566,11 +603,17 @@ export class AssistsX {
     /**
      * 查找所有匹配文本的节点
      * @param text 要查找的文本
-     * @returns 节点数组
+     * @param options.scope 节点查找范围（可选）
      */
-    public static findByTextAllMatch(text: string): Node[] {
+    public static findByTextAllMatch(
+        text: string,
+        { scope }: { scope?: NodeLookupScope } = {}
+    ): Node[] {
         const response = this.call(CallMethod.findByTextAllMatch, {
-            args: { text },
+            args: {
+                text,
+                ...(scope !== undefined ? { scope } : {}),
+            },
         });
         const data = response.getDataOrDefault([]);
         if (!Array.isArray(data)) {
@@ -1130,7 +1173,7 @@ if (typeof window !== "undefined") {
     try {
         // 检查 assistsx 是否可用，如果可用则初始化屏幕尺寸
         if ((window as any).assistsx && typeof (window as any).assistsx.call === "function") {
-            screen = AssistsX.getScreenSize();
+            screen = AssistsX.getScreenSize() ?? { width: 0, height: 0 };
         }
     } catch (e) {
         // 如果初始化失败，screen 保持为 null
