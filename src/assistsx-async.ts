@@ -14,7 +14,7 @@ import {
     AssistsX,
     callbacks,
     WebFloatingWindowOptions,
-} from "./AssistsX1";
+} from "./assistsx";
 
 /**
  * 截图识别位置信息

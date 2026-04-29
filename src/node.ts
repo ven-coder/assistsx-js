@@ -3,9 +3,9 @@
  * 表示界面上的一个可交互元素，包含元素的属性和可执行的操作
  */
 import { Bounds } from "./bounds";
-import { AssistsX } from "./AssistsX1";
+import { AssistsX } from "./assistsx";
 import { AssistsXAsync } from "./assistsx-async";
-import { Step } from "./Step1";
+import { Step } from "./step";
 import { NodeAsync } from "./node-async";
 
 // 将接口改造为类
