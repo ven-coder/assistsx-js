@@ -9,7 +9,7 @@ import { useStepStore } from "./step-state-store";
 import { generateUUID } from "./utils";
 import { StepError } from "./step-error";
 import { AssistsXAsync } from "./assistsx-async";
-import { Step } from "./Step";
+import { Step } from "./Step1";
 import type { NodeLookupScope } from "./node-lookup-scope";
 
 export class StepAsync {

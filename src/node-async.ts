@@ -4,7 +4,7 @@
  */
 import { Bounds } from "./bounds";
 import { AssistsX } from "./AssistsX1";
-import { Step } from "./Step";
+import { Step } from "./Step1";
 import { AssistsXAsync } from "./assistsx-async";
 import { Node } from "./node";
 

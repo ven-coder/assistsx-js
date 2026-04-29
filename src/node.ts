@@ -5,7 +5,7 @@
 import { Bounds } from "./bounds";
 import { AssistsX } from "./AssistsX1";
 import { AssistsXAsync } from "./assistsx-async";
-import { Step } from "./Step";
+import { Step } from "./Step1";
 import { NodeAsync } from "./node-async";
 
 // 将接口改造为类
