@@ -6,10 +6,14 @@ import { AssistsX } from "./assistsx";
 import { Node } from "./node";
 import { CallMethod } from "./call-method";
 import { useStepStore } from "./step-state-store";
+import { ensureAssistsXPinia } from "./pinia-ensure";
 import { generateUUID } from "./utils";
 import { StepError, StepStopError } from "./step-error";
 import { StepAsync } from "./step-async";
 import type { NodeLookupScope } from "./node-lookup-scope";
+
+// 步骤数据类型，始终为普通对象
+export type StepData = Record<string, any>;
 
 // 步骤结果类型，可以是Step实例或undefined
 export type StepResult = Step | undefined;
@@ -26,6 +30,34 @@ export class Step {
     static repeatCountMaxDefault: number = 15;
     static showLog: boolean = false;
     static exceptionRetryCountMaxDefault: number = 3;
+
+    /**
+     * 判断步骤数据是否有效（非空且为普通对象）
+     */
+    private static isValidStepData(data: unknown): data is StepData {
+        return (
+            data !== null &&
+            data !== undefined &&
+            typeof data === "object" &&
+            !Array.isArray(data)
+        );
+    }
+
+    /**
+     * 解析步骤数据：优先使用传入值，否则使用当前值，均无效时返回空对象
+     */
+    private static resolveStepData(
+        provided?: StepData,
+        fallback?: StepData
+    ): StepData {
+        if (provided !== undefined && Step.isValidStepData(provided)) {
+            return provided;
+        }
+        if (fallback !== undefined && Step.isValidStepData(fallback)) {
+            return fallback;
+        }
+        return {};
+    }
 
     /**
      * 当前执行步骤的ID
@@ -60,13 +92,15 @@ export class Step {
         }: {
             stepId?: string | undefined;
             tag?: string | undefined;
-            data?: any | undefined;
+            data?: StepData;
             delayMs?: number;
             exceptionRetryCountMax?: number;
         } = {}
     ): Promise<Step | undefined> {
         this.exception = undefined;
+        ensureAssistsXPinia();
         const stepStore = useStepStore();
+        const resolvedData = Step.resolveStepData(data);
         let implnName = impl.name;
         let currentStep: Step | undefined;
         let nextStep: Step | undefined;
@@ -84,12 +118,12 @@ export class Step {
                 }
             }
 
-            stepStore.startStep(this._stepId, tag, data);
+            stepStore.startStep(this._stepId, tag, resolvedData);
             currentStep = new Step({
                 stepId: this._stepId,
                 impl,
                 tag,
-                data,
+                data: resolvedData,
                 delayMs,
                 exceptionRetryCountMax,
             });
@@ -228,7 +262,7 @@ export class Step {
             const errorMsg = JSON.stringify({
                 impl: implnName,
                 tag: tag,
-                data: data,
+                data: resolvedData,
                 error: e?.message ?? String(e),
             });
             stepStore.setError(errorMsg);
@@ -402,7 +436,7 @@ export class Step {
     /**
      * 步骤数据
      */
-    data: any | undefined;
+    data: StepData;
 
     /**
      * 步骤延迟时间(毫秒)
@@ -435,7 +469,7 @@ export class Step {
         stepId: string;
         impl: StepImpl | undefined;
         tag?: string | undefined;
-        data?: any | undefined;
+        data?: StepData;
         delayMs?: number;
         repeatCountMax?: number;
         exceptionRetryCountMax?: number;
@@ -443,7 +477,7 @@ export class Step {
     }) {
         this.tag = tag;
         this.stepId = stepId;
-        this.data = data ?? {};
+        this.data = Step.resolveStepData(data);
         this.impl = impl;
         this.delayMs = delayMs;
         this.repeatCountMax = repeatCountMax;
@@ -472,7 +506,7 @@ export class Step {
             exceptionRetryCountMax = Step.exceptionRetryCountMaxDefault,
         }: {
             tag?: string | undefined;
-            data?: any | undefined;
+            data?: StepData;
             delayMs?: number;
             repeatCountMax?: number;
             exceptionRetryCountMax?: number;
@@ -483,7 +517,7 @@ export class Step {
             stepId: this.stepId,
             impl,
             tag,
-            data: data ?? this.data ?? {},
+            data: Step.resolveStepData(data, this.data),
             delayMs,
             repeatCountMax,
             exceptionRetryCountMax,
@@ -498,7 +532,7 @@ export class Step {
             exceptionRetryCountMax = Step.exceptionRetryCountMaxDefault,
         }: {
             tag?: string | undefined;
-            data?: any | undefined;
+            data?: StepData;
             delayMs?: number;
             repeatCountMax?: number;
             exceptionRetryCountMax?: number;
@@ -509,7 +543,7 @@ export class Step {
             stepId: this.stepId,
             impl: undefined,
             tag,
-            data: data ?? this.data ?? {},
+            data: Step.resolveStepData(data, this.data),
             delayMs,
             repeatCountMax,
             exceptionRetryCountMax,
@@ -528,14 +562,14 @@ export class Step {
     repeat({
         stepId = this.stepId,
         tag = this.tag,
-        data = this.data ?? {},
+        data,
         delayMs = this.delayMs,
         repeatCountMax = this.repeatCountMax,
         exceptionRetryCountMax = this.exceptionRetryCountMax,
     }: {
         stepId?: string;
         tag?: string | undefined;
-        data?: any | undefined;
+        data?: StepData;
         delayMs?: number;
         repeatCountMax?: number;
         exceptionRetryCountMax?: number;
@@ -544,7 +578,7 @@ export class Step {
         this.repeatCount++;
         this.stepId = stepId;
         this.tag = tag;
-        this.data = data;
+        this.data = Step.resolveStepData(data, this.data);
         this.delayMs = delayMs;
         this.repeatCountMax = repeatCountMax;
         this.exceptionRetryCountMax = exceptionRetryCountMax;

@@ -8,6 +8,7 @@ export * from "./utils";
 export * from "./bounds";
 export * from "./step";
 export * from "./step-state-store";
+export { ensureAssistsXPinia } from "./pinia-ensure";
 export * from "./window-flags";
 export * from "./node-async";
 export * from "./assistsx-async";

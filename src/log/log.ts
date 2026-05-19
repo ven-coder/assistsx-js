@@ -225,6 +225,26 @@ export class Log {
         return res.isSuccess();
     }
 
+    /**
+     * 追加日志（appendTimestampedEntry / appendLine 简写）。
+     * 默认带时间戳；`timestamped: false` 时走 appendLine。
+     */
+    async append(
+        text: string,
+        options?: {
+            /** @default true */
+            timestamped?: boolean;
+            maxLength?: number;
+            timeout?: number;
+        }
+    ): Promise<boolean> {
+        const { timestamped = true, maxLength, timeout } = options ?? {};
+        if (timestamped) {
+            return this.appendTimestampedEntry(text, timeout);
+        }
+        return this.appendLine(text, maxLength, timeout);
+    }
+
     /** 替换全部内容 */
     async replaceAll(
         content: string,
