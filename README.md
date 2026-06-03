@@ -110,6 +110,52 @@ export default defineConfig({
 
 **[API开发文档](https://github.com/ven-coder/assistsx-js/blob/main/README-DEV.md)**
 
+## StepFlow（流程编排，`assistsx-js/step-flow`）
+
+在保留原有 `Step.run` / `StepImpl` 的前提下，提供基于**状态 + 事件 + on 转移表**的流程编排，适合非线性跳转、多流程共用同一步骤实现。
+
+```ts
+import { Step } from "assistsx-js";
+import {
+  StepFlow,
+  flowEvent,
+  flowRepeat,
+  flowEnd,
+  createFlowDispatcher,
+  buildFlowInitialData,
+  createLaunchState,
+} from "assistsx-js/step-flow";
+
+// 1. 定义流程（launch 可衔接 legacy finishMethod）
+const config = {
+  id: "my.flow",
+  initial: "launch",
+  states: {} as Record<string, import("assistsx-js/step-flow").FlowStateDef>,
+  data: { appName: "抖音", packageName: "com.ss.android.ugc.aweme" },
+};
+const dispatcher = createFlowDispatcher(config);
+config.states = {
+  launch: createLaunchState(dispatcher, appLaunch.launch, "mainPage"),
+  mainPage: {
+    run: async (step) => (isHome(step) ? flowEvent("home") : flowRepeat()),
+    on: { home: "next", retry: "mainPage" },
+  },
+  next: { run: async () => flowEnd(), on: {} },
+};
+
+await Step.run(dispatcher, { data: buildFlowInitialData(config) });
+// 或使用：await StepFlow.run(config); // 需在 config.states 填充后再 run，见 createLaunchState 文档
+```
+
+要点：
+
+- **步骤实现**（`FlowStepImpl`）只返回 `flowEvent` / `flowRepeat` / `flowEnd`，或 `legacy` 委托旧版 `StepImpl`。
+- **跳转**由当前状态的 `on` 表决定；同一 `run` 可在不同 Flow 中配置不同的 `on`。
+- **业务数据**建议放在 `step.data.payload`；`getFlowPayload` / `assignFlowPayload` 可读写。
+- **与 legacy 共存**：`import { Step } from "assistsx-js"` 不变；StepFlow 从 `assistsx-js/step-flow` 单独导入。
+
+完整示例见 [ais-douyin-simple](https://github.com/ven-coder/assists-examples) 中 `src/v1/flows/check-unread.ts`。
+
 ## 示例
 
 示例源码及使用教程：[assistsx-js-simple](https://github.com/ven-coder/assists-examples/tree/main/assistsx-js-simple)

@@ -6,7 +6,7 @@
 module.exports = [
   // 主库构建 (ESM + CJS) - 保持与原有 tsc 输出兼容
   {
-    entry: ["src/index.ts"],
+    entry: ["src/index.ts", "src/step-flow/index.ts"],
     format: ["esm", "cjs"],
     dts: true,
     splitting: false,

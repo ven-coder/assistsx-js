@@ -1,6 +1,6 @@
 {
     "name": "assistsx-js",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "description": "assistsx-js自动化开发SDK",
     "main": "dist/index.cjs",
     "module": "dist/index.js",
@@ -16,6 +16,11 @@
             "types": "./dist/index.d.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.cjs"
+        },
+        "./step-flow": {
+            "types": "./dist/step-flow/index.d.ts",
+            "import": "./dist/step-flow/index.js",
+            "require": "./dist/step-flow/index.cjs"
         },
         "./global": {
             "default": "./dist/index.global.js"
