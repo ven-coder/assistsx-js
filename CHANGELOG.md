@@ -1,5 +1,10 @@
 # 更新日志
 
+## 0.2.5（2026-07-06）
+
+- 新增 **`getCurrentPlugin`** API（`AssistsX` / `AssistsXAsync`）与 **`PluginInfo`** 类型；仅 AssistsX 宿主有效。
+- 新增模块文档 [`docs/03-modules/plugin.md`](docs/03-modules/plugin.md)；database 文档补充 AssistsX 插件 dbName 自动隔离说明。
+
 ## 0.2.4（2026-07-04）
 
 - 新增 **`db`** 子模块，封装 `assistsxDb` SQLite 桥接（`exec` / `query` / `execBatch` / `close`）；需宿主 assists-web **3.5.1+**（含 `assistsxDb` 接口）。

@@ -83,6 +83,10 @@ await db.close({ dbName: "automation.db" });
 | 传 `dbName`（推荐） | `db.query(sql, { dbName: "a.db" })` |
 | 传 `dbPath` | `const p = await pathUtils.getInternalAppDbPath("a.db"); db.query(sql, { dbPath: p })` |
 
+## AssistsX 插件隔离
+
+在 **AssistsX 宿主**（`XWebview`）中，`dbName` 会自动加 `{packageName}_` 前缀，例如包名 `com.douyin.auto` + `data.db` → 实际文件 `com.douyin.auto_data.db`。插件 JS 仍写 `data.db` 即可，详见 [plugin.md](./plugin.md)。
+
 ## 类型映射
 
 `query` 返回的 `rows` 中：

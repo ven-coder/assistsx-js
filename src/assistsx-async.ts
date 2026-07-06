@@ -8,6 +8,7 @@ import { CallResponse } from "./call-response";
 import { Bounds } from "./bounds";
 import { generateUUID } from "./utils";
 import { AppInfo } from "./app-info";
+import { PluginInfo } from "./plugin-info";
 import { DeviceInfo } from "./device-info";
 import type { NodeLookupScope } from "./node-lookup-scope";
 import {
@@ -1184,6 +1185,22 @@ export class AssistsXAsync {
             timeout,
         });
         return AppInfo.fromJSON(response.getDataOrDefault({}));
+    }
+    /**
+     * 获取当前运行的 AssistsX 插件信息（仅 AssistsX 宿主有效，否则返回 null）
+     */
+    public static async getCurrentPlugin(timeout?: number): Promise<PluginInfo | null> {
+        const response = await this.asyncCall(CallMethod.getCurrentPlugin, {
+            timeout,
+        });
+        if (!response.isSuccess()) {
+            return null;
+        }
+        const data = response.getDataOrNull();
+        if (!data) {
+            return null;
+        }
+        return PluginInfo.fromJSON(data);
     }
     public static async getUniqueDeviceId(timeout?: number): Promise<any> {
         const response = await this.asyncCall(CallMethod.getUniqueDeviceId, {

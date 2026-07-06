@@ -9,6 +9,7 @@ import { Bounds } from "./bounds";
 import { decodeBase64UTF8, generateUUID } from "./utils";
 import { AccessibilityEventFilter } from "./accessibility-event-filter";
 import { AppInfo } from "./app-info";
+import { PluginInfo } from "./plugin-info";
 import { DeviceInfo } from "./device-info";
 import type { NodeLookupScope } from "./node-lookup-scope";
 import { WindowFlags } from "./window-flags";
@@ -1039,6 +1040,20 @@ export class AssistsX {
             timeout,
         });
         return AppInfo.fromJSON(response.getDataOrDefault({}));
+    }
+    /**
+     * 获取当前运行的 AssistsX 插件信息（仅 AssistsX 宿主有效，否则返回 null）
+     */
+    public static getCurrentPlugin(): PluginInfo | null {
+        const response = this.call(CallMethod.getCurrentPlugin);
+        if (!response.isSuccess()) {
+            return null;
+        }
+        const data = response.getDataOrNull();
+        if (!data) {
+            return null;
+        }
+        return PluginInfo.fromJSON(data);
     }
     public static getUniqueDeviceId(): any {
         const response = this.call(CallMethod.getUniqueDeviceId);

@@ -15,6 +15,7 @@ export * from "./assistsx-async";
 export * from "./step-async";
 export * from "./accessibility-event-filter";
 export * from "./app-info";
+export * from "./plugin-info";
 export * from "./device-info";
 export * from "./step-error";
 export * from "./network/http";

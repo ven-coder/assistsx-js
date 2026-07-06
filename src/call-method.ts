@@ -46,6 +46,7 @@ export const CallMethod = {
     longPressGestureAutoPaste: "longPressGestureAutoPaste",
 
     getAppInfo: "getAppInfo",
+    getCurrentPlugin: "getCurrentPlugin",
     getMacAddress: "getMacAddress",
     getAndroidID: "getAndroidID",
     getUniqueDeviceId: "getUniqueDeviceId",
