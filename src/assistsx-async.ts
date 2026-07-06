@@ -15,6 +15,7 @@ import {
     callbacks,
     WebFloatingWindowOptions,
 } from "./assistsx";
+import { WindowFlags } from "./window-flags";
 
 /**
  * 截图识别位置信息
@@ -142,6 +143,21 @@ export class AssistsXAsync {
         });
         return response.getDataOrDefault(false);
     }
+
+    /**
+     * 设置悬浮窗可获取焦点（WebView 内输入框 focus 时调用）
+     */
+    public static async setOverlayInputFocus(timeout?: number): Promise<boolean> {
+        return this.setOverlayFlagList(WindowFlags.getOverlayInputFocusFlagList(), timeout);
+    }
+
+    /**
+     * 取消悬浮窗焦点（WebView 内输入框 blur 时调用）
+     */
+    public static async clearOverlayInputFocus(timeout?: number): Promise<boolean> {
+        return this.setOverlayFlagList(WindowFlags.getOverlayInputBlurFlagList(), timeout);
+    }
+
     /**
      * 获取所有符合条件的节点
      * @param filterClass 类名过滤

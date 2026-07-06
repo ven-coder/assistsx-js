@@ -1,5 +1,10 @@
 # 更新日志
 
+## 0.2.4（2026-07-04）
+
+- 新增 **`db`** 子模块，封装 `assistsxDb` SQLite 桥接（`exec` / `query` / `execBatch` / `close`）；需宿主 assists-web **3.5.1+**（含 `assistsxDb` 接口）。
+- 新增模块文档 [`docs/03-modules/database.md`](docs/03-modules/database.md)。
+
 ## 0.2.1（2026-04-22）
 
 - 步骤器默认最大重复次数 15，修正无限重复判断。

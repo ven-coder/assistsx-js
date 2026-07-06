@@ -11,6 +11,7 @@ import { AccessibilityEventFilter } from "./accessibility-event-filter";
 import { AppInfo } from "./app-info";
 import { DeviceInfo } from "./device-info";
 import type { NodeLookupScope } from "./node-lookup-scope";
+import { WindowFlags } from "./window-flags";
 
 /**
  * 无障碍事件数据结构
@@ -234,6 +235,23 @@ export class AssistsX {
         });
         return response.getDataOrDefault(false);
     }
+
+    /**
+     * 设置悬浮窗可获取焦点（WebView 内输入框 focus 时调用）
+     * @returns 是否设置成功
+     */
+    public static setOverlayInputFocus(): boolean {
+        return this.setOverlayFlagList(WindowFlags.getOverlayInputFocusFlagList());
+    }
+
+    /**
+     * 取消悬浮窗焦点（WebView 内输入框 blur 时调用）
+     * @returns 是否设置成功
+     */
+    public static clearOverlayInputFocus(): boolean {
+        return this.setOverlayFlagList(WindowFlags.getOverlayInputBlurFlagList());
+    }
+
     /**
      * 获取所有符合条件的节点
      * @param filterClass 类名过滤

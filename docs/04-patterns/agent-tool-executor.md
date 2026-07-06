@@ -6,7 +6,7 @@ related_apis: [AssistsXAsync, mlkit]
 
 # Agent 工具执行器
 
-将 LLM 的 tool call 映射到 assistsx-js API，实现「自然语言驱动自动化」。wx-auto 实现见 `createAssistsxToolExecutor`。
+将 LLM 的 tool call 映射到 assistsx-js API，实现「自然语言驱动自动化」。具体执行器实现见应用侧项目（如 assistsx-agent-control 的 `src/tools/`）。
 
 ## 工具列表
 

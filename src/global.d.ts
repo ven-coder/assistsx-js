@@ -55,6 +55,14 @@ declare global {
             call(method: string): string | null;
         };
         assistsxLogCallback: (data: string) => void;
+        assistsxScreenshot: {
+            call(method: string): string | null;
+        };
+        assistsxScreenshotCallback: (data: string) => void;
+        assistsxDb: {
+            call(method: string): string | null;
+        };
+        assistsxDbCallback: (data: string) => void;
         onAssistsLogUpdate: (encoded: string) => void;
     }
 }

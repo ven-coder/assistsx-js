@@ -90,6 +90,27 @@ export class WindowFlags {
         return flags & ~flag;
     }
 
+    /** 输入框获取焦点时使用的悬浮窗 flag 组合（不含 FLAG_NOT_FOCUSABLE） */
+    static getOverlayInputFocusFlagList(): number[] {
+        return [
+            WindowFlags.FLAG_WATCH_OUTSIDE_TOUCH,
+            WindowFlags.FLAG_NOT_TOUCH_MODAL,
+            WindowFlags.FLAG_LAYOUT_NO_LIMITS,
+            WindowFlags.FLAG_LAYOUT_IN_SCREEN,
+        ];
+    }
+
+    /** 输入框失去焦点时使用的悬浮窗 flag 组合（含 FLAG_NOT_FOCUSABLE） */
+    static getOverlayInputBlurFlagList(): number[] {
+        return [
+            WindowFlags.FLAG_WATCH_OUTSIDE_TOUCH,
+            WindowFlags.FLAG_NOT_TOUCH_MODAL,
+            WindowFlags.FLAG_LAYOUT_NO_LIMITS,
+            WindowFlags.FLAG_NOT_FOCUSABLE,
+            WindowFlags.FLAG_LAYOUT_IN_SCREEN,
+        ];
+    }
+
     /**
      * 获取所有标志位的描述信息
      * @returns 标志位描述对象数组
