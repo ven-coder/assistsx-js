@@ -10,6 +10,44 @@ const pendingCallbacks: Map<string, (data: string) => void> = new Map();
 const streamHandlers: Map<string, (data: string) => void> = new Map();
 const subscriptionIdToCallbackId: Map<string, string> = new Map();
 
+/** 日志文件定位：dirPath 为绝对路径目录，fileName 不含 .txt 后缀 */
+export interface LogTarget {
+    dirPath?: string;
+    fileName?: string;
+}
+
+export interface LogCallOptions extends LogTarget {
+    /** 超时时间（秒），默认 30 */
+    timeout?: number;
+}
+
+function buildLogArguments(
+    target?: LogTarget,
+    extra?: Record<string, unknown>
+): Record<string, unknown> | undefined {
+    const args: Record<string, unknown> = { ...extra };
+    if (target?.dirPath !== undefined) {
+        args.dirPath = target.dirPath;
+    }
+    if (target?.fileName !== undefined) {
+        args.fileName = target.fileName;
+    }
+    return Object.keys(args).length > 0 ? args : undefined;
+}
+
+function resolveTimeout(
+    timeoutOrOptions?: number | LogCallOptions,
+    fallback = 30
+): { timeout: number; target?: LogTarget } {
+    if (typeof timeoutOrOptions === "number") {
+        return { timeout: timeoutOrOptions };
+    }
+    return {
+        timeout: timeoutOrOptions?.timeout ?? fallback,
+        target: timeoutOrOptions,
+    };
+}
+
 if (typeof window !== "undefined" && !window.assistsxLogCallback) {
     window.assistsxLogCallback = (data: string) => {
         try {
@@ -49,7 +87,7 @@ export const logUpdateListeners: Array<
 > = [];
 
 /**
- * Base64 解码后的 CallResponse，data 含 stream / text
+ * Base64 解码后的 CallResponse，data 含 stream / text / logFilePath
  */
 export interface LogUpdateEvent {
     code: number;
@@ -61,15 +99,17 @@ export interface LogUpdateEvent {
 export interface LogUpdateData {
     stream: LogStreamType;
     text: string;
+    logFilePath?: string;
 }
 
 export interface LogSubscribeUpdatePayload {
     text: string;
     stream: string;
     subscriptionId: string;
+    logFilePath?: string;
 }
 
-export interface LogUploadOptions {
+export interface LogUploadOptions extends LogTarget {
     baseUrl?: string;
     /** PNG（默认）| JPEG | JPG | WEBP */
     format?: "PNG" | "JPEG" | "JPG" | "WEBP" | string;
@@ -150,10 +190,13 @@ export class Log {
     }
 
     /** 读取当前日志全文 */
-    async readAllText(timeout?: number): Promise<string> {
+    async readAllText(
+        timeoutOrOptions?: number | LogCallOptions
+    ): Promise<string> {
+        const { timeout, target } = resolveTimeout(timeoutOrOptions);
         const res = await this.asyncCall(
             LogCallMethod.readAllText,
-            undefined,
+            buildLogArguments(target),
             timeout
         );
         const d = res.getDataOrNull() as { text?: string } | null;
@@ -174,21 +217,42 @@ export class Log {
         return d?.baseUrl ?? "";
     }
 
+    /**
+     * 解析日志文件绝对路径（不创建文件）。
+     * AssistsX 插件环境下会经原生拦截追加 log-{packageName} 子目录。
+     */
+    async resolveLogPath(
+        targetOrOptions?: LogTarget | LogCallOptions
+    ): Promise<string> {
+        const { timeout, target } = resolveTimeout(targetOrOptions);
+        const res = await this.asyncCall(
+            LogCallMethod.resolveLogPath,
+            buildLogArguments(target),
+            timeout
+        );
+        const d = res.getDataOrNull() as { logFilePath?: string } | null;
+        return d?.logFilePath ?? "";
+    }
+
     /** 清空日志 */
-    async clear(timeout?: number): Promise<boolean> {
+    async clear(timeoutOrOptions?: number | LogCallOptions): Promise<boolean> {
+        const { timeout, target } = resolveTimeout(timeoutOrOptions);
         const res = await this.asyncCall(
             LogCallMethod.clear,
-            undefined,
+            buildLogArguments(target),
             timeout
         );
         return res.isSuccess();
     }
 
     /** 从文件重新加载到内存 Flow */
-    async refreshFromFile(timeout?: number): Promise<boolean> {
+    async refreshFromFile(
+        timeoutOrOptions?: number | LogCallOptions
+    ): Promise<boolean> {
+        const { timeout, target } = resolveTimeout(timeoutOrOptions);
         const res = await this.asyncCall(
             LogCallMethod.refreshFromFile,
-            undefined,
+            buildLogArguments(target),
             timeout
         );
         return res.isSuccess();
@@ -197,17 +261,25 @@ export class Log {
     /** 追加一行 */
     async appendLine(
         line: string,
-        maxLength?: number,
+        maxLengthOrOptions?:
+            | number
+            | (LogTarget & { maxLength?: number; timeout?: number }),
         timeout?: number
     ): Promise<boolean> {
-        const args: Record<string, unknown> = { line };
-        if (maxLength !== undefined) {
-            args.maxLength = maxLength;
+        let options: (LogTarget & { maxLength?: number; timeout?: number }) | undefined;
+        if (typeof maxLengthOrOptions === "number") {
+            options = { maxLength: maxLengthOrOptions, timeout };
+        } else {
+            options = maxLengthOrOptions;
+        }
+        const args = buildLogArguments(options, { line }) ?? { line };
+        if (options?.maxLength !== undefined) {
+            args.maxLength = options.maxLength;
         }
         const res = await this.asyncCall(
             LogCallMethod.appendLine,
             args,
-            timeout
+            options?.timeout
         );
         return res.isSuccess();
     }
@@ -215,11 +287,13 @@ export class Log {
     /** 追加带时间戳的条目 */
     async appendTimestampedEntry(
         message: string,
-        timeout?: number
+        timeoutOrOptions?: number | LogCallOptions
     ): Promise<boolean> {
+        const { timeout, target } = resolveTimeout(timeoutOrOptions);
+        const args = buildLogArguments(target, { message }) ?? { message };
         const res = await this.asyncCall(
             LogCallMethod.appendTimestampedEntry,
-            { message },
+            args,
             timeout
         );
         return res.isSuccess();
@@ -231,28 +305,30 @@ export class Log {
      */
     async append(
         text: string,
-        options?: {
+        options?: LogTarget & {
             /** @default true */
             timestamped?: boolean;
             maxLength?: number;
             timeout?: number;
         }
     ): Promise<boolean> {
-        const { timestamped = true, maxLength, timeout } = options ?? {};
+        const { timestamped = true, maxLength, timeout, ...target } = options ?? {};
         if (timestamped) {
-            return this.appendTimestampedEntry(text, timeout);
+            return this.appendTimestampedEntry(text, { ...target, timeout });
         }
-        return this.appendLine(text, maxLength, timeout);
+        return this.appendLine(text, { ...target, maxLength, timeout });
     }
 
     /** 替换全部内容 */
     async replaceAll(
         content: string,
-        timeout?: number
+        timeoutOrOptions?: number | LogCallOptions
     ): Promise<boolean> {
+        const { timeout, target } = resolveTimeout(timeoutOrOptions);
+        const args = buildLogArguments(target, { content }) ?? { content };
         const res = await this.asyncCall(
             LogCallMethod.replaceAll,
-            { content },
+            args,
             timeout
         );
         return res.isSuccess();
@@ -265,7 +341,7 @@ export class Log {
     async subscribe(
         stream: LogStreamType,
         onUpdate: (payload: LogSubscribeUpdatePayload) => void,
-        options?: { timeout?: number }
+        options?: LogCallOptions
     ): Promise<{
         subscriptionId: string;
         dispose: () => Promise<void>;
@@ -273,6 +349,7 @@ export class Log {
         const self = this;
         const callbackId = generateUUID();
         const timeoutSec = options?.timeout ?? 30;
+        const subscribeArgs = buildLogArguments(options, { stream }) ?? { stream };
 
         return new Promise((resolve, reject) => {
             let settled = false;
@@ -293,6 +370,7 @@ export class Log {
                         subscriptionId?: string;
                         stream?: string;
                         text?: string;
+                        logFilePath?: string;
                     };
                 };
                 try {
@@ -338,6 +416,7 @@ export class Log {
                         text: data.text ?? "",
                         stream: data.stream ?? stream,
                         subscriptionId: data.subscriptionId,
+                        logFilePath: data.logFilePath,
                     });
                 }
             });
@@ -346,7 +425,7 @@ export class Log {
                 this.getBridge().call(
                     JSON.stringify({
                         method: LogCallMethod.subscribe,
-                        arguments: { stream },
+                        arguments: subscribeArgs,
                         callbackId,
                     })
                 );
@@ -396,6 +475,12 @@ export class Log {
         }
         if (args.uploadKey !== undefined) {
             payload.uploadKey = args.uploadKey;
+        }
+        if (args.dirPath !== undefined) {
+            payload.dirPath = args.dirPath;
+        }
+        if (args.fileName !== undefined) {
+            payload.fileName = args.fileName;
         }
         const uuid = generateUUID();
         const params = {

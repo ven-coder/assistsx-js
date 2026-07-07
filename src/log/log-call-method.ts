@@ -14,6 +14,9 @@ export const LogCallMethod = {
 
     /** 获取日志服务当前域名（origin，无路径；与上传、管理后台同源），对应 AssistsLogDiagnostics.adminWebBaseUrl() */
     getLogServiceBaseUrl: "getLogServiceBaseUrl",
+
+    /** 解析日志文件绝对路径（不创建文件） */
+    resolveLogPath: "resolveLogPath",
 } as const;
 
 /** 与 ASWebView / AssistsLogJavascriptInterface companion 对齐 */
