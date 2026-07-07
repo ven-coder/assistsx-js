@@ -10,7 +10,7 @@ const pendingCallbacks: Map<string, (data: string) => void> = new Map();
 const streamHandlers: Map<string, (data: string) => void> = new Map();
 const subscriptionIdToCallbackId: Map<string, string> = new Map();
 
-/** 日志文件定位：dirPath 为绝对路径目录，fileName 不含 .txt 后缀 */
+/** 日志文件定位：dirPath 为绝对路径目录，fileName 不含 .txt 后缀；均未传时默认 log-default.txt */
 export interface LogTarget {
     dirPath?: string;
     fileName?: string;

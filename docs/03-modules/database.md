@@ -33,14 +33,17 @@ import { db, pathUtils } from "assistsx-js";
 
 | 字段 | 说明 |
 |------|------|
-| `dbName` | 内部库名（推荐），与 `dbPath` 二选一 |
-| `dbPath` | 数据库绝对路径，须在应用私有目录内 |
+| `dbName` | 内部库名（推荐）；未传时默认 `default.db` |
+| `dbPath` | 数据库绝对路径，须在应用私有目录内；与 `dbName` 二选一 |
 | `bindArgs` | 预编译参数（`exec` / `query`） |
 | `timeout` | 超时秒数，默认 **30** |
 
 ## 示例
 
 ```typescript
+// 使用默认库 default.db（可不传 dbName）
+await db.exec("CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY, name TEXT)");
+
 // 建表
 await db.exec(
   `CREATE TABLE IF NOT EXISTS tasks (
@@ -83,9 +86,11 @@ await db.close({ dbName: "automation.db" });
 | 传 `dbName`（推荐） | `db.query(sql, { dbName: "a.db" })` |
 | 传 `dbPath` | `const p = await pathUtils.getInternalAppDbPath("a.db"); db.query(sql, { dbPath: p })` |
 
+> **AssistsX 插件**：请始终使用 `dbName`，不要通过 `pathUtils.getInternalAppDbPath` 取得路径后传 `dbPath`，否则会被宿主拦截拒绝。
+
 ## AssistsX 插件隔离
 
-在 **AssistsX 宿主**（`XWebview`）中，`dbName` 会自动加 `{packageName}_` 前缀，例如包名 `com.douyin.auto` + `data.db` → 实际文件 `com.douyin.auto_data.db`。插件 JS 仍写 `data.db` 即可，详见 [plugin.md](./plugin.md)。
+在 **AssistsX 宿主**（`XWebview`）中，插件 JS 仅支持通过 `dbName` 指定逻辑库名（不支持自定义 `dbPath`）；未传 `dbName` 时默认 `default.db`。宿主拦截器会自动将库文件存放到 `{internalAppDbs}/db-{packageName}/` 目录下，例如包名 `com.douyin.auto` + `data.db` → 实际文件 `{internalAppDbs}/db-com.douyin.auto/data.db`。插件 JS 仍写 `data.db` 即可，详见 [plugin.md](./plugin.md)。
 
 ## 类型映射
 

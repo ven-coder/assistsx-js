@@ -17,11 +17,14 @@ import { log, LogStream } from "assistsx-js";
 | 字段 | 说明 |
 |------|------|
 | `dirPath` | 可选，**绝对路径**目录；不传则使用应用内部 files 目录 |
-| `fileName` | 可选，不含 `.txt` 后缀；不传默认 `assists_log` |
+| `fileName` | 可选，不含 `.txt` 后缀；不传默认 `log-default`（AssistsX 插件内默认 `default`） |
 
-在 **AssistsX 插件**中，原生会自动在目录下追加 `log-{pluginPackageName}` 子目录，不同插件日志互不影响。
+在 **AssistsX 插件**中，原生会自动在目录下追加 `log-{pluginPackageName}` 子目录，不同插件日志互不影响。插件内不传 `dirPath` / `fileName` 时，默认写入 `{internalFiles}/log-{packageName}/default.txt`。
 
 ```typescript
+// 使用默认路径（插件：log-{packageName}/default.txt；非插件：log-default.txt）
+await log.appendLine("task started");
+
 import { log, path } from "assistsx-js";
 
 const base = await path.getInternalAppFilesPath();
@@ -120,7 +123,7 @@ log.removeLogUpdateListener(fn);
 
 - 长任务关键节点 `appendTimestampedEntry`
 - 自定义目录时先用 `path.getInternalAppFilesPath()` 等 API 取得绝对路径
-- 插件内不传 `dirPath` 时，日志默认写入 `{internalFiles}/log-{packageName}/assists_log.txt`
+- 插件内不传 `dirPath` / `fileName` 时，日志默认写入 `{internalFiles}/log-{packageName}/default.txt`
 - subscribe 用完必须 dispose，避免泄漏
 
 ## 常见坑

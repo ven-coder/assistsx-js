@@ -5,7 +5,7 @@ import { CallResponse } from "../call-response";
 import { decodeBase64UTF8, generateUUID } from "../utils";
 import { DbCallMethod } from "./db-call-method";
 
-/** 数据库定位，dbPath 与 dbName 二选一 */
+/** 数据库定位；dbPath 与 dbName 均可选，均未传时默认 default.db */
 export interface DbTarget {
     dbPath?: string;
     dbName?: string;
@@ -193,7 +193,7 @@ export class Db {
     /**
      * 执行非查询 SQL
      */
-    async exec(sql: string, options: DbCallOptions): Promise<DbExecResult> {
+    async exec(sql: string, options: DbCallOptions = {}): Promise<DbExecResult> {
         const { timeout = 30, bindArgs, ...target } = options;
         const response = await this.asyncCall(
             DbCallMethod.exec,
@@ -209,7 +209,7 @@ export class Db {
     /**
      * 执行查询 SQL
      */
-    async query(sql: string, options: DbCallOptions): Promise<DbQueryResult> {
+    async query(sql: string, options: DbCallOptions = {}): Promise<DbQueryResult> {
         const { timeout = 30, bindArgs, ...target } = options;
         const response = await this.asyncCall(
             DbCallMethod.query,
@@ -227,7 +227,7 @@ export class Db {
      */
     async execBatch(
         statements: string[],
-        options: DbExecBatchOptions
+        options: DbExecBatchOptions = {}
     ): Promise<DbExecBatchResult> {
         const { timeout = 30, ...target } = options;
         const response = await this.asyncCall(
@@ -241,7 +241,7 @@ export class Db {
     /**
      * 关闭并释放指定数据库连接
      */
-    async close(options: DbTarget & { timeout?: number }): Promise<void> {
+    async close(options: DbTarget & { timeout?: number } = {}): Promise<void> {
         const { timeout = 30, ...target } = options;
         await this.asyncCall(
             DbCallMethod.close,
