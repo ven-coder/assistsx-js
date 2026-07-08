@@ -258,15 +258,26 @@ export class Log {
         return res.isSuccess();
     }
 
-    /** 追加一行 */
+    /** 追加一行；`prepend: true` 时写入文件头部 */
     async appendLine(
         line: string,
         maxLengthOrOptions?:
             | number
-            | (LogTarget & { maxLength?: number; timeout?: number }),
+            | (LogTarget & {
+                  maxLength?: number;
+                  timeout?: number;
+                  /** @default false */
+                  prepend?: boolean;
+              }),
         timeout?: number
     ): Promise<boolean> {
-        let options: (LogTarget & { maxLength?: number; timeout?: number }) | undefined;
+        let options:
+            | (LogTarget & {
+                  maxLength?: number;
+                  timeout?: number;
+                  prepend?: boolean;
+              })
+            | undefined;
         if (typeof maxLengthOrOptions === "number") {
             options = { maxLength: maxLengthOrOptions, timeout };
         } else {
@@ -276,6 +287,9 @@ export class Log {
         if (options?.maxLength !== undefined) {
             args.maxLength = options.maxLength;
         }
+        if (options?.prepend) {
+            args.prepend = true;
+        }
         const res = await this.asyncCall(
             LogCallMethod.appendLine,
             args,
@@ -284,13 +298,20 @@ export class Log {
         return res.isSuccess();
     }
 
-    /** 追加带时间戳的条目 */
+    /** 追加带时间戳的条目；`prepend: true` 时写入文件头部 */
     async appendTimestampedEntry(
         message: string,
-        timeoutOrOptions?: number | LogCallOptions
+        timeoutOrOptions?: number | (LogCallOptions & { prepend?: boolean })
     ): Promise<boolean> {
         const { timeout, target } = resolveTimeout(timeoutOrOptions);
+        const prepend =
+            typeof timeoutOrOptions === "object"
+                ? timeoutOrOptions?.prepend
+                : undefined;
         const args = buildLogArguments(target, { message }) ?? { message };
+        if (prepend) {
+            args.prepend = true;
+        }
         const res = await this.asyncCall(
             LogCallMethod.appendTimestampedEntry,
             args,
@@ -310,13 +331,20 @@ export class Log {
             timestamped?: boolean;
             maxLength?: number;
             timeout?: number;
+            /** @default false */
+            prepend?: boolean;
         }
     ): Promise<boolean> {
-        const { timestamped = true, maxLength, timeout, ...target } = options ?? {};
+        const { timestamped = true, maxLength, timeout, prepend, ...target } =
+            options ?? {};
         if (timestamped) {
-            return this.appendTimestampedEntry(text, { ...target, timeout });
+            return this.appendTimestampedEntry(text, {
+                ...target,
+                timeout,
+                prepend,
+            });
         }
-        return this.appendLine(text, { ...target, maxLength, timeout });
+        return this.appendLine(text, { ...target, maxLength, timeout, prepend });
     }
 
     /** 替换全部内容 */

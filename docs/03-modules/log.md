@@ -49,9 +49,9 @@ const resolved = await log.resolveLogPath({
 | `getLogServiceBaseUrl(timeout?)` | 日志服务 base URL | 低 |
 | `clear(options?)` | 清空 | 低 |
 | `refreshFromFile(options?)` | 从文件刷新到内存 | 低 |
-| `appendLine(line, options?)` | 追加一行；options 可含 `maxLength`、`dirPath`、`fileName`、`timeout` | 中 |
-| `appendTimestampedEntry(msg, options?)` | 带时间戳追加 | 中 |
-| `append(text, options?)` | 追加文本；options 可含 `timestamped`、`maxLength`、`dirPath`、`fileName` | 低 |
+| `appendLine(line, options?)` | 追加一行；options 可含 `maxLength`、`prepend`、`dirPath`、`fileName`、`timeout` | 中 |
+| `appendTimestampedEntry(msg, options?)` | 带时间戳追加；options 可含 `prepend`、`dirPath`、`fileName` | 中 |
+| `append(text, options?)` | 追加文本；options 可含 `timestamped`、`prepend`、`maxLength`、`dirPath`、`fileName` | 低 |
 | `replaceAll(text, options?)` | 替换全部 | 低 |
 | `subscribe(stream, onUpdate, options?)` | 订阅流，返回 `{ subscriptionId, dispose }` | 低 |
 | `unsubscribe(subscriptionId, timeout?)` | 取消订阅 | 低 |
@@ -122,6 +122,7 @@ log.removeLogUpdateListener(fn);
 ## 最佳实践
 
 - 长任务关键节点 `appendTimestampedEntry`
+- 需要在日志最前面插入提示或分隔时，传 `prepend: true`：`await log.append("session start", { prepend: true })`
 - 自定义目录时先用 `path.getInternalAppFilesPath()` 等 API 取得绝对路径
 - 插件内不传 `dirPath` / `fileName` 时，日志默认写入 `{internalFiles}/log-{packageName}/default.txt`
 - subscribe 用完必须 dispose，避免泄漏
