@@ -32,7 +32,7 @@ if (plugin) {
 |------|------|
 | `id` | 插件 ID |
 | `name` | 插件名称 |
-| `packageName` | 插件包名（用于 `log-{packageName}` / `db-{packageName}` 目录隔离） |
+| `packageName` | 插件包名（用于 `log-{packageName}` / `db-{packageName}` / `mmkv-{packageName}` 目录隔离） |
 | `versionName` / `versionCode` | 版本 |
 | `description` | 描述 |
 | `path` | 插件路径或远程 URL |
@@ -43,3 +43,7 @@ if (plugin) {
 ## 与数据库模块的关系
 
 在 AssistsX 宿主中，插件 JS 调用 `db` 模块时传入的逻辑库名（如 `data.db`）会由宿主自动存放到 `{internalAppDbs}/db-{packageName}/data.db`，实现插件间数据库隔离。插件环境不支持自定义 `dbPath`，插件侧无需手动拼接目录或前缀，详见 [database.md](./database.md)。
+
+## 与 MMKV 模块的关系
+
+在 AssistsX 宿主中，插件 JS 调用 `mmkv` 模块时传入的逻辑存储名（如 `settings`）会由宿主自动存放到 `{internalAppFiles}/mmkv-{packageName}/` 目录下，实现插件间键值存储隔离。插件环境不支持自定义 `rootPath`，插件侧无需手动拼接目录或前缀，详见 [mmkv.md](./mmkv.md)。

@@ -6,7 +6,8 @@
 
 > 以下改动已在仓库中，**尚未发布到 npm**。当前 npm 最新版：**[0.2.4](https://www.npmjs.com/package/assistsx-js)**。
 
-- **新增**：`log.appendTimestampedEntry`、`log.appendLine`、`log.append` 支持 `prepend` 参数，可将日志写入文件头部
+- **新增**：日志追加时，可将新内容写入文件头部
+- **新增**：插件脚本内可使用 MMKV 进行键值读写，支持自定义存储名称与常见数据类型
 
 ---
 

@@ -31,6 +31,8 @@ export * from "./screenshot/screenshot";
 export * from "./screenshot/screenshot-call-method";
 export * from "./db/db";
 export * from "./db/db-call-method";
+export * from "./mmkv/mmkv";
+export * from "./mmkv/mmkv-call-method";
 export * from "./barutils/bar-utils";
 export * from "./barutils/bar-utils-call-method";
 export * from "./floatingwindow/float";

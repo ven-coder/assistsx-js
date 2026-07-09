@@ -46,6 +46,7 @@
 | [float-and-ui.md](./03-modules/float-and-ui.md) | 浮动 WebView、状态栏 |
 | [ime.md](./03-modules/ime.md) | 输入法动作 |
 | [log.md](./03-modules/log.md) | 日志读写与上传 |
+| [mmkv.md](./03-modules/mmkv.md) | MMKV 键值存储 |
 
 ### 生产模式与平台食谱
 

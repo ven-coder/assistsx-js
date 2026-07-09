@@ -63,6 +63,10 @@ declare global {
             call(method: string): string | null;
         };
         assistsxDbCallback: (data: string) => void;
+        assistsxMmkv: {
+            call(method: string): string | null;
+        };
+        assistsxMmkvCallback: (data: string) => void;
         onAssistsLogUpdate: (encoded: string) => void;
     }
 }
