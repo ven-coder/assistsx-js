@@ -1193,7 +1193,7 @@ export class AssistsX {
 }
 
 /** 将原生返回的 screenWidth/screenHeight 规范为 width/height */
-function normalizeScreen(data: any): Screen | null {
+export function normalizeScreen(data: any): Screen | null {
     if (data == null) return null;
     const w = typeof data.width === "number" ? data.width : data.screenWidth;
     const h = typeof data.height === "number" ? data.height : data.screenHeight;

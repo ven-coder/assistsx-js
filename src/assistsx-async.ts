@@ -15,6 +15,8 @@ import {
     AssistsX,
     callbacks,
     WebFloatingWindowOptions,
+    type Screen,
+    normalizeScreen,
 } from "./assistsx";
 import { WindowFlags } from "./window-flags";
 
@@ -1230,11 +1232,11 @@ export class AssistsXAsync {
      * @param timeout 超时时间(秒)，默认30秒
      * @returns 屏幕尺寸对象
      */
-    public static async getScreenSize(timeout?: number): Promise<any> {
+    public static async getScreenSize(timeout?: number): Promise<Screen | null> {
         const response = await this.asyncCall(CallMethod.getScreenSize, {
             timeout,
         });
-        return response.getDataOrDefault({});
+        return normalizeScreen(response.getDataOrNull());
     }
 
     /**

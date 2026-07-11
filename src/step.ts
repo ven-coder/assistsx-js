@@ -2,7 +2,7 @@
  * 步骤执行控制类
  * 用于管理和执行自动化步骤，提供步骤的生命周期管理、状态控制和界面操作功能
  */
-import { AssistsX } from "./assistsx";
+import { AssistsX, type Screen } from "./assistsx";
 import { Node } from "./node";
 import { CallMethod } from "./call-method";
 import { useStepStore } from "./step-state-store";
@@ -959,9 +959,10 @@ export class Step {
 
     /**
      * 获取屏幕尺寸
+     * @deprecated 已过时，请使用全局变量 {@link screen}
      * @returns 屏幕尺寸对象
      */
-    public getScreenSize(): any {
+    public getScreenSize(): Screen | null {
         Step.assert(this.stepId);
         const data = AssistsX.getScreenSize();
         Step.assert(this.stepId);
