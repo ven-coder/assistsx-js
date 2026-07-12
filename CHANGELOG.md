@@ -8,6 +8,8 @@
 
 - **新增**：日志追加时，可将新内容写入文件头部
 - **新增**：插件脚本内可使用 MMKV 进行键值读写，支持自定义存储名称与常见数据类型
+- **调整**：`AssistsX.loadWebViewOverlay` / `AssistsXAsync.loadWebViewOverlay` / `AssistsXAsync.closeOverlay` 已标记过期，请改用 `float.open` / `float.close`
+- **调整**：`step.getScreenSize` 已标记过期，请改用全局变量 `screen`；屏幕尺寸返回字段统一为 `width` / `height`
 
 ---
 
