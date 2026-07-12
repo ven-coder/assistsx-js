@@ -22,6 +22,36 @@ export interface FloatBounds {
 }
 
 /**
+ * Screen centering options shared by float.open and float.refresh.
+ * Prefer these over deprecated initialCenter* aliases.
+ */
+export interface FloatCenterOptions {
+    /**
+     * Center both horizontally and vertically (screen center).
+     * Equivalent to setting both centerHorizontal and centerVertical to true.
+     * On open: defaults to true when omitted (unless an axis flag is set).
+     * On refresh: omit to keep current position.
+     */
+    center?: boolean;
+    /** Center horizontally (left-right); can be combined with centerVertical */
+    centerHorizontal?: boolean;
+    /** Center vertically (top-bottom); can be combined with centerHorizontal */
+    centerVertical?: boolean;
+    /**
+     * @deprecated Use `center` instead
+     */
+    initialCenter?: boolean;
+    /**
+     * @deprecated Use `centerHorizontal` instead
+     */
+    initialCenterHorizontal?: boolean;
+    /**
+     * @deprecated Use `centerVertical` instead
+     */
+    initialCenterVertical?: boolean;
+}
+
+/**
  * Scaffold visibility / size options shared by float.open and float.refresh.
  * Component sizes default to dp (scaffoldUnit); titleTextSize is always sp.
  */
@@ -56,7 +86,7 @@ export interface FloatScaffoldOptions {
 }
 
 /** Options for float.refresh */
-export interface FloatRefreshOptions extends FloatScaffoldOptions {
+export interface FloatRefreshOptions extends FloatScaffoldOptions, FloatCenterOptions {
     /** Window size/position unit; default "px" */
     unit?: FloatSizeUnit;
     x?: number;

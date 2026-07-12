@@ -30,7 +30,7 @@ import type {
 | `open(url, options?)` | 打开浮窗（窗口尺寸默认 px；可同时传 refresh 同款脚手架配置） |
 | `close()` | 关闭当前浮窗 |
 | `move(x, y, options?)` | 相对位移（默认 px） |
-| `refresh(options?)` | 更新位置、尺寸、脚手架显隐与按钮尺寸 |
+| `refresh(options?)` | 更新位置、尺寸、居中、脚手架显隐与按钮尺寸 |
 | `getBounds(options?)` | 查询当前 bounds（默认 px） |
 | `hideCurrent` / `showCurrent` | 隐藏/显示当前浮窗 |
 | `isCurrentVisible` / `containsCurrent` | 查询可见性 / 是否在管理器中 |
@@ -55,9 +55,10 @@ import type {
 | `initialWidth` / `initialHeight` | 初始尺寸（默认 px） |
 | `initialX` / `initialY` | 初始位置（默认 px） |
 | `unit` | `"px"` \| `"dp"`，窗口尺寸单位，默认 `"px"` |
-| `initialCenter` | 同时左右+上下居中（屏幕居中），默认 true |
-| `initialCenterHorizontal` | 仅左右（水平）居中，可与垂直居中独立组合 |
-| `initialCenterVertical` | 仅上下（垂直）居中，可与水平居中独立组合 |
+| `center` | 同时左右+上下居中（屏幕居中）；open 省略时默认 true |
+| `centerHorizontal` | 仅左右（水平）居中，可与垂直居中独立组合 |
+| `centerVertical` | 仅上下（垂直）居中，可与水平居中独立组合 |
+| `initialCenter` / `initialCenterHorizontal` / `initialCenterVertical` | 旧别名，等同于上述 `center*` |
 | `minWidth` / `maxWidth` / `minHeight` / `maxHeight` | 尺寸限制（-1 表示无限制） |
 | `keepScreenOn` | 打开期间保持亮屏 |
 | `showTopOperationArea` | 标题栏/关闭区 |
@@ -71,6 +72,7 @@ import type {
 | `unit` | 窗口位置/尺寸单位，默认 `"px"` |
 | `scaffoldUnit` | 脚手架组件尺寸单位，默认 `"dp"` |
 | `x` / `y` / `width` / `height` | 绝对位置与尺寸 |
+| `center` / `centerHorizontal` / `centerVertical` | 运行时居中（优先于同次请求的 x/y）；省略则保持当前位置 |
 | `minWidth` / `maxWidth` / `minHeight` / `maxHeight` | 运行时限制 |
 | `showTopOperationArea` / `showBottomOperationArea` | 顶部/底部栏 |
 | `showMove` / `showClose` / `showTitle` | 标题栏组件 |
@@ -109,6 +111,7 @@ const bounds = await float.getBounds();
 await float.refresh({
   width: bounds.width,
   height: 480,
+  center: true, // 按当前宽高重新屏幕居中
   showMinimize: false,
   moveSize: 36, // 默认 dp
   scaffoldUnit: "dp",

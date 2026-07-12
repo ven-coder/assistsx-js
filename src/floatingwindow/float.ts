@@ -12,6 +12,7 @@ import type { WebFloatingWindowOptions } from "../assistsx";
 
 export type {
     FloatBounds,
+    FloatCenterOptions,
     FloatRefreshOptions,
     FloatScaffoldOptions,
     FloatSizeUnit,
@@ -195,6 +196,7 @@ export class Float {
      * Refresh floating window config.
      * Window size/position: unit defaults to "px".
      * Scaffold sizes: scaffoldUnit defaults to "dp".
+     * Center with center / centerHorizontal / centerVertical (initialCenter* aliases also accepted).
      * Omit a field to keep current value.
      */
     async refresh(options: FloatRefreshOptions = {}): Promise<void> {

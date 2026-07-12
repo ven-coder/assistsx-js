@@ -165,10 +165,15 @@ interface WebFloatingWindowOptions {
   maxWidth?: number;
   minHeight?: number;
   maxHeight?: number;
+  /** Screen center (both axes); preferred over initialCenter */
+  center?: boolean;
+  centerHorizontal?: boolean;
+  centerVertical?: boolean;
+  /** @deprecated Use center */
   initialCenter?: boolean;
-  /** Center horizontally only */
+  /** @deprecated Use centerHorizontal */
   initialCenterHorizontal?: boolean;
-  /** Center vertically only */
+  /** @deprecated Use centerVertical */
   initialCenterVertical?: boolean;
   showTopOperationArea?: boolean;
   showBottomOperationArea?: boolean;
