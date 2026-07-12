@@ -166,6 +166,10 @@ interface WebFloatingWindowOptions {
   minHeight?: number;
   maxHeight?: number;
   initialCenter?: boolean;
+  /** Center horizontally only */
+  initialCenterHorizontal?: boolean;
+  /** Center vertically only */
+  initialCenterVertical?: boolean;
   showTopOperationArea?: boolean;
   showBottomOperationArea?: boolean;
   backgroundColor?: string | number;

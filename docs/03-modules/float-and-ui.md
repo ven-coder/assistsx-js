@@ -27,7 +27,7 @@ import type {
 
 | 方法 | 说明 |
 |------|------|
-| `open(url, options?)` | 打开浮窗（窗口尺寸默认 px） |
+| `open(url, options?)` | 打开浮窗（窗口尺寸默认 px；可同时传 refresh 同款脚手架配置） |
 | `close()` | 关闭当前浮窗 |
 | `move(x, y, options?)` | 相对位移（默认 px） |
 | `refresh(options?)` | 更新位置、尺寸、脚手架显隐与按钮尺寸 |
@@ -55,7 +55,9 @@ import type {
 | `initialWidth` / `initialHeight` | 初始尺寸（默认 px） |
 | `initialX` / `initialY` | 初始位置（默认 px） |
 | `unit` | `"px"` \| `"dp"`，窗口尺寸单位，默认 `"px"` |
-| `initialCenter` | 是否居中 |
+| `initialCenter` | 同时左右+上下居中（屏幕居中），默认 true |
+| `initialCenterHorizontal` | 仅左右（水平）居中，可与垂直居中独立组合 |
+| `initialCenterVertical` | 仅上下（垂直）居中，可与水平居中独立组合 |
 | `minWidth` / `maxWidth` / `minHeight` / `maxHeight` | 尺寸限制（-1 表示无限制） |
 | `keepScreenOn` | 打开期间保持亮屏 |
 | `showTopOperationArea` | 标题栏/关闭区 |
@@ -76,6 +78,7 @@ import type {
 | `showWebBack` / `showWebForward` / `showWebRefresh` | 网页导航按钮 |
 | `headerHeight` / `bottomBarHeight` | 栏高度（默认 dp） |
 | `moveSize` / `closeSize` / `scaleSize` 等 | 方形按钮边长（默认 dp） |
+| `titleTextSize` | 标题文字大小（单位固定 **sp**） |
 | `showBackground` / `backgroundColor` | 背景 |
 
 ### 打开日志页

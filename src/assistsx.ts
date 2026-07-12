@@ -13,6 +13,7 @@ import { PluginInfo } from "./plugin-info";
 import { DeviceInfo } from "./device-info";
 import type { NodeLookupScope } from "./node-lookup-scope";
 import { WindowFlags } from "./window-flags";
+import type { FloatScaffoldOptions, FloatSizeUnit } from "./floatingwindow/float-types";
 
 /**
  * 无障碍事件数据结构
@@ -43,8 +44,9 @@ export type AccessibilityEventListener = (event: AccessibilityEvent) => void;
 
 /**
  * Web浮动窗口选项接口定义
+ * 尺寸/位置默认 px；可额外传入与 float.refresh 相同的脚手架配置
  */
-export interface WebFloatingWindowOptions {
+export interface WebFloatingWindowOptions extends FloatScaffoldOptions {
     /** Initial width (default unit: px) */
     initialWidth?: number;
     /** Initial height (default unit: px) */
@@ -62,16 +64,19 @@ export interface WebFloatingWindowOptions {
     /** Maximum height (-1 = no limit; default unit: px) */
     maxHeight?: number;
     /** Size/position unit for window fields; default "px" */
-    unit?: "px" | "dp";
+    unit?: FloatSizeUnit;
+    /**
+     * Center both horizontally and vertically (screen center).
+     * Equivalent to setting both initialCenterHorizontal and initialCenterVertical to true.
+     * Default true when omitted on native open.
+     */
     initialCenter?: boolean;
+    /** Center horizontally (left-right); can be combined with initialCenterVertical */
+    initialCenterHorizontal?: boolean;
+    /** Center vertically (top-bottom); can be combined with initialCenterHorizontal */
+    initialCenterVertical?: boolean;
     /** Keep screen on while floating window is open */
     keepScreenOn?: boolean;
-    /** Whether to show top operation area (title bar, close button, etc.) */
-    showTopOperationArea?: boolean;
-    /** Whether to show bottom operation area (zoom, back/forward/refresh, etc.) */
-    showBottomOperationArea?: boolean;
-    /** Background color: hex string (e.g. "#ffffff") or Android color int */
-    backgroundColor?: string | number;
 }
 
 // 回调函数存储对象

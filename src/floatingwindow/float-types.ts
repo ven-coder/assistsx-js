@@ -21,20 +21,13 @@ export interface FloatBounds {
     unit: FloatSizeUnit;
 }
 
-/** Options for float.refresh */
-export interface FloatRefreshOptions {
-    /** Window size/position unit; default "px" */
-    unit?: FloatSizeUnit;
+/**
+ * Scaffold visibility / size options shared by float.open and float.refresh.
+ * Component sizes default to dp (scaffoldUnit); titleTextSize is always sp.
+ */
+export interface FloatScaffoldOptions {
     /** Scaffold component size unit; default "dp" */
     scaffoldUnit?: FloatSizeUnit;
-    x?: number;
-    y?: number;
-    width?: number;
-    height?: number;
-    minWidth?: number;
-    minHeight?: number;
-    maxWidth?: number;
-    maxHeight?: number;
     showTopOperationArea?: boolean;
     showBottomOperationArea?: boolean;
     backgroundColor?: string | number;
@@ -48,6 +41,8 @@ export interface FloatRefreshOptions {
     showWebBack?: boolean;
     showWebForward?: boolean;
     showWebRefresh?: boolean;
+    /** Title text size in sp */
+    titleTextSize?: number;
     headerHeight?: number;
     bottomBarHeight?: number;
     moveSize?: number;
@@ -58,5 +53,19 @@ export interface FloatRefreshOptions {
     webBackSize?: number;
     webForwardSize?: number;
     webRefreshSize?: number;
+}
+
+/** Options for float.refresh */
+export interface FloatRefreshOptions extends FloatScaffoldOptions {
+    /** Window size/position unit; default "px" */
+    unit?: FloatSizeUnit;
+    x?: number;
+    y?: number;
+    width?: number;
+    height?: number;
+    minWidth?: number;
+    minHeight?: number;
+    maxWidth?: number;
+    maxHeight?: number;
     timeout?: number;
 }

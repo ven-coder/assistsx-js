@@ -7,10 +7,15 @@
 import { CallResponse } from "../call-response";
 import { decodeBase64UTF8, generateUUID } from "../utils";
 import { FloatCallMethod } from "./float-call-method";
-import type { FloatBounds, FloatRefreshOptions, FloatSizeUnit } from "./float-types";
+import type { FloatBounds, FloatRefreshOptions, FloatScaffoldOptions, FloatSizeUnit } from "./float-types";
 import type { WebFloatingWindowOptions } from "../assistsx";
 
-export type { FloatBounds, FloatRefreshOptions, FloatSizeUnit } from "./float-types";
+export type {
+    FloatBounds,
+    FloatRefreshOptions,
+    FloatScaffoldOptions,
+    FloatSizeUnit,
+} from "./float-types";
 
 const callbacks: Map<string, (data: string) => void> = new Map();
 
@@ -103,47 +108,15 @@ export class Float {
         return Object.keys(args).length ? args : undefined;
     }
 
-    /** Open floating window. Size/position default to px; pass unit: "dp" to use dp. */
+    /** Open floating window. Accepts window options plus the same scaffold fields as refresh. */
     async open(
         url: string,
         options: WebFloatingWindowOptions & { timeout?: number } = {}
     ): Promise<boolean> {
-        const {
-            initialWidth,
-            initialHeight,
-            initialX,
-            initialY,
-            minWidth,
-            minHeight,
-            maxWidth,
-            maxHeight,
-            unit,
-            initialCenter,
-            keepScreenOn,
-            showTopOperationArea,
-            showBottomOperationArea,
-            backgroundColor,
-            timeout,
-        } = options;
+        const { timeout, ...rest } = options;
         const res = await this.asyncCall(
             FloatCallMethod.open,
-            {
-                url,
-                initialWidth,
-                initialHeight,
-                initialX,
-                initialY,
-                minWidth,
-                minHeight,
-                maxWidth,
-                maxHeight,
-                unit,
-                initialCenter,
-                keepScreenOn,
-                showTopOperationArea,
-                showBottomOperationArea,
-                backgroundColor,
-            },
+            this.pickDefined({ url, ...rest }),
             timeout
         );
         if (!res.isSuccess()) {
