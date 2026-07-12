@@ -375,6 +375,9 @@ export class AssistsXAsync {
         const data = response.getDataOrDefault({ value: "" });
         return data.value;
     }
+    /**
+     * @deprecated Use `float.open` instead
+     */
     public static async loadWebViewOverlay(
         url: string,
         options: WebFloatingWindowOptions & { timeout?: number } = {}
@@ -418,6 +421,7 @@ export class AssistsXAsync {
 
     /**
      * 关闭当前 WebView 悬浮窗
+     * @deprecated Use `float.close` instead
      * @param timeout 超时时间(秒)，默认30秒
      * @returns 是否关闭成功（当前页面在悬浮窗内时返回 true，否则 false）
      */

@@ -35,7 +35,9 @@ export const CallMethod = {
     scrollBackward: "scrollBackward",
     setOverlayFlags: "setOverlayFlags",
     scanQR: "scanQR",
+    /** @deprecated Use `float.open` instead */
     loadWebViewOverlay: "loadWebViewOverlay",
+    /** @deprecated Use `float.close` instead */
     closeOverlay: "closeOverlay",
     recognizeTextInScreenshot: "recognizeTextInScreenshot",
 

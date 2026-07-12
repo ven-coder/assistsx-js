@@ -16,7 +16,7 @@ related_apis: [AssistsXAsync]
 | `takeScreenshotSave` | — | 有 |
 | `takeScreenshotToFile` | — | 有 |
 | `recognizeTextInScreenshot` | — | 有 |
-| `closeOverlay` | — | 有 |
+| `closeOverlay`（Deprecated，改用 `float.close`） | — | 有 |
 | `download` | — | 有 |
 | `audioPlayFromFile` / `audioStop` | — | 有 |
 | `addContact` / `getAllContacts` | — | 有 |
@@ -77,12 +77,12 @@ if (path) {
 |------|------|--------------|
 | `saveRootNodeTreeJson(savePath, timeout?)` | 导出节点树 JSON | 低（TestPage） |
 
-## 浮层
+## 浮层（已过期，请改用 `float`）
 
 | 方法 | 说明 |
 |------|------|
-| `loadWebViewOverlay(options?, timeout?)` | 加载 Web 浮层 |
-| `closeOverlay(timeout?)` | 关闭浮层 |
+| `loadWebViewOverlay(options?, timeout?)` | **Deprecated** → `float.open` |
+| `closeOverlay(timeout?)` | **Deprecated** → `float.close` |
 
 ## 镜像 API（全异步 + timeout）
 

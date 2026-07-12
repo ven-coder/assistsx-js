@@ -98,7 +98,7 @@ await AssistsX.clickByGesture(sendX, sendY, 50);
 | `setOverlayFlags(flags)` | Window flags | 低 |
 | `setOverlayFlagList(flags[])` | flags 数组 | 低 |
 | `overlayToast(text, delay?)` | 悬浮 Toast | 低 |
-| `loadWebViewOverlay(options?)` | 加载 Web 浮层 | 中 |
+| `loadWebViewOverlay(options?)` | **Deprecated** → `float.open` | 中 |
 | `keepScreenOn(tip?)` / `clearKeepScreenOn()` | 常亮 | 低 |
 
 ## 截图与扫码

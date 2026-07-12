@@ -387,6 +387,9 @@ export class AssistsX {
         const data = response.getDataOrDefault({ value: "" });
         return data.value;
     }
+    /**
+     * @deprecated Use `float.open` instead
+     */
     public static async loadWebViewOverlay(
         url: string,
         options: WebFloatingWindowOptions & { timeout?: number } = {}

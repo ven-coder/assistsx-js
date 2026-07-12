@@ -1,7 +1,7 @@
 ---
 title: 浮动窗与 UI 模块
 tags: [module, float, barUtils]
-related_apis: [float, barUtils, AssistsX.loadWebViewOverlay]
+related_apis: [float, barUtils]
 ---
 
 # 浮动窗与 UI 模块
@@ -94,25 +94,23 @@ Bridge：`window.assistsxBarUtils`。
 
 浮窗 `initialY` 建议 `getStatusBarHeight()`，避免遮挡状态栏。
 
-## AssistsX.loadWebViewOverlay
+## AssistsX.loadWebViewOverlay（已过期）
 
-非 float 模块的全屏/半屏 Web overlay：
+**Deprecated**：请改用 `float.open`。
 
 ```typescript
-import { AssistsX, screen } from "assistsx-js";
+import { float, screen } from "assistsx-js";
 
-await AssistsX.loadWebViewOverlay({
+await float.open("/#/logs", {
   initialWidth: screen.width,
   initialHeight: Math.floor(screen.height * 0.6),
   showTopOperationArea: true,
 });
 ```
 
-用于新手引导、账号关联（wx-auto OnboardingGuidePage）。
+## AssistsXAsync.closeOverlay（已过期）
 
-## AssistsXAsync.closeOverlay
-
-关闭 overlay：`await AssistsXAsync.closeOverlay(timeout?)`
+**Deprecated**：请改用 `float.close()`。
 
 ## 最佳实践
 
