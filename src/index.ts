@@ -37,4 +37,5 @@ export * from "./barutils/bar-utils";
 export * from "./barutils/bar-utils-call-method";
 export * from "./floatingwindow/float";
 export * from "./floatingwindow/float-call-method";
+export * from "./floatingwindow/float-types";
 export * from "./log/log";

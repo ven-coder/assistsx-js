@@ -10,31 +10,73 @@ related_apis: [float, barUtils]
 
 Bridge：`window.assistsxFloat`。在 Android 上打开浮动 WebView，用于运维 UI。
 
+**单位约定**：
+- 窗口位置/尺寸（`open` / `move` / `refresh` 的 x、y、width、height、min/max，`getBounds`）：默认 **px**，可通过 `unit: "dp" | "px"` 切换
+- 脚手架组件尺寸（`headerHeight`、`moveSize` 等）：默认 **dp**，可通过 `scaffoldUnit: "dp" | "px"` 切换
+
 ```typescript
 import { float } from "assistsx-js";
-import type { WebFloatingWindowOptions } from "assistsx-js";
+import type {
+  WebFloatingWindowOptions,
+  FloatBounds,
+  FloatRefreshOptions,
+} from "assistsx-js";
 ```
 
-| 方法 | 说明 | wx-auto |
-|------|------|---------|
-| `open(url, options?, timeout?)` | 打开浮窗 | 高 |
-| `close(timeout?)` | 关闭 | 中 |
-| `move(x, y, timeout?)` | 移动位置 | 低 |
-| `refresh(timeout?)` | 刷新页面 | 低 |
-| `toast(text, timeout?)` | 浮窗 Toast | 低 |
-| `setFlags(flags, timeout?)` | Window flags | 低 |
+### 当前浮窗
+
+| 方法 | 说明 |
+|------|------|
+| `open(url, options?)` | 打开浮窗（窗口尺寸默认 px） |
+| `close()` | 关闭当前浮窗 |
+| `move(x, y, options?)` | 相对位移（默认 px） |
+| `refresh(options?)` | 更新位置、尺寸、脚手架显隐与按钮尺寸 |
+| `getBounds(options?)` | 查询当前 bounds（默认 px） |
+| `hideCurrent` / `showCurrent` | 隐藏/显示当前浮窗 |
+| `isCurrentVisible` / `containsCurrent` | 查询可见性 / 是否在管理器中 |
+| `toast(text, delay?)` | 浮窗 Toast |
+| `setFlags(flags)` | Window flags |
+
+### 全局管理
+
+| 方法 | 说明 |
+|------|------|
+| `hideAll` / `showAll` | 隐藏/显示全部 |
+| `hideTop` / `showTop` | 隐藏/显示栈顶 |
+| `temporarilyHideAll` | 临时隐藏后按快照恢复 |
+| `touchableByAll` / `nonTouchableByAll` | 触摸穿透控制 |
+| `pop` | 移除栈顶 |
+| `removeAllWindows({ confirm: true })` | 移除全部（需确认） |
 
 ### WebFloatingWindowOptions
 
 | 字段 | 说明 |
 |------|------|
-| `initialWidth` / `initialHeight` | 初始尺寸 |
-| `initialX` / `initialY` | 初始位置 |
+| `initialWidth` / `initialHeight` | 初始尺寸（默认 px） |
+| `initialX` / `initialY` | 初始位置（默认 px） |
+| `unit` | `"px"` \| `"dp"`，窗口尺寸单位，默认 `"px"` |
 | `initialCenter` | 是否居中 |
-| `minWidth` / `maxWidth` / `minHeight` / `maxHeight` | 尺寸限制 |
+| `minWidth` / `maxWidth` / `minHeight` / `maxHeight` | 尺寸限制（-1 表示无限制） |
+| `keepScreenOn` | 打开期间保持亮屏 |
 | `showTopOperationArea` | 标题栏/关闭区 |
 | `showBottomOperationArea` | 底部操作区 |
 | `backgroundColor` | `#hex` 或 Android color int |
+
+### FloatRefreshOptions（节选）
+
+| 字段 | 说明 |
+|------|------|
+| `unit` | 窗口位置/尺寸单位，默认 `"px"` |
+| `scaffoldUnit` | 脚手架组件尺寸单位，默认 `"dp"` |
+| `x` / `y` / `width` / `height` | 绝对位置与尺寸 |
+| `minWidth` / `maxWidth` / `minHeight` / `maxHeight` | 运行时限制 |
+| `showTopOperationArea` / `showBottomOperationArea` | 顶部/底部栏 |
+| `showMove` / `showClose` / `showTitle` | 标题栏组件 |
+| `showScale` / `showMaximize` / `showMinimize` | 底部控制按钮 |
+| `showWebBack` / `showWebForward` / `showWebRefresh` | 网页导航按钮 |
+| `headerHeight` / `bottomBarHeight` | 栏高度（默认 dp） |
+| `moveSize` / `closeSize` / `scaleSize` 等 | 方形按钮边长（默认 dp） |
+| `showBackground` / `backgroundColor` | 背景 |
 
 ### 打开日志页
 
@@ -51,6 +93,22 @@ await float.open("/#/logs", {
   showTopOperationArea: true,
   showBottomOperationArea: false,
   backgroundColor: "#1a1a1a",
+});
+
+// 使用 dp 打开
+await float.open("/#/status", {
+  unit: "dp",
+  initialWidth: 360,
+  initialHeight: 400,
+});
+
+const bounds = await float.getBounds();
+await float.refresh({
+  width: bounds.width,
+  height: 480,
+  showMinimize: false,
+  moveSize: 36, // 默认 dp
+  scaffoldUnit: "dp",
 });
 ```
 
@@ -92,18 +150,18 @@ Bridge：`window.assistsxBarUtils`。
 |------|------|
 | `getActionBarHeight(timeout?)` | ActionBar 高度 |
 
-浮窗 `initialY` 建议 `getStatusBarHeight()`，避免遮挡状态栏。
+浮窗 `initialY` 建议传入 `getStatusBarHeight()`（px，与默认窗口单位一致），避免遮挡状态栏。
 
 ## AssistsX.loadWebViewOverlay（已过期）
 
 **Deprecated**：请改用 `float.open`。
 
 ```typescript
-import { float, screen } from "assistsx-js";
+import { float } from "assistsx-js";
 
 await float.open("/#/logs", {
-  initialWidth: screen.width,
-  initialHeight: Math.floor(screen.height * 0.6),
+  initialWidth: 360,
+  initialHeight: 480,
   showTopOperationArea: true,
 });
 ```
@@ -116,7 +174,7 @@ await float.open("/#/logs", {
 
 - 运维浮窗与自动化并行：`float.open` 不阻塞 Step.run
 - 深色背景 + 浅色文字适配日志页
-- 坐标布局结合 `screen.width` 适配不同分辨率
+- 坐标布局可直接使用 `screen.width`（px），或传 `unit: "dp"` 使用密度无关单位
 
 ## 常见坑
 
@@ -125,6 +183,7 @@ await float.open("/#/logs", {
 | 浮窗挡操作 | 缩小尺寸或移 corner；或 `showTopOperationArea: false` |
 | 路由 404 | Vue `base: './'` + hash 路由 |
 | barUtils color | 传 Android color int，非 CSS 字符串 |
+| 尺寸单位 | 窗口字段默认 px；脚手架字段默认 dp；可用 `unit` / `scaffoldUnit` 切换 |
 
 ## 扩展阅读
 

@@ -10,6 +10,9 @@
 - **新增**：插件脚本内可使用 MMKV 进行键值读写，支持自定义存储名称与常见数据类型
 - **调整**：`AssistsX.loadWebViewOverlay` / `AssistsXAsync.loadWebViewOverlay` / `AssistsXAsync.closeOverlay` 已标记过期，请改用 `float.open` / `float.close`
 - **调整**：`step.getScreenSize` 已标记过期，请改用全局变量 `screen`；屏幕尺寸返回字段统一为 `width` / `height`
+- **调整**：悬浮窗窗口尺寸默认按 px，脚手架组件尺寸默认按 dp，均可通过参数切换为 dp 或 px
+- **新增**：可查询当前悬浮窗位置与尺寸，并在运行时调整缩放上下限与脚手架按钮显隐、尺寸
+- **新增**：悬浮窗支持批量显示/隐藏、临时隐藏、触摸穿透及当前窗可见性查询等封装
 
 ---
 

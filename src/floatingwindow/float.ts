@@ -1,11 +1,16 @@
 /**
  * Float window API for WebView.
  * Requires assistsxFloat native bridge. Matches FloatJsInterface.kt.
+ * Window size/position default to px; scaffold sizes default to dp.
+ * Override with unit / scaffoldUnit ("px" | "dp").
  */
 import { CallResponse } from "../call-response";
 import { decodeBase64UTF8, generateUUID } from "../utils";
 import { FloatCallMethod } from "./float-call-method";
+import type { FloatBounds, FloatRefreshOptions, FloatSizeUnit } from "./float-types";
 import type { WebFloatingWindowOptions } from "../assistsx";
+
+export type { FloatBounds, FloatRefreshOptions, FloatSizeUnit } from "./float-types";
 
 const callbacks: Map<string, (data: string) => void> = new Map();
 
@@ -87,7 +92,18 @@ export class Float {
         return fallback;
     }
 
-    /** Load floating window */
+    private pickDefined(
+        source: Record<string, unknown>
+    ): Record<string, unknown> | undefined {
+        const args: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(source)) {
+            if (key === "timeout") continue;
+            if (value !== undefined) args[key] = value;
+        }
+        return Object.keys(args).length ? args : undefined;
+    }
+
+    /** Open floating window. Size/position default to px; pass unit: "dp" to use dp. */
     async open(
         url: string,
         options: WebFloatingWindowOptions & { timeout?: number } = {}
@@ -101,7 +117,9 @@ export class Float {
             minHeight,
             maxWidth,
             maxHeight,
+            unit,
             initialCenter,
+            keepScreenOn,
             showTopOperationArea,
             showBottomOperationArea,
             backgroundColor,
@@ -119,7 +137,9 @@ export class Float {
                 minHeight,
                 maxWidth,
                 maxHeight,
+                unit,
                 initialCenter,
+                keepScreenOn,
                 showTopOperationArea,
                 showBottomOperationArea,
                 backgroundColor,
@@ -177,11 +197,20 @@ export class Float {
         }
     }
 
-    /** Move floating window to x, y */
-    async move(x: number, y: number, timeout?: number): Promise<void> {
+    /** Move floating window by relative offset. Default unit px; pass unit: "dp" to use dp. */
+    async move(
+        x: number,
+        y: number,
+        optionsOrTimeout?: { unit?: FloatSizeUnit; timeout?: number } | number
+    ): Promise<void> {
+        const options =
+            typeof optionsOrTimeout === "number"
+                ? { timeout: optionsOrTimeout }
+                : optionsOrTimeout ?? {};
+        const { unit, timeout } = options;
         const res = await this.asyncCall(
             FloatCallMethod.move,
-            { x, y },
+            this.pickDefined({ x, y, unit }),
             timeout
         );
         if (!res.isSuccess()) {
@@ -189,47 +218,230 @@ export class Float {
         }
     }
 
-    /** Refresh floating window view config. Optional: showTopOperationArea, showBottomOperationArea, backgroundColor, width, height, x, y (omit to keep current) */
-    async refresh(
-        options: {
-            showTopOperationArea?: boolean;
-            showBottomOperationArea?: boolean;
-            backgroundColor?: string | number;
-            width?: number;
-            height?: number;
-            x?: number;
-            y?: number;
-            timeout?: number;
-        } = {}
-    ): Promise<void> {
-        const {
-            showTopOperationArea,
-            showBottomOperationArea,
-            backgroundColor,
-            width,
-            height,
-            x,
-            y,
-            timeout,
-        } = options;
-        const args: Record<string, number | boolean | string | undefined> = {};
-        if (showTopOperationArea !== undefined)
-            args.showTopOperationArea = showTopOperationArea;
-        if (showBottomOperationArea !== undefined)
-            args.showBottomOperationArea = showBottomOperationArea;
-        if (backgroundColor !== undefined) args.backgroundColor = backgroundColor;
-        if (width !== undefined) args.width = width;
-        if (height !== undefined) args.height = height;
-        if (x !== undefined) args.x = x;
-        if (y !== undefined) args.y = y;
+    /**
+     * Refresh floating window config.
+     * Window size/position: unit defaults to "px".
+     * Scaffold sizes: scaffoldUnit defaults to "dp".
+     * Omit a field to keep current value.
+     */
+    async refresh(options: FloatRefreshOptions = {}): Promise<void> {
+        const { timeout, ...rest } = options;
         const res = await this.asyncCall(
             FloatCallMethod.refresh,
-            Object.keys(args).length ? args : undefined,
+            this.pickDefined(rest as Record<string, unknown>),
             timeout
         );
         if (!res.isSuccess()) {
             throw new Error(this.errorMessage(res, "Float.refresh failed"));
         }
+    }
+
+    /** Get current floating window bounds. Default unit px; pass unit: "dp" to get dp. */
+    async getBounds(
+        optionsOrTimeout?: { unit?: FloatSizeUnit; timeout?: number } | number
+    ): Promise<FloatBounds> {
+        const options =
+            typeof optionsOrTimeout === "number"
+                ? { timeout: optionsOrTimeout }
+                : optionsOrTimeout ?? {};
+        const { unit, timeout } = options;
+        const res = await this.asyncCall(
+            FloatCallMethod.getBounds,
+            this.pickDefined({ unit }),
+            timeout
+        );
+        if (!res.isSuccess()) {
+            throw new Error(this.errorMessage(res, "Float.getBounds failed"));
+        }
+        return res.getData() as FloatBounds;
+    }
+
+    async hideAll(
+        options: { isTouchable?: boolean; timeout?: number } = {}
+    ): Promise<void> {
+        const { isTouchable, timeout } = options;
+        const res = await this.asyncCall(
+            FloatCallMethod.hideAll,
+            this.pickDefined({ isTouchable }),
+            timeout
+        );
+        if (!res.isSuccess()) {
+            throw new Error(this.errorMessage(res, "Float.hideAll failed"));
+        }
+    }
+
+    async hideTop(
+        options: { isTouchable?: boolean; timeout?: number } = {}
+    ): Promise<void> {
+        const { isTouchable, timeout } = options;
+        const res = await this.asyncCall(
+            FloatCallMethod.hideTop,
+            this.pickDefined({ isTouchable }),
+            timeout
+        );
+        if (!res.isSuccess()) {
+            throw new Error(this.errorMessage(res, "Float.hideTop failed"));
+        }
+    }
+
+    async showAll(
+        options: { isTouchable?: boolean; timeout?: number } = {}
+    ): Promise<void> {
+        const { isTouchable, timeout } = options;
+        const res = await this.asyncCall(
+            FloatCallMethod.showAll,
+            this.pickDefined({ isTouchable }),
+            timeout
+        );
+        if (!res.isSuccess()) {
+            throw new Error(this.errorMessage(res, "Float.showAll failed"));
+        }
+    }
+
+    async showTop(
+        options: { isTouchable?: boolean; timeout?: number } = {}
+    ): Promise<void> {
+        const { isTouchable, timeout } = options;
+        const res = await this.asyncCall(
+            FloatCallMethod.showTop,
+            this.pickDefined({ isTouchable }),
+            timeout
+        );
+        if (!res.isSuccess()) {
+            throw new Error(this.errorMessage(res, "Float.showTop failed"));
+        }
+    }
+
+    async temporarilyHideAll(
+        options: {
+            durationMs?: number;
+            isTouchable?: boolean;
+            timeout?: number;
+        } = {}
+    ): Promise<void> {
+        const { durationMs, isTouchable, timeout } = options;
+        const res = await this.asyncCall(
+            FloatCallMethod.temporarilyHideAll,
+            this.pickDefined({ durationMs, isTouchable }),
+            timeout
+        );
+        if (!res.isSuccess()) {
+            throw new Error(
+                this.errorMessage(res, "Float.temporarilyHideAll failed")
+            );
+        }
+    }
+
+    async touchableByAll(timeout?: number): Promise<void> {
+        const res = await this.asyncCall(
+            FloatCallMethod.touchableByAll,
+            undefined,
+            timeout
+        );
+        if (!res.isSuccess()) {
+            throw new Error(
+                this.errorMessage(res, "Float.touchableByAll failed")
+            );
+        }
+    }
+
+    async nonTouchableByAll(timeout?: number): Promise<void> {
+        const res = await this.asyncCall(
+            FloatCallMethod.nonTouchableByAll,
+            undefined,
+            timeout
+        );
+        if (!res.isSuccess()) {
+            throw new Error(
+                this.errorMessage(res, "Float.nonTouchableByAll failed")
+            );
+        }
+    }
+
+    async pop(
+        options: { showTop?: boolean; timeout?: number } = {}
+    ): Promise<void> {
+        const { showTop, timeout } = options;
+        const res = await this.asyncCall(
+            FloatCallMethod.pop,
+            this.pickDefined({ showTop }),
+            timeout
+        );
+        if (!res.isSuccess()) {
+            throw new Error(this.errorMessage(res, "Float.pop failed"));
+        }
+    }
+
+    async removeAllWindows(
+        options: { confirm: true; timeout?: number }
+    ): Promise<void> {
+        const { confirm, timeout } = options;
+        const res = await this.asyncCall(
+            FloatCallMethod.removeAllWindows,
+            { confirm },
+            timeout
+        );
+        if (!res.isSuccess()) {
+            throw new Error(
+                this.errorMessage(res, "Float.removeAllWindows failed")
+            );
+        }
+    }
+
+    async hideCurrent(
+        options: { isTouchable?: boolean; timeout?: number } = {}
+    ): Promise<void> {
+        const { isTouchable, timeout } = options;
+        const res = await this.asyncCall(
+            FloatCallMethod.hideCurrent,
+            this.pickDefined({ isTouchable }),
+            timeout
+        );
+        if (!res.isSuccess()) {
+            throw new Error(this.errorMessage(res, "Float.hideCurrent failed"));
+        }
+    }
+
+    async showCurrent(
+        options: { isTouchable?: boolean; timeout?: number } = {}
+    ): Promise<void> {
+        const { isTouchable, timeout } = options;
+        const res = await this.asyncCall(
+            FloatCallMethod.showCurrent,
+            this.pickDefined({ isTouchable }),
+            timeout
+        );
+        if (!res.isSuccess()) {
+            throw new Error(this.errorMessage(res, "Float.showCurrent failed"));
+        }
+    }
+
+    async isCurrentVisible(timeout?: number): Promise<boolean> {
+        const res = await this.asyncCall(
+            FloatCallMethod.isCurrentVisible,
+            undefined,
+            timeout
+        );
+        if (!res.isSuccess()) {
+            throw new Error(
+                this.errorMessage(res, "Float.isCurrentVisible failed")
+            );
+        }
+        return res.getDataOrDefault(false);
+    }
+
+    async containsCurrent(timeout?: number): Promise<boolean> {
+        const res = await this.asyncCall(
+            FloatCallMethod.containsCurrent,
+            undefined,
+            timeout
+        );
+        if (!res.isSuccess()) {
+            throw new Error(
+                this.errorMessage(res, "Float.containsCurrent failed")
+            );
+        }
+        return res.getDataOrDefault(false);
     }
 }
 

@@ -45,17 +45,27 @@ export type AccessibilityEventListener = (event: AccessibilityEvent) => void;
  * Web浮动窗口选项接口定义
  */
 export interface WebFloatingWindowOptions {
+    /** Initial width (default unit: px) */
     initialWidth?: number;
+    /** Initial height (default unit: px) */
     initialHeight?: number;
-    /** Initial window X position (default 0) */
+    /** Initial window X position (default unit: px) */
     initialX?: number;
-    /** Initial window Y position (default 0) */
+    /** Initial window Y position (default unit: px) */
     initialY?: number;
+    /** Minimum width (default unit: px) */
     minWidth?: number;
+    /** Minimum height (default unit: px) */
     minHeight?: number;
+    /** Maximum width (-1 = no limit; default unit: px) */
     maxWidth?: number;
+    /** Maximum height (-1 = no limit; default unit: px) */
     maxHeight?: number;
+    /** Size/position unit for window fields; default "px" */
+    unit?: "px" | "dp";
     initialCenter?: boolean;
+    /** Keep screen on while floating window is open */
+    keepScreenOn?: boolean;
     /** Whether to show top operation area (title bar, close button, etc.) */
     showTopOperationArea?: boolean;
     /** Whether to show bottom operation area (zoom, back/forward/refresh, etc.) */
