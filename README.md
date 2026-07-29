@@ -17,6 +17,26 @@
 
 **[更新日志](./CHANGELOG.md)**
 
+# 🤖 Assists MCP · AI Agent 协作开发
+
+> **新增 MCP 支持，全面增强 AI Agent 与无障碍自动化的协作能力。**  
+> 通过 MCP，AI Agent 从辅助工具提升为自动化开发流程中的核心协作者。
+
+接入 **Cursor、Claude Code、Codex、OpenCode** 等支持 MCP 的 AI 编程助手后，Agent 可全程参与开发与调试：不只是「遥控手机」，而是覆盖**基于无障碍服务的自动化**——读节点、写逻辑、查 Bug，让 AI Agent 真正进入自动化落地全流程。
+
+与 AssistsX + `assistsx-js` 协作时，可进一步发挥 MCP 的全部潜能。MCP 创建插件项目时会**附带 assistsx-js 源码**，便于 Agent 深入理解并正确调用 API，更高效地完成自动化逻辑编写、调试与排障。
+
+| 能力 | 说明 |
+|------|------|
+| **多端 MCP 接入** | 支持 Cursor、Claude Code、Codex、OpenCode 等 MCP 客户端 |
+| **无障碍自动化协作** | 凡基于 Android 无障碍服务的自动化，均可读节点、写逻辑、查 Bug |
+| **源码级 API 协作** | 创建项目时附带 assistsx-js 源码，Agent 可更准确地使用 API 开发自动化 |
+| **AssistsX 全潜能** | 与 AssistsX 搭配时，支持插件创建、逻辑编写、调试与异常排查 |
+| **节点读取与分析** | 原生无障碍服务节点读取与逻辑分析 |
+| **异常与 Bug 排查** | 运行异常分析与问题定位 |
+
+**详细介绍及配置教程** → [https://assists.cn/mcp](https://assists.cn/mcp)
+
 # 快速开始
 
 ## 方式一：HTML 直接引用（无需构建工具）
