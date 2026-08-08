@@ -30,7 +30,7 @@
         "access": "public"
     },
     "scripts": {
-        "build": "tsup",
+        "build": "tsup && node tools/sync-runner-asset.js",
         "prepublish": "npm run build",
         "test": "echo \"Error: no test specified\" && exit 1"
     },

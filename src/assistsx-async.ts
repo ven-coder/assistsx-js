@@ -768,13 +768,17 @@ export class AssistsXAsync {
         node: Node,
         className: string,
         timeout?: number
-    ): Promise<Node> {
+    ): Promise<Node | null> {
         const response = await this.asyncCall(CallMethod.findFirstParentByTags, {
             args: { className },
             node,
             timeout,
         });
-        return Node.create(response.getDataOrDefault({}));
+        const data = response.getDataOrNull();
+        if (data == null) {
+            return null;
+        }
+        return Node.create(data);
     }
 
     /**
@@ -831,29 +835,40 @@ export class AssistsXAsync {
     public static async findFirstParentClickable(
         node: Node,
         timeout?: number
-    ): Promise<Node> {
+    ): Promise<Node | null> {
         const response = await this.asyncCall(CallMethod.findFirstParentClickable, {
             node,
             timeout,
         });
-        return Node.create(response.getDataOrDefault({}));
+        const data = response.getDataOrNull();
+        if (data == null) {
+            return null;
+        }
+        return Node.create(data);
     }
 
     /**
      * 获取节点在屏幕中的边界
      * @param node 目标节点
      * @param timeout 超时时间(秒)，默认30秒
-     * @returns 边界对象
+     * @returns 边界对象；节点无效时返回 null
      */
     public static async getBoundsInScreen(
         node: Node,
         timeout?: number
-    ): Promise<Bounds> {
+    ): Promise<Bounds | null> {
         const response = await this.asyncCall(CallMethod.getBoundsInScreen, {
             node,
             timeout,
         });
-        return Bounds.fromData(response.getDataOrDefault({}));
+        if (!response.isSuccess()) {
+            return null;
+        }
+        const data = response.getDataOrNull();
+        if (data == null) {
+            return null;
+        }
+        return Bounds.fromData(data);
     }
 
     /**
@@ -1215,21 +1230,21 @@ export class AssistsXAsync {
         }
         return PluginInfo.fromJSON(data);
     }
-    public static async getUniqueDeviceId(timeout?: number): Promise<any> {
+    public static async getUniqueDeviceId(timeout?: number): Promise<string> {
         const response = await this.asyncCall(CallMethod.getUniqueDeviceId, {
             timeout,
         });
-        return response.getDataOrDefault("");
+        return response.getStringData("uniqueDeviceId");
     }
-    public static async getAndroidID(timeout?: number): Promise<any> {
+    public static async getAndroidID(timeout?: number): Promise<string> {
         const response = await this.asyncCall(CallMethod.getAndroidID, { timeout });
-        return response.getDataOrDefault("");
+        return response.getStringData("androidID");
     }
-    public static async getMacAddress(timeout?: number): Promise<any> {
+    public static async getMacAddress(timeout?: number): Promise<string> {
         const response = await this.asyncCall(CallMethod.getMacAddress, {
             timeout,
         });
-        return response.getDataOrDefault({});
+        return response.getStringData("macAddress");
     }
     public static async getDeviceInfo(timeout?: number): Promise<DeviceInfo> {
         const response = await this.asyncCall(CallMethod.getDeviceInfo, {
@@ -1299,12 +1314,12 @@ export class AssistsXAsync {
             useAbsoluteVolume?: boolean;
             timeout?: number;
         }
-    ): Promise<string | null | undefined> {
+    ): Promise<boolean> {
         const response = await this.asyncCall(CallMethod.audioPlayFromFile, {
             args: { filePath, volume, useAbsoluteVolume },
             timeout,
         });
-        return response.getDataOrDefault(null);
+        return response.getBooleanResult();
     }
     public static async audioStop({
         timeout = 30,
@@ -1326,27 +1341,27 @@ export class AssistsXAsync {
         timeout = 30,
     }: {
         timeout?: number;
-    }): Promise<string> {
+    }): Promise<boolean> {
         const response = await this.asyncCall(CallMethod.audioPlayRingtone, {
             timeout,
         });
-        return response.getDataOrDefault("");
+        return response.getBooleanResult();
     }
 
     /**
      * 停止播放系统电话铃声
      * @param timeout 超时时间(秒)，默认30秒
-     * @returns 停止结果消息
+     * @returns 是否停止成功
      */
     public static async audioStopRingtone({
         timeout = 30,
     }: {
         timeout?: number;
-    }): Promise<string> {
+    }): Promise<boolean> {
         const response = await this.asyncCall(CallMethod.audioStopRingtone, {
             timeout,
         });
-        return response.getDataOrDefault("");
+        return response.getBooleanResult();
     }
 
     /**

@@ -23,7 +23,7 @@ export class NodeAsync {
      * @param className 类名
      * @returns 父节点
      */
-    public async findFirstParentByTags(className: string): Promise<Node> {
+    public async findFirstParentByTags(className: string): Promise<Node | null> {
         Step.assert(this.node.stepId);
         const node = await AssistsXAsync.findFirstParentByTags(
             this.node,
@@ -312,18 +312,20 @@ export class NodeAsync {
      * 查找第一个可点击的父节点
      * @returns 可点击的父节点
      */
-    public async findFirstParentClickable(): Promise<Node> {
+    public async findFirstParentClickable(): Promise<Node | null> {
         Step.assert(this.node.stepId);
         const result = await AssistsXAsync.findFirstParentClickable(this.node);
         Step.assert(this.node.stepId);
-        Step.assignIdsToNodes([result], this.node.stepId);
+        if (result) {
+            Step.assignIdsToNodes([result], this.node.stepId);
+        }
         return result;
     }
     /**
      * 获取节点在屏幕中的边界
-     * @returns 边界对象
+     * @returns 边界对象；节点无效时返回 null
      */
-    public async getBoundsInScreen(): Promise<Bounds> {
+    public async getBoundsInScreen(): Promise<Bounds | null> {
         Step.assert(this.node.stepId);
         const result = await AssistsXAsync.getBoundsInScreen(this.node);
         Step.assert(this.node.stepId);

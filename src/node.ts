@@ -179,7 +179,7 @@ export class Node {
      * @param className 类名
      * @returns 父节点
      */
-    public findFirstParentByTags(className: string): Node {
+    public findFirstParentByTags(className: string): Node | null {
         Step.assert(this.stepId);
         const node = AssistsX.findFirstParentByTags(this, className);
         Step.assert(this.stepId);
@@ -482,18 +482,20 @@ export class Node {
      * 查找第一个可点击的父节点
      * @returns 可点击的父节点
      */
-    public findFirstParentClickable(): Node {
+    public findFirstParentClickable(): Node | null {
         Step.assert(this.stepId);
         const result = AssistsX.findFirstParentClickable(this);
         Step.assert(this.stepId);
-        Step.assignIdsToNodes([result], this.stepId);
+        if (result) {
+            Step.assignIdsToNodes([result], this.stepId);
+        }
         return result;
     }
     /**
      * 获取节点在屏幕中的边界
-     * @returns 边界对象
+     * @returns 边界对象；节点无效时返回 null
      */
-    public getBoundsInScreen(): Bounds {
+    public getBoundsInScreen(): Bounds | null {
         Step.assert(this.stepId);
         const result = AssistsX.getBoundsInScreen(this);
         Step.assert(this.stepId);

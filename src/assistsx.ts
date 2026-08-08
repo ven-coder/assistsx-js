@@ -228,7 +228,7 @@ export class AssistsX {
         const response = this.call(CallMethod.setOverlayFlags, {
             args: { flags: flags },
         });
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
     /**
      * 设置悬浮窗标志
@@ -239,7 +239,7 @@ export class AssistsX {
         const response = this.call(CallMethod.setOverlayFlags, {
             args: { flags: flags },
         });
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
 
     /**
@@ -309,7 +309,7 @@ export class AssistsX {
             args: { text },
             node,
         });
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
     /**
      * 获取剪贴板最新文本
@@ -342,7 +342,7 @@ export class AssistsX {
         const response = this.call(CallMethod.openUrlInBrowser, {
             args: { url },
         });
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
 
     /**
@@ -354,17 +354,24 @@ export class AssistsX {
         const response = this.call(CallMethod.keepScreenOn, {
             args: { tip },
         });
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
     public static clearKeepScreenOn(): boolean {
         const response = this.call(CallMethod.clearKeepScreenOn, {});
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
     public static isAppInstalled(packageName: string): boolean {
         const response = this.call(CallMethod.isAppInstalled, {
             args: { packageName },
         });
-        return response.getDataOrDefault(false);
+        const data = response.getDataOrDefault(false);
+        if (typeof data === "boolean") {
+            return data;
+        }
+        if (data && typeof data === "object" && "appInstalled" in data) {
+            return !!(data as { appInstalled?: boolean }).appInstalled;
+        }
+        return false;
     }
 
     /**
@@ -450,7 +457,7 @@ export class AssistsX {
      */
     public static click(node: Node): boolean {
         const response = this.call(CallMethod.click, { node });
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
 
     /**
@@ -460,7 +467,7 @@ export class AssistsX {
      */
     public static longClick(node: Node): boolean {
         const response = this.call(CallMethod.longClick, { node });
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
 
     /**
@@ -470,7 +477,7 @@ export class AssistsX {
      */
     public static launchApp(packageName: string): boolean {
         const response = this.call(CallMethod.launchApp, { args: { packageName } });
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
 
     /**
@@ -496,7 +503,7 @@ export class AssistsX {
         const response = this.call(CallMethod.overlayToast, {
             args: { text, delay },
         });
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
 
     /**
@@ -666,7 +673,7 @@ export class AssistsX {
      */
     public static containsText(text: string): boolean {
         const response = this.call(CallMethod.containsText, { args: { text } });
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
 
     /**
@@ -690,12 +697,16 @@ export class AssistsX {
      * @param className 类名
      * @returns 父节点
      */
-    public static findFirstParentByTags(node: Node, className: string): Node {
+    public static findFirstParentByTags(node: Node, className: string): Node | null {
         const response = this.call(CallMethod.findFirstParentByTags, {
             args: { className },
             node,
         });
-        return Node.create(response.getDataOrDefault({}));
+        const data = response.getDataOrNull();
+        if (data == null) {
+            return null;
+        }
+        return Node.create(data);
     }
 
     /**
@@ -737,19 +748,30 @@ export class AssistsX {
      * @param node 起始节点
      * @returns 可点击的父节点
      */
-    public static findFirstParentClickable(node: Node): Node {
+    public static findFirstParentClickable(node: Node): Node | null {
         const response = this.call(CallMethod.findFirstParentClickable, { node });
-        return Node.create(response.getDataOrDefault({}));
+        const data = response.getDataOrNull();
+        if (data == null) {
+            return null;
+        }
+        return Node.create(data);
     }
 
     /**
      * 获取节点在屏幕中的边界
      * @param node 目标节点
-     * @returns 边界对象
+     * @returns 边界对象；节点无效时返回 null
      */
-    public static getBoundsInScreen(node: Node): Bounds {
+    public static getBoundsInScreen(node: Node): Bounds | null {
         const response = this.call(CallMethod.getBoundsInScreen, { node });
-        return Bounds.fromData(response.getDataOrDefault({}));
+        if (!response.isSuccess()) {
+            return null;
+        }
+        const data = response.getDataOrNull();
+        if (data == null) {
+            return null;
+        }
+        return Bounds.fromData(data);
     }
 
     /**
@@ -770,7 +792,7 @@ export class AssistsX {
             node,
             args: { compareNode, isFullyByCompareNode },
         });
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
 
     /**
@@ -791,7 +813,7 @@ export class AssistsX {
             args: { x, y, duration },
             timeout,
         });
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
 
     /**
@@ -800,7 +822,7 @@ export class AssistsX {
      */
     public static back(): boolean {
         const response = this.call(CallMethod.back);
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
 
     /**
@@ -809,7 +831,7 @@ export class AssistsX {
      */
     public static home(): boolean {
         const response = this.call(CallMethod.home);
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
 
     /**
@@ -818,7 +840,7 @@ export class AssistsX {
      */
     public static notifications(): boolean {
         const response = this.call(CallMethod.notifications);
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
 
     /**
@@ -827,7 +849,7 @@ export class AssistsX {
      */
     public static recentApps(): boolean {
         const response = this.call(CallMethod.recentApps);
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
 
     /**
@@ -838,11 +860,11 @@ export class AssistsX {
      */
     public static paste(node: Node, text: string): boolean {
         const response = this.call(CallMethod.paste, { args: { text }, node });
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
     public static focus(node: Node): boolean {
         const response = this.call(CallMethod.focus, { node });
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
 
     /**
@@ -861,7 +883,7 @@ export class AssistsX {
             args: { selectionStart, selectionEnd },
             node,
         });
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
 
     /**
@@ -871,7 +893,7 @@ export class AssistsX {
      */
     public static scrollForward(node: Node): boolean {
         const response = this.call(CallMethod.scrollForward, { node });
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
 
     /**
@@ -881,7 +903,7 @@ export class AssistsX {
      */
     public static scrollBackward(node: Node): boolean {
         const response = this.call(CallMethod.scrollBackward, { node });
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
 
     /**
@@ -915,7 +937,7 @@ export class AssistsX {
             args: { offsetX, offsetY, switchWindowIntervalDelay, clickDuration },
             timeout,
         });
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
 
     /**
@@ -958,7 +980,7 @@ export class AssistsX {
             },
             timeout,
         });
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
     /**
      * 执行线型手势
@@ -977,7 +999,7 @@ export class AssistsX {
             args: { startPoint, endPoint, duration },
             timeout,
         });
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
     public static async longPressNodeByGestureAutoPaste(
         node: Node,
@@ -1010,7 +1032,7 @@ export class AssistsX {
                 timeout,
             }
         );
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
 
     public static async longPressGestureAutoPaste(
@@ -1044,7 +1066,7 @@ export class AssistsX {
                 timeout,
             }
         );
-        return response.getDataOrDefault(false);
+        return response.getBooleanResult();
     }
     public static async getAppInfo(
         packageName: string,
@@ -1070,19 +1092,19 @@ export class AssistsX {
         }
         return PluginInfo.fromJSON(data);
     }
-    public static getUniqueDeviceId(): any {
+    public static getUniqueDeviceId(): string {
         const response = this.call(CallMethod.getUniqueDeviceId);
-        return response.getDataOrDefault("");
+        return response.getStringData("uniqueDeviceId");
     }
-    public static getAndroidID(): any {
+    public static getAndroidID(): string {
         const response = this.call(CallMethod.getAndroidID);
-        return response.getDataOrDefault("");
+        return response.getStringData("androidID");
     }
-    public static async getMacAddress(timeout?: number): Promise<any> {
+    public static async getMacAddress(timeout?: number): Promise<string> {
         const response = await this.asyncCall(CallMethod.getMacAddress, {
             timeout,
         });
-        return response.getDataOrDefault({});
+        return response.getStringData("macAddress");
     }
     public static async getDeviceInfo(timeout?: number): Promise<DeviceInfo> {
         const response = await this.asyncCall(CallMethod.getDeviceInfo, {
@@ -1101,22 +1123,22 @@ export class AssistsX {
      * @param timeout 超时时间(秒)，默认30秒
      * @returns 播放结果消息
      */
-    public static async audioPlayRingtone(timeout?: number): Promise<string> {
+    public static async audioPlayRingtone(timeout?: number): Promise<boolean> {
         const response = await this.asyncCall(CallMethod.audioPlayRingtone, {
             timeout,
         });
-        return response.getDataOrDefault("");
+        return response.getBooleanResult();
     }
     /**
      * 停止播放系统电话铃声
      * @param timeout 超时时间(秒)，默认30秒
-     * @returns 停止结果消息
+     * @returns 是否停止成功
      */
-    public static async audioStopRingtone(timeout?: number): Promise<string> {
+    public static async audioStopRingtone(timeout?: number): Promise<boolean> {
         const response = await this.asyncCall(CallMethod.audioStopRingtone, {
             timeout,
         });
-        return response.getDataOrDefault("");
+        return response.getBooleanResult();
     }
     public static async setAccessibilityEventFilters(
         value: AccessibilityEventFilter[]

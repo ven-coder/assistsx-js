@@ -6,7 +6,11 @@
 
 > 以下改动已在仓库中，**尚未发布到 npm**。当前 npm 最新版：**[0.2.5](https://www.npmjs.com/package/assistsx-js)**。
 
-（暂无）
+- **修复**：`findFirstParentClickable` / `findFirstParentByTags` 未找到时返回 `null`，不再返回空壳节点
+- **修复**：`getUniqueDeviceId` / `getAndroidID` / `getMacAddress` 解包为字符串，兼容旧版对象包装
+- **修复**：动作类 API 同时尊重 Bridge `code` 与 `data` 布尔，避免失败被当成成功
+- **修复**：`getBoundsInScreen` 在节点无效时返回 `null`
+- **调整**：铃声播放/停止与按文件播放返回布尔成败，不再把提示文案当作成功载荷
 
 ---
 
