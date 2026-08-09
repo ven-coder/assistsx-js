@@ -4,7 +4,13 @@
 
 ## 待发布
 
-> 以下改动已在仓库中，**尚未发布到 npm**。当前 npm 最新版：**[0.2.5](https://www.npmjs.com/package/assistsx-js)**。
+> 当前 npm 最新版：**[0.2.6](https://www.npmjs.com/package/assistsx-js)**。
+
+（暂无）
+
+---
+
+## 0.2.6（2026-08-09）· 已发布
 
 - **修复**：`findFirstParentClickable` / `findFirstParentByTags` 未找到时返回 `null`，不再返回空壳节点
 - **修复**：`getUniqueDeviceId` / `getAndroidID` / `getMacAddress` 解包为字符串，兼容旧版对象包装
