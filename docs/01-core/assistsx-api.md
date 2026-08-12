@@ -62,7 +62,7 @@ const waitForApp: StepImpl = async (step) => {
 | `clickByGesture(x, y, duration?)` | 坐标, 毫秒 | `boolean` | 是 | 高 |
 | `clickNodeByGesture(node, offset?)` | node, {x,y} | `boolean` | 是 | 中 |
 | `doubleClickNodeByGesture(node, offset?)` | node | `boolean` | 是 | 低 |
-| `performLinearGesture(points, duration?)` | 点数组 | `boolean` | 是 | 中 |
+| `performLinearGesture(startPoint, endPoint, {duration?, timeout?})` | 起点, 终点, {时长ms} | `boolean` | 是 | 中 |
 | `longPressNodeByGestureAutoPaste(node, text, ...)` | node, text | `boolean` | 是 | 低 |
 | `longPressGestureAutoPaste(x, y, text, ...)` | 坐标, text | `boolean` | 是 | 低 |
 

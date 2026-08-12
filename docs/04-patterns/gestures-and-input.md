@@ -32,13 +32,17 @@ await step.clickByGesture(x, y, 50);
 ```typescript
 // 场景：TikTok/Messenger 列表刷新
 await step.performLinearGesture(
-  [
-    { x: screen.width / 2, y: screen.height * 0.3 },
-    { x: screen.width / 2, y: screen.height * 0.7 },
-  ],
-  300
+  { x: screen.width / 2, y: screen.height * 0.3 },
+  { x: screen.width / 2, y: screen.height * 0.7 },
+  { duration: 300 }
 );
 ```
+
+> **签名坑（务必按此调用）**：`performLinearGesture(startPoint, endPoint, { duration?, timeout? })`
+> 接受**两个点对象** + 选项对象，**不是**「点数组 + 时长」。
+> `step`、`AssistsX`、`AssistsXAsync`、`step.async` 四个入口签名一致（`Step` / `AssistsXAsync` 的 timeout 单位为秒）。
+> 错误写法 `performLinearGesture([p1, p2], 300)` 会让 Native 参数解析抛异常，
+> 手势不会分发，MCP `execute_js` 会返回空字符串 `""`（被误判为「有效但无效」）。
 
 ## 滚动
 
