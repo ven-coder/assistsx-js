@@ -6,7 +6,10 @@
 
 > 当前 npm 最新版：**[0.2.6](https://www.npmjs.com/package/assistsx-js)**。
 
-（暂无）
+- **新增**：宿主 Chrome 控制能力——可通过 JS 控制插件页面的顶部标题栏（ActionBar）与悬浮操作按钮显隐
+- **新增**：可通过 JS 调用插件 WebView 的前进、后退、刷新
+- **新增**：可通过 JS 直接退出当前插件（无确认框）
+- 以上方法 `AssistsX`（同步）与 `AssistsXAsync`（异步）均已提供封装
 
 ---
 

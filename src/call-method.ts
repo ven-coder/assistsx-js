@@ -77,6 +77,14 @@ export const CallMethod = {
 
     // 节点树相关方法
     saveRootNodeTreeJson: "saveRootNodeTreeJson",
+
+    // 宿主 Chrome 控制（仅 AssistsX 插件宿主有效）
+    setActionBarVisible: "setActionBarVisible",
+    setFloatingButtonVisible: "setFloatingButtonVisible",
+    webViewGoBack: "webViewGoBack",
+    webViewGoForward: "webViewGoForward",
+    webViewReload: "webViewReload",
+    exitPlugin: "exitPlugin",
 } as const;
 
 // 导出类型定义

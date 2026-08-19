@@ -1230,6 +1230,82 @@ export class AssistsXAsync {
         }
         return PluginInfo.fromJSON(data);
     }
+    /**
+     * 设置宿主 IndexActivity 顶部 ActionBar 标题栏显隐（仅 AssistsX 插件宿主有效）
+     * @param visible 是否显示
+     * @param timeout 超时时间(秒)，默认30秒
+     * @returns 宿主是否存在且已派发
+     */
+    public static async setActionBarVisible(
+        visible: boolean,
+        timeout?: number
+    ): Promise<boolean> {
+        const response = await this.asyncCall(CallMethod.setActionBarVisible, {
+            args: { visible },
+            timeout,
+        });
+        return response.getDataOrDefault(false);
+    }
+    /**
+     * 设置宿主 IndexActivity 悬浮操作按钮显隐（仅 AssistsX 插件宿主有效）
+     * @param visible 是否显示
+     * @param timeout 超时时间(秒)，默认30秒
+     * @returns 宿主是否存在且已派发
+     */
+    public static async setFloatingButtonVisible(
+        visible: boolean,
+        timeout?: number
+    ): Promise<boolean> {
+        const response = await this.asyncCall(CallMethod.setFloatingButtonVisible, {
+            args: { visible },
+            timeout,
+        });
+        return response.getDataOrDefault(false);
+    }
+    /**
+     * 插件 WebView 后退（仅 AssistsX 插件宿主有效）
+     * @param timeout 超时时间(秒)，默认30秒
+     * @returns 宿主是否存在且已派发
+     */
+    public static async webViewGoBack(timeout?: number): Promise<boolean> {
+        const response = await this.asyncCall(CallMethod.webViewGoBack, {
+            timeout,
+        });
+        return response.getDataOrDefault(false);
+    }
+    /**
+     * 插件 WebView 前进（仅 AssistsX 插件宿主有效）
+     * @param timeout 超时时间(秒)，默认30秒
+     * @returns 宿主是否存在且已派发
+     */
+    public static async webViewGoForward(timeout?: number): Promise<boolean> {
+        const response = await this.asyncCall(CallMethod.webViewGoForward, {
+            timeout,
+        });
+        return response.getDataOrDefault(false);
+    }
+    /**
+     * 插件 WebView 刷新（仅 AssistsX 插件宿主有效）
+     * @param timeout 超时时间(秒)，默认30秒
+     * @returns 宿主是否存在且已派发
+     */
+    public static async webViewReload(timeout?: number): Promise<boolean> {
+        const response = await this.asyncCall(CallMethod.webViewReload, {
+            timeout,
+        });
+        return response.getDataOrDefault(false);
+    }
+    /**
+     * 退出当前插件（直接关闭页面，无确认框；仅 AssistsX 插件宿主有效）
+     * @param timeout 超时时间(秒)，默认30秒
+     * @returns 宿主是否存在且已派发
+     */
+    public static async exitPlugin(timeout?: number): Promise<boolean> {
+        const response = await this.asyncCall(CallMethod.exitPlugin, {
+            timeout,
+        });
+        return response.getDataOrDefault(false);
+    }
     public static async getUniqueDeviceId(timeout?: number): Promise<string> {
         const response = await this.asyncCall(CallMethod.getUniqueDeviceId, {
             timeout,

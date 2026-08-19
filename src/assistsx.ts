@@ -1092,6 +1092,60 @@ export class AssistsX {
         }
         return PluginInfo.fromJSON(data);
     }
+    /**
+     * 设置宿主 IndexActivity 顶部 ActionBar 标题栏显隐（仅 AssistsX 插件宿主有效）
+     * @param visible 是否显示
+     * @returns 宿主是否存在且已派发
+     */
+    public static setActionBarVisible(visible: boolean): boolean {
+        const response = this.call(CallMethod.setActionBarVisible, {
+            args: { visible },
+        });
+        return response.getBooleanResult();
+    }
+    /**
+     * 设置宿主 IndexActivity 悬浮操作按钮显隐（仅 AssistsX 插件宿主有效）
+     * @param visible 是否显示
+     * @returns 宿主是否存在且已派发
+     */
+    public static setFloatingButtonVisible(visible: boolean): boolean {
+        const response = this.call(CallMethod.setFloatingButtonVisible, {
+            args: { visible },
+        });
+        return response.getBooleanResult();
+    }
+    /**
+     * 插件 WebView 后退（仅 AssistsX 插件宿主有效）
+     * @returns 宿主是否存在且已派发
+     */
+    public static webViewGoBack(): boolean {
+        const response = this.call(CallMethod.webViewGoBack);
+        return response.getBooleanResult();
+    }
+    /**
+     * 插件 WebView 前进（仅 AssistsX 插件宿主有效）
+     * @returns 宿主是否存在且已派发
+     */
+    public static webViewGoForward(): boolean {
+        const response = this.call(CallMethod.webViewGoForward);
+        return response.getBooleanResult();
+    }
+    /**
+     * 插件 WebView 刷新（仅 AssistsX 插件宿主有效）
+     * @returns 宿主是否存在且已派发
+     */
+    public static webViewReload(): boolean {
+        const response = this.call(CallMethod.webViewReload);
+        return response.getBooleanResult();
+    }
+    /**
+     * 退出当前插件（直接关闭页面，无确认框；仅 AssistsX 插件宿主有效）
+     * @returns 宿主是否存在且已派发
+     */
+    public static exitPlugin(): boolean {
+        const response = this.call(CallMethod.exitPlugin);
+        return response.getBooleanResult();
+    }
     public static getUniqueDeviceId(): string {
         const response = this.call(CallMethod.getUniqueDeviceId);
         return response.getStringData("uniqueDeviceId");
