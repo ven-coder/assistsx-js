@@ -6,6 +6,11 @@
 
 > 当前 npm 最新版：**[0.2.7](https://www.npmjs.com/package/assistsx-js)**。
 
+- **修复**：`Mlkit.asyncCall` 超时分支返回 `code=0`（成功）导致超时被伪装成空成功——改为返回 `code=-1`，使 `isSuccess()` 正确识别超时
+- **修复**：`CallResponse.getDataOrDefault` 不校验 `code`，原生失败但 `data` 非空时丢弃错误码——改为 `!isSuccess()` 时返回 `defaultValue`
+- **新增**：`AssistsXAsync.recognizeTextInScreenshot` 新增 `hideOverlay` 选项（默认 `true`），与 `restoreOverlay` 独立控制浮窗隐藏与恢复
+- **修复**：`sync-runner-asset.js` 候选路径只找 `app/src/main/assets/mcp-js-runner/`，实际在 `platform-kit/src/main/assets/`；改为同时检查 `platform-kit` 和 `app` 模块
+
 ---
 
 ## 0.2.7（2026-08-20）· 已发布

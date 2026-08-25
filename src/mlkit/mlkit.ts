@@ -95,7 +95,7 @@ export class Mlkit {
             });
             setTimeout(() => {
                 callbacks.delete(uuid);
-                resolve(JSON.stringify(new CallResponse(0, null, uuid)));
+                resolve(JSON.stringify(new CallResponse(-1, null, uuid)));
             }, timeout * 1000);
         });
         const result = window.assistsxMlkit.call(JSON.stringify(params));

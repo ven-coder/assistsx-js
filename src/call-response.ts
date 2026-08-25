@@ -26,6 +26,9 @@ export class CallResponse {
 
     // 获取数据，如果数据为空则返回默认值
     public getDataOrDefault(defaultValue: any): any {
+        if (!this.isSuccess()) {
+            return defaultValue;
+        }
         return this.data ?? defaultValue;
     }
 

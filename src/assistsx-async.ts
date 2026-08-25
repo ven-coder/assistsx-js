@@ -338,6 +338,7 @@ export class AssistsXAsync {
         options: {
             rotationDegrees?: number;
             overlayHiddenScreenshotDelayMillis?: number;
+            hideOverlay?: boolean;
             restoreOverlay?: boolean;
             region?: RecognizeTextRegion;
             timeout?: number;
@@ -346,6 +347,7 @@ export class AssistsXAsync {
         const {
             rotationDegrees = 0,
             overlayHiddenScreenshotDelayMillis = 250,
+            hideOverlay = true,
             restoreOverlay = true,
             region,
             timeout,
@@ -358,6 +360,7 @@ export class AssistsXAsync {
                     targetText,
                     rotationDegrees,
                     overlayHiddenScreenshotDelayMillis,
+                    hideOverlay,
                     restoreOverlay,
                     region,
                 },
