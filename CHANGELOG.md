@@ -2,9 +2,7 @@
 
 编写规范见 [CHANGELOG_RULES.md](CHANGELOG_RULES.md)。
 
-## 待发布
-
-> 当前 npm 最新版：**[0.2.7](https://www.npmjs.com/package/assistsx-js)**。
+## 0.2.8（2026-08-26）· 已发布
 
 - **新增**：插件脚本可控制插件页面顶部状态栏占位条——设置其显示/隐藏与背景色，便于沉浸式页面把内容延伸到状态栏区域
 - **修复**：`Mlkit.asyncCall` 超时分支返回 `code=0`（成功）导致超时被伪装成空成功——改为返回 `code=-1`，使 `isSuccess()` 正确识别超时
