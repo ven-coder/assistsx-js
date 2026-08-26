@@ -6,6 +6,7 @@
 
 > 当前 npm 最新版：**[0.2.7](https://www.npmjs.com/package/assistsx-js)**。
 
+- **新增**：插件脚本可控制插件页面顶部状态栏占位条——设置其显示/隐藏与背景色，便于沉浸式页面把内容延伸到状态栏区域
 - **修复**：`Mlkit.asyncCall` 超时分支返回 `code=0`（成功）导致超时被伪装成空成功——改为返回 `code=-1`，使 `isSuccess()` 正确识别超时
 - **修复**：`CallResponse.getDataOrDefault` 不校验 `code`，原生失败但 `data` 非空时丢弃错误码——改为 `!isSuccess()` 时返回 `defaultValue`
 - **新增**：`AssistsXAsync.recognizeTextInScreenshot` 新增 `hideOverlay` 选项（默认 `true`），与 `restoreOverlay` 独立控制浮窗隐藏与恢复

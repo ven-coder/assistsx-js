@@ -1146,6 +1146,28 @@ export class AssistsX {
         const response = this.call(CallMethod.exitPlugin);
         return response.getBooleanResult();
     }
+    /**
+     * 设置插件页顶部状态栏占位 View 显隐（仅 AssistsX 插件宿主有效）
+     * @param visible 是否显示
+     * @returns 宿主是否存在且已派发
+     */
+    public static setPluginStatusBarPlaceholderVisible(visible: boolean): boolean {
+        const response = this.call(CallMethod.setPluginStatusBarPlaceholderVisible, {
+            args: { visible },
+        });
+        return response.getBooleanResult();
+    }
+    /**
+     * 设置插件页顶部状态栏占位 View 背景色（仅 AssistsX 插件宿主有效）
+     * @param color Android color int
+     * @returns 宿主是否存在且已派发
+     */
+    public static setPluginStatusBarPlaceholderColor(color: number): boolean {
+        const response = this.call(CallMethod.setPluginStatusBarPlaceholderColor, {
+            args: { color },
+        });
+        return response.getBooleanResult();
+    }
     public static getUniqueDeviceId(): string {
         const response = this.call(CallMethod.getUniqueDeviceId);
         return response.getStringData("uniqueDeviceId");

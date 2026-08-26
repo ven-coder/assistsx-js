@@ -85,6 +85,10 @@ export const CallMethod = {
     webViewGoForward: "webViewGoForward",
     webViewReload: "webViewReload",
     exitPlugin: "exitPlugin",
+
+    // 插件页顶部状态栏占位 View（仅 AssistsX 插件宿主有效）
+    setPluginStatusBarPlaceholderVisible: "setPluginStatusBarPlaceholderVisible",
+    setPluginStatusBarPlaceholderColor: "setPluginStatusBarPlaceholderColor",
 } as const;
 
 // 导出类型定义
