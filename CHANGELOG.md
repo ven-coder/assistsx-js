@@ -2,7 +2,7 @@
 
 编写规范见 [CHANGELOG_RULES.md](CHANGELOG_RULES.md)。
 
-## 待发布
+## 0.2.9（2026-08-29）· 已发布
 
 - **修复**：`AssistsX.asyncCall` / `AssistsXAsync.asyncCall` 误把 `Node[]` 传给单节点参数 `node` 时序列化出数组结构、导致原生侧 Gson 解析崩溃——改为在 JS 侧提前抛出清晰错误提示（提示从返回数组中取单个元素，如 `nodes[0]`）；`nodes` 传非数组同样前置校验
 
