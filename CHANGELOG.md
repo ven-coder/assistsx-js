@@ -2,6 +2,10 @@
 
 编写规范见 [CHANGELOG_RULES.md](CHANGELOG_RULES.md)。
 
+## 待发布
+
+- **修复**：`AssistsX.asyncCall` / `AssistsXAsync.asyncCall` 误把 `Node[]` 传给单节点参数 `node` 时序列化出数组结构、导致原生侧 Gson 解析崩溃——改为在 JS 侧提前抛出清晰错误提示（提示从返回数组中取单个元素，如 `nodes[0]`）；`nodes` 传非数组同样前置校验
+
 ## 0.2.8（2026-08-26）· 已发布
 
 - **新增**：插件脚本可控制插件页面顶部状态栏占位条——设置其显示/隐藏与背景色，便于沉浸式页面把内容延伸到状态栏区域

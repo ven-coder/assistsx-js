@@ -188,6 +188,17 @@ export class AssistsX {
         }: { args?: any; node?: Node; nodes?: Node[]; timeout?: number } = {}
     ): Promise<CallResponse> {
         const uuid = generateUUID();
+        if (node && Array.isArray(node)) {
+            throw new Error(
+                `AssistsX.asyncCall: 'node' must be a single Node, but got an array. ` +
+                `APIs like findById/findByText return Node[] — pick one element, e.g. nodes[0].`
+            );
+        }
+        if (nodes && !Array.isArray(nodes)) {
+            throw new Error(
+                `AssistsX.asyncCall: 'nodes' must be an array of Node.`
+            );
+        }
         const params = {
             method,
             arguments: args ? args : undefined,
