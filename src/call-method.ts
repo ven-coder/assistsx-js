@@ -53,6 +53,9 @@ export const CallMethod = {
     getAndroidID: "getAndroidID",
     getUniqueDeviceId: "getUniqueDeviceId",
 
+    /** 获取当前宿主应用自身信息（版本号/版本名称等） */
+    getCurrentAppInfo: "getCurrentAppInfo",
+
     addAccessibilityEventFilter: "addAccessibilityEventFilter",
     setAccessibilityEventFilters: "setAccessibilityEventFilters",
 

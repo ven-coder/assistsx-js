@@ -342,6 +342,12 @@ export class StepAsync {
         Step.assert(this.step.stepId);
         return result;
     }
+    public async getCurrentAppInfo(): Promise<any> {
+        Step.assert(this.step.stepId);
+        const result = await AssistsXAsync.getCurrentAppInfo();
+        Step.assert(this.step.stepId);
+        return result;
+    }
     public async performLinearGesture(
         startPoint: { x: number; y: number },
         endPoint: { x: number; y: number },

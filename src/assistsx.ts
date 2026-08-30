@@ -1090,6 +1090,16 @@ export class AssistsX {
         return AppInfo.fromJSON(response.getDataOrDefault({}));
     }
     /**
+     * 获取当前宿主应用自身信息（版本号/版本名称等，即当前应用 build.gradle 中的 versionCode/versionName）
+     * @param timeout 超时时间(秒)，默认30秒
+     */
+    public static async getCurrentAppInfo(timeout?: number): Promise<AppInfo> {
+        const response = await this.asyncCall(CallMethod.getCurrentAppInfo, {
+            timeout,
+        });
+        return AppInfo.fromJSON(response.getDataOrDefault({}));
+    }
+    /**
      * 获取当前运行的 AssistsX 插件信息（仅 AssistsX 宿主有效，否则返回 null）
      */
     public static getCurrentPlugin(): PluginInfo | null {

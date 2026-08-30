@@ -7,6 +7,7 @@
 > 当前最新已发布版本：**0.2.9**。以下为下一版本计划，正式发布前请勿当作已上线版本。
 
 - **新增**：可检查无障碍服务是否已开启，并一键跳转至系统无障碍设置页面
+- **新增**：`AssistsX.getCurrentAppInfo` / `AssistsXAsync.getCurrentAppInfo`（及 `Step` / `StepAsync` 透传）——无需传包名即可获取当前宿主应用自身信息，返回 `AppInfo`，含 `packageName`、`versionName`、`versionCode` 等字段（版本信息取自宿主应用 `build.gradle`）
 
 ---
 
