@@ -23,6 +23,8 @@ export * from "./filesystem/path";
 export * from "./filesystem/fileio/file-io";
 export * from "./filesystem/fileutils/file-utils";
 export * from "./ime/ime";
+export * from "./a11y/a11y";
+export * from "./a11y/a11y-call-method";
 export * from "./imageutils/image-utils";
 export * from "./gallery/gallery";
 export * from "./mlkit/mlkit";

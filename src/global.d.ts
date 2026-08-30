@@ -31,6 +31,10 @@ declare global {
             call(method: string): string | null;
         };
         assistsxImeCallback: (data: string) => void;
+        assistsxA11y: {
+            call(method: string): string | null;
+        };
+        assistsxA11yCallback: (data: string) => void;
         assistsxImageUtils: {
             call(method: string): string | null;
         };
