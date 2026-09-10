@@ -19,10 +19,12 @@ import { http, Http, HttpDownloadResponse } from "assistsx-js";
 | `httpGet(url, headers?, timeout?)` | GET | 高 |
 | `httpPost(url, body, headers?, timeout?)` | POST | 高 |
 | `httpPostFile(url, files, fields?, headers?, timeout?)` |  multipart 上传 | 高 |
-| `httpDownload(url, savePath, headers?, timeout?)` | 下载到本地 | 中 |
+| `httpDownload(url, savePath, headers?, saveToGallery?, displayName?, timeout?, timestamp?)` | 下载到本地，可选保存到相册并更新媒体时间 | 中 |
 | `httpConfigure(config, timeout?)` | 超时等配置 | 低 |
 | `httpReset(timeout?)` | 重置配置 | 低 |
 | `httpGetConfig(timeout?)` | 读取配置 | 低 |
+
+- `timestamp` 为 Unix epoch 毫秒时间戳；仅在 `saveToGallery` 为 `true` 时生效，不传入则不更新媒体时间
 
 ## 文件上传（头像 OSS）
 

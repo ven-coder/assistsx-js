@@ -25,6 +25,29 @@ export interface GalleryDeleteResponse {
     message?: string;
 }
 
+/**
+ * 媒体权限请求范围
+ */
+export interface MediaPermissionOptions {
+    /** 是否检查/请求图片读取权限，默认 true */
+    readImages?: boolean;
+    /** 是否检查/请求视频读取权限，默认 true */
+    readVideos?: boolean;
+    /** 是否检查/请求旧版共享存储写入权限，默认 true；Android 10+ MediaStore 自有媒体写入不需要该权限 */
+    write?: boolean;
+}
+
+/**
+ * 媒体权限状态
+ */
+export interface MediaPermissionStatus {
+    readImages: boolean;
+    readVideos: boolean;
+    write: boolean;
+    allGranted: boolean;
+    apiLevel: number;
+}
+
 // 回调函数存储对象
 const callbacks: Map<string, (data: string) => void> = new Map();
 
@@ -94,16 +117,57 @@ export class Gallery {
     }
 
     /**
-     * 添加图片到系统相册
-     * @param filePath 图片文件路径（必需）
-     * @param displayName 显示名称（可选，默认使用文件名）
+     * 检查系统媒体权限
+     * @param options 权限检查范围，默认检查图片读取、视频读取和写入权限
+     */
+    async checkMediaPermissions(
+        options?: MediaPermissionOptions,
+        timeout?: number
+    ): Promise<MediaPermissionStatus> {
+        const response = await this.asyncCall(
+            "checkMediaPermissions",
+            options,
+            timeout
+        );
+        if (!response.isSuccess()) {
+            throw new Error(response.data?.message || "检查媒体权限失败");
+        }
+        return response.data as MediaPermissionStatus;
+    }
+
+    /**
+     * 请求系统媒体权限
+     * @param options 权限请求范围，默认请求图片读取、视频读取和旧版写入权限
      * @param timeout 超时时间(秒)，默认30秒
-     * @returns Promise<相册操作响应>
+     * @returns 权限请求完成后的实际状态；用户拒绝时返回 allGranted=false
+     */
+    async requestMediaPermissions(
+        options?: MediaPermissionOptions,
+        timeout?: number
+    ): Promise<MediaPermissionStatus> {
+        const response = await this.asyncCall(
+            "requestMediaPermissions",
+            options,
+            timeout
+        );
+        if (response.data) {
+            return response.data as MediaPermissionStatus;
+        }
+        throw new Error(response.data?.message || "请求媒体权限失败");
+    }
+
+    /**
+     * @param filePath 图片文件路径（必需）
+    * @param displayName 显示名称（可选，默认使用文件名）
+    * @param timeout 超时时间(秒)，默认30秒
+    * @param timestamp 媒体时间戳（Unix epoch 毫秒，可选；未传入则不更新）
+    * @returns Promise<相册操作响应>
      */
     async addImageToGallery(
         filePath: string,
         displayName?: string,
-        timeout?: number
+        timeout?: number,
+        timestamp?: number
     ): Promise<GalleryResponse> {
         if (!filePath) {
             throw new Error("filePath参数不能为空");
@@ -111,7 +175,7 @@ export class Gallery {
 
         const response = await this.asyncCall(
             "addImageToGallery",
-            { filePath, displayName },
+            { filePath, displayName, timestamp },
             timeout
         );
         if (!response.isSuccess()) {
@@ -125,12 +189,14 @@ export class Gallery {
      * @param filePath 视频文件路径（必需）
      * @param displayName 显示名称（可选，默认使用文件名）
      * @param timeout 超时时间(秒)，默认30秒
+     * @param timestamp 媒体时间戳（Unix epoch 毫秒，可选；未传入则不更新）
      * @returns Promise<相册操作响应>
      */
     async addVideoToGallery(
         filePath: string,
         displayName?: string,
-        timeout?: number
+        timeout?: number,
+        timestamp?: number
     ): Promise<GalleryResponse> {
         if (!filePath) {
             throw new Error("filePath参数不能为空");
@@ -138,7 +204,7 @@ export class Gallery {
 
         const response = await this.asyncCall(
             "addVideoToGallery",
-            { filePath, displayName },
+            { filePath, displayName, timestamp },
             timeout
         );
         if (!response.isSuccess()) {

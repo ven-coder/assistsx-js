@@ -230,6 +230,7 @@ export class Http {
      * @param saveToGallery 是否保存到系统相册（仅支持图片和视频文件），默认 false
      * @param displayName 保存到相册时的显示名称（可选，默认使用文件名）
      * @param timeout 超时时间(秒)，默认30秒
+     * @param timestamp 媒体时间戳（Unix epoch 毫秒，可选；未传入则不更新）
      * @returns Promise<下载响应>
      */
     async httpDownload(
@@ -238,11 +239,12 @@ export class Http {
         headers?: Record<string, string>,
         saveToGallery?: boolean,
         displayName?: string,
-        timeout?: number
+        timeout?: number,
+        timestamp?: number
     ): Promise<HttpDownloadResponse> {
         const response = await this.asyncCall(
             "httpDownload",
-            { url, savePath, headers, saveToGallery, displayName },
+            { url, savePath, headers, saveToGallery, displayName, timestamp },
             timeout
         );
         if (!response.isSuccess()) {

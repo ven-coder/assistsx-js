@@ -76,10 +76,15 @@ async function prepareAvatar(screenshotPath: string): Promise<string> {
 
 | 方法 | 返回值/说明 | wx-auto |
 |------|-------------|---------|
-| `addImageToGallery(filePath, timeout?)` | `{ success, uri?, ... }` | 中 |
-| `addVideoToGallery(filePath, timeout?)` | 视频入库 | 低 |
+| `addImageToGallery(filePath, displayName?, timeout?, timestamp?)` | `{ success, uri?, ... }`；可选时间戳（Unix epoch 毫秒）更新媒体时间 | 中 |
+| `addVideoToGallery(filePath, displayName?, timeout?, timestamp?)` | 视频入库；可选时间戳（Unix epoch 毫秒）更新媒体时间 | 低 |
 | `deleteFromGalleryByUri(uri, timeout?)` | 按 URI 删除 | 中 |
-| `deleteFromGalleryById(id, type, timeout?)` | 按 ID 删除 | 低 |
+| `checkMediaPermissions(options?, timeout?)` | 检查图片读取、视频读取和旧版共享存储写入权限 | 中 |
+| `requestMediaPermissions(options?, timeout?)` | 请求媒体权限并返回最终权限状态 | 中 |
+- `timestamp` 为 Unix epoch 毫秒时间戳；不传入时只保存媒体文件，不修改文件内部时间
+- `checkMediaPermissions` / `requestMediaPermissions` 默认覆盖图片读取、视频读取和写入；Android 13+ 使用图片/视频媒体权限，Android 12 及以下使用存储读取权限
+- Android 10+ 使用 MediaStore 写入应用自己创建的媒体通常不需要写权限；访问其他应用创建的媒体仍可能需要系统授权
+- 图片通过 EXIF 拍摄时间更新，视频通过 MP4 文件时间元数据更新；保存完成后由系统媒体扫描器刷新相册时间
 
 ```typescript
 // 场景：Messenger 发送失败后清理相册
