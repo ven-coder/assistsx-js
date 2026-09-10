@@ -264,19 +264,19 @@ export class Log {
         maxLengthOrOptions?:
             | number
             | (LogTarget & {
-                  maxLength?: number;
-                  timeout?: number;
-                  /** @default false */
-                  prepend?: boolean;
-              }),
+                maxLength?: number;
+                timeout?: number;
+                /** @default false */
+                prepend?: boolean;
+            }),
         timeout?: number
     ): Promise<boolean> {
         let options:
             | (LogTarget & {
-                  maxLength?: number;
-                  timeout?: number;
-                  prepend?: boolean;
-              })
+                maxLength?: number;
+                timeout?: number;
+                prepend?: boolean;
+            })
             | undefined;
         if (typeof maxLengthOrOptions === "number") {
             options = { maxLength: maxLengthOrOptions, timeout };
@@ -301,16 +301,25 @@ export class Log {
     /** 追加带时间戳的条目；`prepend: true` 时写入文件头部 */
     async appendTimestampedEntry(
         message: string,
-        timeoutOrOptions?: number | (LogCallOptions & { prepend?: boolean })
+        timeoutOrOptions?:
+            | number
+            | (LogCallOptions & { prepend?: boolean; maxLength?: number })
     ): Promise<boolean> {
         const { timeout, target } = resolveTimeout(timeoutOrOptions);
         const prepend =
             typeof timeoutOrOptions === "object"
                 ? timeoutOrOptions?.prepend
                 : undefined;
+        const maxLength =
+            typeof timeoutOrOptions === "object"
+                ? timeoutOrOptions?.maxLength
+                : undefined;
         const args = buildLogArguments(target, { message }) ?? { message };
         if (prepend) {
             args.prepend = true;
+        }
+        if (maxLength !== undefined) {
+            args.maxLength = maxLength;
         }
         const res = await this.asyncCall(
             LogCallMethod.appendTimestampedEntry,
@@ -340,6 +349,7 @@ export class Log {
         if (timestamped) {
             return this.appendTimestampedEntry(text, {
                 ...target,
+                maxLength,
                 timeout,
                 prepend,
             });
@@ -544,8 +554,8 @@ export class Log {
                 typeof raw.message === "string"
                     ? raw.message
                     : raw.code !== 0
-                      ? "uploadLogs failed"
-                      : "",
+                        ? "uploadLogs failed"
+                        : "",
         };
     }
 
