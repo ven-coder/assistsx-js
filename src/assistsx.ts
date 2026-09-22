@@ -67,6 +67,11 @@ export interface WebFloatingWindowOptions extends FloatScaffoldOptions, FloatCen
     unit?: FloatSizeUnit;
     /** Keep screen on while floating window is open */
     keepScreenOn?: boolean;
+    /**
+     * 指定浮窗唯一标识；省略时自动生成。
+     * 传入的 uniqueId 已存在（有同 id 浮窗）时 open 失败并抛异常。
+     */
+    uniqueId?: string;
 }
 
 // 回调函数存储对象

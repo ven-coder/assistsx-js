@@ -109,11 +109,15 @@ export class Float {
         return Object.keys(args).length ? args : undefined;
     }
 
-    /** Open floating window. Accepts window options plus the same scaffold fields as refresh. */
+    /**
+     * Open floating window. Accepts window options plus the same scaffold fields as refresh.
+     * Returns the floating window uniqueId (explicitly passed or auto-generated).
+     * Throws if the explicit uniqueId already exists.
+     */
     async open(
         url: string,
         options: WebFloatingWindowOptions & { timeout?: number } = {}
-    ): Promise<boolean> {
+    ): Promise<{ success: boolean; uniqueId?: string }> {
         const { timeout, ...rest } = options;
         const res = await this.asyncCall(
             FloatCallMethod.open,
@@ -123,14 +127,27 @@ export class Float {
         if (!res.isSuccess()) {
             throw new Error(this.errorMessage(res, "Float.open failed"));
         }
-        return res.getDataOrDefault(false);
+        const data = res.getData();
+        return {
+            success: data?.success === true,
+            uniqueId: data?.uniqueId,
+        };
     }
 
-    /** Close current floating window */
-    async close(timeout?: number): Promise<boolean> {
+    /**
+     * Close a floating window.
+     * Pass uniqueId to close the window with that id (allowed to close the current one;
+     * throws if the id does not exist).
+     * Omit uniqueId to close the current floating window (original behavior).
+     */
+    async close(uniqueId?: string, timeout?: number): Promise<boolean> {
+        const args =
+            typeof uniqueId === "string" && uniqueId.length > 0
+                ? { uniqueId }
+                : undefined;
         const res = await this.asyncCall(
             FloatCallMethod.close,
-            undefined,
+            args,
             timeout
         );
         if (!res.isSuccess()) {
@@ -414,6 +431,24 @@ export class Float {
         if (!res.isSuccess()) {
             throw new Error(
                 this.errorMessage(res, "Float.containsCurrent failed")
+            );
+        }
+        return res.getDataOrDefault(false);
+    }
+
+    /**
+     * Whether the floating window with the given uniqueId is already in the manager.
+     * Useful to check if a window is open before opening/closing by id.
+     */
+    async containsByUniqueId(uniqueId: string, timeout?: number): Promise<boolean> {
+        const res = await this.asyncCall(
+            FloatCallMethod.containsByUniqueId,
+            { uniqueId },
+            timeout
+        );
+        if (!res.isSuccess()) {
+            throw new Error(
+                this.errorMessage(res, "Float.containsByUniqueId failed")
             );
         }
         return res.getDataOrDefault(false);

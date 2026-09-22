@@ -43,6 +43,8 @@ export const FloatCallMethod = {
     isCurrentVisible: "isCurrentVisible",
     /** Whether current Web floating window is in the manager */
     containsCurrent: "containsCurrent",
+    /** Whether the floating window with the given uniqueId is in the manager */
+    containsByUniqueId: "containsByUniqueId",
 } as const;
 
 export type FloatCallMethodType =
