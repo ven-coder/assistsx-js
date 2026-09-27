@@ -36,6 +36,8 @@ import type {
 | `isCurrentVisible` / `containsCurrent` | 查询可见性 / 是否在管理器中 |
 | `toast(text, delay?)` | 浮窗 Toast |
 | `setFlags(flags)` | Window flags |
+| `setInputFocus()` | 设置浮窗可获取输入焦点 |
+| `clearInputFocus()` | 设置浮窗不可获取输入焦点 |
 
 ### 全局管理
 

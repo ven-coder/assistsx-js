@@ -7,6 +7,7 @@
 import { CallResponse } from "../call-response";
 import { decodeBase64UTF8, generateUUID } from "../utils";
 import { FloatCallMethod } from "./float-call-method";
+import { WindowFlags } from "../window-flags";
 import type { FloatBounds, FloatRefreshOptions, FloatScaffoldOptions, FloatSizeUnit } from "./float-types";
 import type { WebFloatingWindowOptions } from "../assistsx";
 
@@ -170,6 +171,16 @@ export class Float {
         if (!res.isSuccess()) {
             throw new Error(this.errorMessage(res, "Float.setFlags failed"));
         }
+    }
+
+    /** Set floating window flags for an input element receiving focus. */
+    async setInputFocus(timeout?: number): Promise<void> {
+        await this.setFlags(WindowFlags.getOverlayInputFocusFlagList(), timeout);
+    }
+
+    /** Set floating window flags after an input element loses focus. */
+    async clearInputFocus(timeout?: number): Promise<void> {
+        await this.setFlags(WindowFlags.getOverlayInputBlurFlagList(), timeout);
     }
 
     /** Show overlay toast */
