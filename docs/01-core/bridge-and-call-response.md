@@ -18,6 +18,7 @@ assistsx-js 在 AssistsX WebView 中通过 `window` 上的桥接对象与 Androi
 | `window.assistsxPath` / `assistsxFileIO` / `assistsxFileUtils` | 文件系统 |
 | `window.assistsxIme` / `assistsxImageUtils` / `assistsxGallery` / `assistsxMlkit` | 扩展能力 |
 | `window.assistsxFloat` / `assistsxBarUtils` / `assistsxLog` | UI 与日志 |
+| `window.assistsxEvent` | 跨 WebView 事件总线（见 [cross-webview-event-bus.md](./cross-webview-event-bus.md)） |
 
 库加载时自动注册 `window.assistsxCallback`，用于异步结果回传（Base64 解码 + JSON 解析）。
 

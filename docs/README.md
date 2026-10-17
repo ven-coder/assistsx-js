@@ -32,6 +32,7 @@
 | [assistsx-async-api.md](./01-core/assistsx-async-api.md) | AssistsXAsync 扩展 API |
 | [node-and-selectors.md](./01-core/node-and-selectors.md) | Node 查找、scope、子树操作 |
 | [node-api-reference.md](./01-core/node-api-reference.md) | Node 属性与方法完整参考 |
+| [cross-webview-event-bus.md](./01-core/cross-webview-event-bus.md) | 多 WebView（主页 / 浮窗）互相通信与状态同步 |
 | [assistsx-edge-api.md](./01-core/assistsx-edge-api.md) | 剪贴板、扫码、音频、通讯录等 |
 | [types-reference.md](./01-core/types-reference.md) | TypeScript 类型速查 |
 

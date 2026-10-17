@@ -37,6 +37,7 @@ export * from "./mmkv/mmkv";
 export * from "./mmkv/mmkv-call-method";
 export * from "./barutils/bar-utils";
 export * from "./barutils/bar-utils-call-method";
+export * from "./event";
 export * from "./floatingwindow/float";
 export * from "./floatingwindow/float-call-method";
 export * from "./floatingwindow/float-types";

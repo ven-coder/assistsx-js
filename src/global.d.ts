@@ -71,6 +71,11 @@ declare global {
             call(method: string): string | null;
         };
         assistsxMmkvCallback: (data: string) => void;
+        assistsxEvent: {
+            call(method: string): string | null;
+        };
+        assistsxEventCallback: (data: string) => void;
+        onAssistsxEvent: (encoded: string) => void;
         onAssistsLogUpdate: (encoded: string) => void;
     }
 }

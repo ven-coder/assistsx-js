@@ -32,7 +32,8 @@
     "scripts": {
         "build": "tsup && node tools/sync-runner-asset.js",
         "prepublish": "npm run build",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "test:event-bus": "node tools/event-bus-smoke.mjs"
     },
     "keywords": [
         "assistsx",
