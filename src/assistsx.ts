@@ -67,6 +67,12 @@ export interface WebFloatingWindowOptions extends FloatScaffoldOptions, FloatCen
     unit?: FloatSizeUnit;
     /** Keep screen on while floating window is open */
     keepScreenOn?: boolean;
+    /** Show this floating window while the device is locked; defaults to the manager policy (true). */
+    showWhenLocked?: boolean;
+    /** Restore this window after unlock if it was hidden by the lock policy; defaults to the manager policy (true). */
+    restoreAfterUnlock?: boolean;
+    /** Remove this window after unlock when it is not restored; defaults to the manager policy (false). */
+    removeAfterUnlock?: boolean;
     /**
      * 指定浮窗唯一标识；省略时自动生成。
      * 传入的 uniqueId 已存在（有同 id 浮窗）时 open 失败并抛异常。
