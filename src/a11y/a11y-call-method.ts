@@ -3,6 +3,8 @@
  */
 export const A11yCallMethod = {
     isA11yEnabled: "isA11yEnabled",
+    getSelectToSpeakStatus: "getSelectToSpeakStatus",
+    openSystemSettings: "openSystemSettings",
     openAccessibilitySetting: "openAccessibilitySetting",
 } as const;
 

@@ -13,11 +13,32 @@ export interface IsA11yEnabledResponse {
     enabled: boolean;
 }
 
+/** 快捷方式检测到目标，或由于未匹配、不可读取等原因无法确定。 */
+export type SelectToSpeakShortcutStatus = "DETECTED" | "UNKNOWN";
+
+/** Google 随选朗读服务及快捷方式的快照，不表示是否正在朗读。 */
+export interface SelectToSpeakStatus {
+    googleServiceEnabled: boolean;
+    matchingServiceIds: string[];
+    enabledServiceIds: string[];
+    accessibilityButton: SelectToSpeakShortcutStatus;
+    volumeKeys: SelectToSpeakShortcutStatus;
+    quickSettings: SelectToSpeakShortcutStatus;
+    shortcutSettings: Record<string, string | null>;
+}
+
 /**
  * 打开无障碍设置页面响应接口定义
  */
 export interface OpenAccessibilitySettingResponse {
     success: boolean;
+}
+
+/** 系统设置 Intent 参数；组件名使用 package/class 格式。 */
+export interface OpenSystemSettingsOptions {
+    action: string;
+    dataUri?: string;
+    accessibilityServiceComponent?: string;
 }
 
 // 回调函数存储对象
@@ -103,6 +124,32 @@ export class A11y {
             throw new Error(response.data?.message || "Check accessibility enabled failed");
         }
         return response.data as IsA11yEnabledResponse;
+    }
+
+    /**
+     * 检查 Google 随选朗读服务及快捷方式，快捷方式的 UNKNOWN 不代表关闭。
+     * 需要宿主支持该桥接方法；厂商的其他实现可能无法识别。
+     * @param timeout 超时时间(秒)，默认30秒
+     */
+    async getSelectToSpeakStatus(timeout?: number): Promise<SelectToSpeakStatus> {
+        const response = await this.asyncCall(
+            A11yCallMethod.getSelectToSpeakStatus,
+            undefined,
+            timeout
+        );
+        if (!response.isSuccess()) {
+            throw new Error(response.data?.message || "Check Select to Speak status failed");
+        }
+        return response.data as SelectToSpeakStatus;
+    }
+
+    /** 打开指定系统设置页；success 仅表示成功发起跳转。 */
+    async openSystemSettings(options: OpenSystemSettingsOptions, timeout?: number): Promise<OpenAccessibilitySettingResponse> {
+        const response = await this.asyncCall(A11yCallMethod.openSystemSettings, options, timeout);
+        if (!response.isSuccess()) {
+            throw new Error(response.data?.message || "Open system settings failed");
+        }
+        return response.data as OpenAccessibilitySettingResponse;
     }
 
     /**
